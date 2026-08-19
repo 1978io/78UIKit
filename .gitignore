@@ -1,6 +1,6 @@
 # internal working context — keep the repo fingerprint-clean (public give-away)
 CLAUDE.md
-_build-brief.md
+_build-brief*
 HANDOFF.md
 
 # dependencies / build bulk
