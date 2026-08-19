@@ -14,7 +14,7 @@
 
 ._78-modal {
   /* the reset zeroes every margin — a dialog needs `auto` back, or it is
-     pinned to the top-left corner instead of centred */
+     pinned to the top-left corner instead of centered */
   margin: auto;
   width: min(520px, calc(100vw - (var(--space-4) * 2)));
   max-height: calc(100vh - (var(--space-5) * 2));

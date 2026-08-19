@@ -1,27 +1,27 @@
 /* ==========================================================================
    78 UI Kit — theme generator (_78.gen)
 
-   One colour in, the whole kit token set out — for light AND dark — plus a
+   One color in, the whole kit token set out — for light AND dark — plus a
    live WCAG readout, an apply-to-this-page mode and a shareable ?theme= URL.
    This is the "re-theme by editing ~15 lines" pitch, automated: the generator
    writes those lines for you.
 
    Opt-in — NOT part of _78.js. Only demo/generator.html loads it.
 
-   🔴 Two colour rules this file exists to enforce:
+   🔴 Two color rules this file exists to enforce:
    1. **Work in OKLCH.** HSL ramps go muddy — equal steps in HSL are not equal
       steps to the eye. Every derivation here moves lightness/chroma in OKLCH.
-   2. **Dark is not inverted light.** A colour that pops on a dark surface
+   2. **Dark is not inverted light.** A color that pops on a dark surface
       washes out on a light one, so each theme gets its own lightness and
       chroma targets, not a mirror of the other's.
 
-   No colour library, no build — all the maths is here, both directions:
+   No color library, no build — all the maths is here, both directions:
    sRGB ⇄ OKLCH are fixed matrix transforms, plus a chroma-reduction gamut map
    for OKLCH values that land outside sRGB.
 
    ⚠️ The old "set oklch() on a hidden element and read the resolved rgb() back
    from getComputedStyle" trick **no longer converts**: since Chrome ~119 the
-   computed value keeps its colour space, so you get `oklch(0.62 0.19 250)`
+   computed value keeps its color space, so you get `oklch(0.62 0.19 250)`
    back verbatim. The browser is still the right parser for *user input*
    (hex, names, rgb) — resolve() below uses it for that, and understands
    whichever notation it hands back — but the OKLCH → sRGB direction is done
@@ -33,7 +33,7 @@ window._78 = window._78 || {};
 (function (_78) {
   "use strict";
 
-  /* --- colour plumbing ---------------------------------------------------- */
+  /* --- color plumbing ---------------------------------------------------- */
 
   var probeEl = null;
   var resolveCache = Object.create(null);
@@ -47,8 +47,8 @@ window._78 = window._78 || {};
     return probeEl;
   }
 
-  /* Any CSS colour the browser understands → {r,g,b}.
-     The browser parses (hex, names, rgb, hsl, oklch…); we normalise whatever
+  /* Any CSS color the browser understands → {r,g,b}.
+     The browser parses (hex, names, rgb, hsl, oklch…); we normalize whatever
      notation it gives back, because modern engines no longer flatten
      everything to rgb(). */
   function resolve(colour) {
@@ -101,7 +101,7 @@ window._78 = window._78 || {};
     return linear.every(function (c) { return c >= -0.0001 && c <= 1.0001; });
   }
 
-  /* OKLCH → {r,g,b}. Out-of-gamut colours keep their lightness and hue and
+  /* OKLCH → {r,g,b}. Out-of-gamut colors keep their lightness and hue and
      lose chroma until they fit — the same trade a designer would make, and
      far better than clipping channels (which shifts the hue). */
   function fromOklch(l, c, h) {
@@ -169,7 +169,7 @@ window._78 = window._78 || {};
     return (hi + 0.05) / (lo + 0.05);
   }
 
-  /* alpha-composite a colour over a surface — what a `-lo` tint really is */
+  /* alpha-composite a color over a surface — what a `-lo` tint really is */
   function over(rgb, alpha, surface) {
     return {
       r: Math.round(rgb.r * alpha + surface.r * (1 - alpha)),
@@ -179,7 +179,7 @@ window._78 = window._78 || {};
   }
 
   /* Walk lightness until the pair reaches `need`, staying in OKLCH so hue and
-     chroma survive the nudge. Returns the (possibly unchanged) colour. */
+     chroma survive the nudge. Returns the (possibly unchanged) color. */
   function nudge(base, against, need, dir) {
     var lch = { l: base.l, c: base.c, h: base.h };
     for (var i = 0; i < 100; i++) {
@@ -222,7 +222,7 @@ window._78 = window._78 || {};
 
   var DEFAULTS = { accent: "#0073ea", neutral: "neutral", radius: 8, density: "cozy" };
 
-  /* Neutral tint: greys are never truly grey in a good UI — they lean.
+  /* Neutral tint: grays are never truly gray in a good UI — they lean.
      A tiny chroma at a chosen hue is the whole difference. */
   var NEUTRALS = {
     neutral: { h: 0, c: 0 },
@@ -280,8 +280,8 @@ window._78 = window._78 || {};
     var t = THEMES[mode];
     var dir = mode === "light" ? -1 : 1;          /* which way is "more contrast" */
     var n = { h: neutral.h, c: neutral.c };
-    /* A tint has to fade as a grey approaches black or white, or near-white
-       surfaces read as "pale blue" rather than "cool grey". */
+    /* A tint has to fade as a gray approaches black or white, or near-white
+       surfaces read as "pale blue" rather than "cool gray". */
     var tintAt = function (l) { return n.c * (1 - 0.65 * Math.abs(2 * l - 1)); };
     var grey = function (l, chroma) { return fromOklch(l, chroma == null ? tintAt(l) : chroma, n.h); };
 
@@ -485,7 +485,7 @@ window._78 = window._78 || {};
       block(':root[data-theme="light"]', result.light, true)
     ];
     if (opts.base !== false) {
-      parts.push("", "/* Shape + density (not colour — these live in the shared :root) */",
+      parts.push("", "/* Shape + density (not color — these live in the shared :root) */",
                  block(":root", result.base, false));
     }
     return parts.join("\n");
@@ -570,7 +570,7 @@ window._78 = window._78 || {};
   }
 
   _78.gen = {
-    /* colour maths */
+    /* color maths */
     resolve: resolve, toOklch: toOklch, fromOklch: fromOklch, oklch: oklch,
     hex: hex, rgba: rgba, contrast: contrast, luminance: luminance, over: over,
     /* the job */

@@ -1,22 +1,22 @@
 /* ==========================================================================
    78 UI Kit — data-viz primitives (CSS + inline SVG, no library)
 
-   The lightweight essentials: a sparkline, a progress/score bar, a labelled
+   The lightweight essentials: a sparkline, a progress/score bar, a labeled
    bar row, a donut/gauge ring and a trend arrow. Anything deeper — axes,
    tooltips, interaction, real charts — is the Chart.js adapter's job
    (js/adapters/chartjs.js); these exist so you don't load a chart library to
    draw one 40px trend line.
 
-   Colour comes through two inherited variables, so every shape re-themes for
+   Color comes through two inherited variables, so every shape re-themes for
    free and a tone is one class — on the primitive OR on any ancestor:
-     --viz     the solid colour   (falls back to --accent)
+     --viz     the solid color   (falls back to --accent)
      --viz-lo  its tint           (falls back to --accent-lo)
    Set them with ._78-tone-accent/-success/-warn/-danger/-info/-dim (bottom of
    this file), or by hand: style="--viz: var(--info)".
 
    🔴 Accessibility: a shape is never the only carrier of meaning. Every
    primitive here either renders its value as text or gets role="img" +
-   aria-label from _78.viz — colour alone never says "good" or "bad".
+   aria-label from _78.viz — color alone never says "good" or "bad".
    ========================================================================== */
 
 /* --- Sparkline ------------------------------------------------------------
@@ -177,12 +177,12 @@
 ._78-donut-lg { width: 136px; }
 ._78-donut-lg ._78-donut-value { font-size: var(--fs-xl); }
 
-/* The gauge's arc leaves a gap at the bottom, so the centre text sits higher */
+/* The gauge's arc leaves a gap at the bottom, so the center text sits higher */
 ._78-gauge ._78-donut-center { justify-content: center; padding-bottom: 6%; }
 
 /* --- Trend arrow ----------------------------------------------------------
    The direction word is in the markup (or an aria-label) — the arrow and the
-   colour are reinforcement, never the only signal.
+   color are reinforcement, never the only signal.
      <span class="_78-trend _78-up">▲ 12.4%</span>
    -------------------------------------------------------------------------- */
 ._78-trend,
@@ -224,7 +224,7 @@
 ._78-trend-pill._78-invert._78-down { background: var(--success-lo); }
 
 /* --- Tones ----------------------------------------------------------------
-   One class re-colours any primitive above. Last in the file on purpose.
+   One class re-colors any primitive above. Last in the file on purpose.
    -------------------------------------------------------------------------- */
 ._78-tone-accent  { --viz: var(--accent);  --viz-lo: var(--accent-lo); }
 ._78-tone-success { --viz: var(--success); --viz-lo: var(--success-lo); }

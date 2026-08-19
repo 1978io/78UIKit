@@ -67,7 +67,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     <div class="_78-kpi-grid _78-mb-16">
       <div class="_78-stat-card">
         <div class="_78-stat-card__head">
-          <span class="_78-stat-card__label">Realised P/L</span>
+          <span class="_78-stat-card__label">Realized P/L</span>
           <span class="_78-stat-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/></svg>
           </span>
@@ -110,7 +110,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         </div>
         <div class="_78-stat-card__num _78-red">−9.4%</div>
         <div class="_78-stat-card__row">
-          <!-- up is BAD here: data-invert flips the colour, not the arrow -->
+          <!-- up is BAD here: data-invert flips the color, not the arrow -->
           <span class="_78-stat-delta" data-delta="3.1" data-invert="true"></span>
           <span class="_78-stat-card__sub">peak to trough</span>
         </div>
@@ -183,8 +183,8 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         </div>
       </div>
       <p class="_78-text-sm _78-text-dim _78-mt-16">Every one of these carries its value as text or an
-        <code class="tok">aria-label</code> — the colour and the shape are reinforcement, never the only
-        signal. <code class="tok">_78-invert</code> flips the colour for metrics where up is bad
+        <code class="tok">aria-label</code> — the color and the shape are reinforcement, never the only
+        signal. <code class="tok">_78-invert</code> flips the color for metrics where up is bad
         (the last pill: drawdown rising).</p>
     </div>
   </section>
@@ -197,7 +197,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     <div class="_78-table-wrap">
       <table class="_78-table">
         <thead>
-          <tr><th>Component</th><th>Use for</th><th>Behaviour</th><th>API</th></tr>
+          <tr><th>Component</th><th>Use for</th><th>Behavior</th><th>API</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -317,7 +317,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
 
       <div class="_78-alert">
-        <div class="_78-alert-body">Plain variant — no semantic colour.</div>
+        <div class="_78-alert-body">Plain variant — no semantic color.</div>
       </div>
 
       <div class="_78-empty _78-mt-16">
@@ -425,7 +425,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
             <tr><td class="_78-mono">#48213</td><td>Order placed</td><td class="_78-right _78-nums">09:31:04</td></tr>
             <tr><td class="_78-mono">#48213</td><td>Partially filled</td><td class="_78-right _78-nums">09:31:07</td></tr>
             <tr><td class="_78-mono">#48213</td><td>Filled</td><td class="_78-right _78-nums">09:31:12</td></tr>
-            <tr><td class="_78-mono">#48214</td><td>Order cancelled</td><td class="_78-right _78-nums">10:02:55</td></tr>
+            <tr><td class="_78-mono">#48214</td><td>Order canceled</td><td class="_78-right _78-nums">10:02:55</td></tr>
           </tbody>
         </table>
       </div>
@@ -443,7 +443,7 @@ function showResult(value) { result.textContent = JSON.stringify(value); }
 document.getElementById("m-open").addEventListener("click", function () {
   _78.modal.open({
     title: "Close position",
-    body: "EUR/USD, 25,000 at 1.0842.\nClosing now realises +£1,240.50.",
+    body: "EUR/USD, 25,000 at 1.0842.\nClosing now realizes +£1,240.50.",
     actions: [
       { label: "Cancel", value: null, variant: "ghost" },
       { label: "Close at market", value: "market", variant: "primary", autofocus: true }
@@ -454,7 +454,7 @@ document.getElementById("m-open").addEventListener("click", function () {
 document.getElementById("m-confirm").addEventListener("click", function () {
   _78.modal.confirm("This will cancel both working orders.").then(function (ok) {
     showResult(ok);
-    if (ok) _78.notify.success("Orders cancelled");
+    if (ok) _78.notify.success("Orders canceled");
   });
 });
 

@@ -9,7 +9,7 @@
      <script src="/78UIKit/js/adapters/chartjs.js"></script>
 
    🔴 Why this one is JS and the others are CSS: a chart is a <canvas>. Canvas
-   pixels can't resolve `var(--accent)` — the colours are baked in at draw
+   pixels can't resolve `var(--accent)` — the colors are baked in at draw
    time. So the adapter reads the kit tokens with getComputedStyle, pushes
    them into Chart.defaults, and — the bit everyone misses — re-applies and
    `update()`s every live chart on `_78:themechange`, because Chart.defaults
@@ -17,14 +17,14 @@
 
    API:
      _78.adapters.chartjs.apply()      re-read tokens, restyle, update charts
-     _78.adapters.chartjs.palette(n)   n theme-derived series colours
+     _78.adapters.chartjs.palette(n)   n theme-derived series colors
      _78.adapters.chartjs.tokens()     the token values currently in force
-     _78.adapters.chartjs.alpha(c, a)  any CSS colour → rgba() at alpha a
+     _78.adapters.chartjs.alpha(c, a)  any CSS color → rgba() at alpha a
 
-   Datasets: a dataset that declares no colours of its own is adopted by the
-   adapter and recoloured on every theme switch. A dataset that declares
+   Datasets: a dataset that declares no colors of its own is adopted by the
+   adapter and recolored on every theme switch. A dataset that declares
    `backgroundColor`/`borderColor` is left alone, forever — your explicit
-   colour always wins.
+   color always wins.
    ========================================================================== */
 
 window._78 = window._78 || {};
@@ -66,7 +66,7 @@ window._78 = window._78 || {};
     };
   }
 
-  /* --- colour helper ------------------------------------------------------
+  /* --- color helper ------------------------------------------------------
      Canvas needs a concrete rgba() — this is the `-lo` tint idea in JS.
      Handles #rgb / #rrggbb / #rrggbbaa / rgb() / rgba(); anything else is
      returned untouched rather than mangled.
@@ -92,8 +92,8 @@ window._78 = window._78 || {};
   }
 
   /* --- palette ------------------------------------------------------------
-     Series colours derived from the theme: accent first (it's the project's
-     own colour), then the semantic tokens. Past the base set the ramp repeats
+     Series colors derived from the theme: accent first (it's the project's
+     own color), then the semantic tokens. Past the base set the ramp repeats
      at lower opacity rather than inventing hues that no token defines.
      ---------------------------------------------------------------------- */
   function palette(n) {
@@ -163,12 +163,12 @@ window._78 = window._78 || {};
     d.elements.point.hoverBorderColor = t.bg2;
     d.elements.bar.borderWidth = 0;
 
-    /* Chart.js 4 ships its own auto-colour plugin — ours replaces it */
+    /* Chart.js 4 ships its own auto-color plugin — ours replaces it */
     if (d.plugins.colors) d.plugins.colors.enabled = false;
   }
 
-  /* --- dataset colouring --------------------------------------------------
-     Runs on every chart update, so a theme switch recolours adopted datasets.
+  /* --- dataset coloring --------------------------------------------------
+     Runs on every chart update, so a theme switch recolors adopted datasets.
      ---------------------------------------------------------------------- */
 
   function adopts(ds) {

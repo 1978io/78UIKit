@@ -72,8 +72,8 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
     padding: var(--space-3); overflow: auto; max-height: 340px;
     font-size: var(--fs-sm); line-height: 1.5; color: var(--text);
   }
-  .colour-row { display: flex; gap: var(--space-2); align-items: center; }
-  .colour-row input[type="color"] {
+  .color-row { display: flex; gap: var(--space-2); align-items: center; }
+  .color-row input[type="color"] {
     width: 44px; height: 36px; padding: 2px; background: var(--bg3);
     border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;
   }
@@ -102,7 +102,7 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
 
 <main class="page">
 
-  <p class="_78-text-dim _78-mb-16">Pick a colour. The generator derives the <strong>whole token set for
+  <p class="_78-text-dim _78-mb-16">Pick a color. The generator derives the <strong>whole token set for
     light and dark</strong> in OKLCH — dark is <em>not</em> an inverted light — checks every important pair
     against WCAG AA, and hands you the paste-ready CSS. That's the kit's pitch, automated: re-theme by
     editing ~15 lines, except you don't write them.</p>
@@ -125,8 +125,8 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
 
         <div class="_78-field">
           <label for="in-accent">Accent</label>
-          <div class="colour-row">
-            <input type="color" id="in-accent" value="#0073ea" aria-label="Accent colour picker">
+          <div class="color-row">
+            <input type="color" id="in-accent" value="#0073ea" aria-label="Accent color picker">
             <input class="_78-input _78-mono" id="in-hex" value="#0073ea" spellcheck="false" aria-label="Accent hex">
           </div>
           <div class="_78-field-hint">The one input that matters — everything else follows it.</div>
@@ -143,12 +143,12 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
         <div class="_78-field">
           <label for="in-neutral">Neutral tint</label>
           <select class="_78-select" id="in-neutral">
-            <option value="neutral">Neutral — true grey</option>
-            <option value="cool">Cool — blue-grey</option>
-            <option value="warm">Warm — sand-grey</option>
+            <option value="neutral">Neutral — true gray</option>
+            <option value="cool">Cool — blue-gray</option>
+            <option value="warm">Warm — sand-gray</option>
             <option value="accent">Match accent hue</option>
           </select>
-          <div class="_78-field-hint">Greys are never truly grey in good UI; they lean.</div>
+          <div class="_78-field-hint">Grays are never truly gray in good UI; they lean.</div>
         </div>
 
         <div class="_78-field">
@@ -246,7 +246,7 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
 
     <div class="_78-stat-card">
       <div class="_78-stat-card__head">
-        <span class="_78-stat-card__label">Realised P/L</span>
+        <span class="_78-stat-card__label">Realized P/L</span>
         <span class="_78-badge _78-badge-green">Live</span>
       </div>
       <div class="_78-stat-card__num _78-accent">+£4,820</div>
@@ -380,7 +380,7 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
     document.getElementById("hex-dark").textContent = result.dark["--accent"];
 
     /* the viz primitives are re-rendered so their SVG picks up the new tokens
-       (the colours are CSS, but a fresh mount keeps the demo honest) */
+       (the colors are CSS, but a fresh mount keeps the demo honest) */
     _78.viz.mountAll(panes.light);
     _78.viz.mountAll(panes.dark);
 

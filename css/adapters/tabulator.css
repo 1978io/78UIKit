@@ -8,7 +8,7 @@
      <link rel="stylesheet" href="…/tabulator-tables@6/dist/css/tabulator.css">
      <link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css">
 
-   Every colour here is a kit token, so the table re-themes with the rest of
+   Every color here is a kit token, so the table re-themes with the rest of
    the page the moment `data-theme` flips — no JS, no redraw.
    ⚠️ Tabulator renames classes across majors; re-check on a major upgrade.
    ========================================================================== */
@@ -62,7 +62,7 @@
   }
 }
 
-/* Sort arrows are CSS triangles — the visible colour is a border colour */
+/* Sort arrows are CSS triangles — the visible color is a border color */
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter { color: var(--dim); }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow { border-bottom-color: var(--dim); }
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="ascending"] .tabulator-col-content .tabulator-col-sorter { color: var(--accent); }

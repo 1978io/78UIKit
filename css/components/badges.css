@@ -27,7 +27,7 @@
 ._78-badge-info   { background: var(--info-lo);    border-color: transparent; color: var(--info); }
 ._78-badge-dim    { background: var(--bg3);        border-color: var(--border); color: var(--dim); }
 
-/* A dot before the label — status without a colour-only signal */
+/* A dot before the label — status without a color-only signal */
 ._78-badge-dot::before {
   content: "";
   width: 6px;

@@ -1,13 +1,13 @@
 /* ==========================================================================
    78 UI Kit — tokens
-   The ONLY theming mechanism. A theme is *colour and nothing else*: non-colour
-   tokens live in the shared :root, colours live in the [data-theme] blocks.
-   To re-theme a project, override the ~15 colour vars in your own stylesheet
+   The ONLY theming mechanism. A theme is *color and nothing else*: non-color
+   tokens live in the shared :root, colors live in the [data-theme] blocks.
+   To re-theme a project, override the ~15 color vars in your own stylesheet
    (loaded after kit.css) — never fork this file.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   Non-colour tokens — shared by every theme
+   Non-color tokens — shared by every theme
    -------------------------------------------------------------------------- */
 :root {
   /* Type */

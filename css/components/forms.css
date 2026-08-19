@@ -76,7 +76,7 @@
   box-shadow: 0 0 0 var(--ring-w) var(--danger-lo);
 }
 
-/* Select — native arrow replaced with a token-coloured chevron */
+/* Select — native arrow replaced with a token-colored chevron */
 ._78-select {
   appearance: none;
   padding-right: var(--space-6);

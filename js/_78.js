@@ -386,7 +386,7 @@ window._78 = window._78 || {};
 
   _78.notify = notify;
 
-  /* Inline alerts are pure CSS — the one behaviour they have is dismissal. */
+  /* Inline alerts are pure CSS — the one behavior they have is dismissal. */
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest("._78-alert-close");
     if (!btn) return;
@@ -512,11 +512,11 @@ window._78 = window._78 || {};
      <div data-values="4,7,6,9,12">…</div>        → sparkline
      <div class="_78-progress" data-pct="72">      → progress fill + aria
      <div class="_78-bar-row" data-pct="82">       → bar fill + aria
-     <div class="_78-donut" data-pct="68">         → ring + centre value
+     <div class="_78-donut" data-pct="68">         → ring + center value
      <div class="_78-donut _78-gauge" data-pct="41">
 
    🔴 Every primitive gets a text value or role="img" + aria-label. A shape or
-   a colour is never the only carrier of the meaning.
+   a color is never the only carrier of the meaning.
    ========================================================================== */
 (function (_78) {
   "use strict";
@@ -714,7 +714,7 @@ window._78 = window._78 || {};
     if (old) old.remove();
     el.insertBefore(svg, el.firstChild);
 
-    /* Centre text — respected if the markup already provides it */
+    /* Center text — respected if the markup already provides it */
     var centre = el.querySelector("._78-donut-center");
     if (!centre) {
       centre = document.createElement("div");
@@ -778,7 +778,7 @@ window._78 = window._78 || {};
     el.appendChild(icon);
     el.appendChild(document.createTextNode(text));
 
-    /* the word, for anyone who can't see the arrow or the colour */
+    /* the word, for anyone who can't see the arrow or the color */
     var sr = document.createElement("span");
     sr.className = "_78-sr-only";
     sr.textContent = " " + (opts.label || (dir === "up" ? "up" : dir === "down" ? "down" : "no change"));
