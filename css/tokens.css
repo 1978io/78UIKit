@@ -94,6 +94,9 @@
   --row-border: #232739;
   --row-selected: var(--accent-lo);
 
+  /* Overlay (modal backdrop) */
+  --overlay: rgba(0, 0, 0, .60);
+
   /* Focus */
   --ring: rgba(75, 158, 255, .35);
 }
@@ -133,6 +136,8 @@
   --row-hover: rgba(26, 29, 35, .035);
   --row-border: #eef0f4;
   --row-selected: var(--accent-lo);
+
+  --overlay: rgba(26, 29, 35, .45);
 
   --ring: rgba(0, 115, 234, .25);
 }

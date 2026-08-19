@@ -11,5 +11,13 @@
 @import url("components/cards.css");
 @import url("components/forms.css");
 @import url("components/badges.css");
+@import url("components/table.css");
+@import url("components/tabs.css");
+@import url("components/modal.css");
+@import url("components/toast.css");
+@import url("components/alert.css");
 @import url("components/theme-toggle.css");
 @import url("components/utilities.css");
+
+/* Library adapters (css/adapters/*) are deliberately NOT imported here —
+   they are opt-in, one per library a project actually uses. */

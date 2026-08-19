@@ -1,0 +1,113 @@
+/* ==========================================================================
+   78 UI Kit — inline alert
+   For anything tied to a region of the page: form errors, empty states, a
+   standing warning above a table. It sits in the layout and persists — that
+   is what separates it from a toast (transient) and a modal (blocking).
+
+     <div class="_78-alert _78-alert-danger" role="alert">
+       <svg class="_78-alert-icon">…</svg>
+       <div class="_78-alert-body">
+         <div class="_78-alert-title">Import failed</div>
+         Three rows were rejected.
+       </div>
+       <button class="_78-alert-close" aria-label="Dismiss">×</button>
+     </div>
+
+   Pure CSS — the optional dismiss button is wired by _78.js (any
+   ._78-alert-close removes its alert).
+   ========================================================================== */
+
+._78-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--dim);
+  border-radius: var(--radius);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: var(--fs-base);
+}
+._78-alert + ._78-alert { margin-top: var(--space-2); }
+
+._78-alert-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--dim);
+}
+._78-alert-body { flex: 1 1 auto; min-width: 0; }
+._78-alert-title { font-weight: 600; margin-bottom: 2px; }
+._78-alert-close {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+._78-alert-close:hover { background: var(--row-hover); color: var(--text); }
+._78-alert-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Variants — `-lo` tint + solid text/icon, never opacity */
+._78-alert-accent {
+  background: var(--accent-lo);
+  border-color: transparent;
+  border-left-color: var(--accent);
+}
+._78-alert-accent ._78-alert-title,
+._78-alert-accent ._78-alert-icon { color: var(--accent); }
+
+._78-alert-success {
+  background: var(--success-lo);
+  border-color: transparent;
+  border-left-color: var(--success);
+}
+._78-alert-success ._78-alert-title,
+._78-alert-success ._78-alert-icon { color: var(--success); }
+
+._78-alert-warn {
+  background: var(--warn-lo);
+  border-color: transparent;
+  border-left-color: var(--warn);
+}
+._78-alert-warn ._78-alert-title,
+._78-alert-warn ._78-alert-icon { color: var(--warn); }
+
+._78-alert-danger {
+  background: var(--danger-lo);
+  border-color: transparent;
+  border-left-color: var(--danger);
+}
+._78-alert-danger ._78-alert-title,
+._78-alert-danger ._78-alert-icon { color: var(--danger); }
+
+._78-alert-info {
+  background: var(--info-lo);
+  border-color: transparent;
+  border-left-color: var(--info);
+}
+._78-alert-info ._78-alert-title,
+._78-alert-info ._78-alert-icon { color: var(--info); }
+
+/* Empty state — the other half of "tied to a region" */
+._78-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--bg3);
+  color: var(--dim);
+  text-align: center;
+}
+._78-empty-title { color: var(--text); font-weight: 600; }

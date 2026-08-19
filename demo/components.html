@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>78 UI Kit — notifications, tabs, table</title>
+
+<!-- Pre-paint theme snippet — FIRST thing in <head>, before any CSS. No FOUC. -->
+<script>
+(function(){var p=localStorage.getItem('_78-theme')||'system';
+var t=p==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):p;
+var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
+</script>
+
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700">
+<link rel="stylesheet" href="../css/kit.css">
+
+<style>
+  /* Demo page chrome only — NOT part of the kit. */
+  .page { max-width: var(--content-max); margin: 0 auto; padding: var(--space-5) var(--space-4) 64px; }
+  .site-head {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    height: var(--header-h); padding: 0 var(--space-4);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+  }
+  .site-head h1 { font-size: var(--fs-lg); }
+  .site-head .mark { color: var(--accent); }
+  .site-head nav a { color: var(--dim); font-size: var(--fs-sm); margin-right: var(--space-3); }
+  .site-head nav a:hover, .site-head nav a[aria-current] { color: var(--accent); text-decoration: none; }
+  section { margin-top: var(--space-6); }
+  section > h2 {
+    font-size: var(--fs-lg); padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border); margin-bottom: var(--space-4);
+  }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  code.tok { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <h1><span class="mark">78</span> UI Kit <span class="_78-badge _78-badge-accent">components</span></h1>
+  <div class="_78-flex _78-gap-8">
+    <nav>
+      <a href="index.html">Foundation</a><a href="components.html" aria-current="page">Components</a><a href="adapters.html">Adapters</a>
+    </nav>
+    <span class="_78-text-xs _78-text-dim _78-mono" id="theme-state">theme: …</span>
+    <button class="_78-icon-btn _78-theme-toggle" type="button">
+      <svg class="_78-theme-icon" data-pref="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="_78-theme-icon" data-pref="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="_78-theme-icon" data-pref="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- ============================ THE RULE ============================ -->
+  <section id="rule" style="margin-top:0">
+    <h2>Notifications — which one?</h2>
+    <p class="_78-text-dim _78-mb-16">Three components, one rule. Ship the rule, not just the widgets:
+      pick by <em>what the user has to do</em>, not by how it looks.</p>
+    <div class="_78-table-wrap">
+      <table class="_78-table">
+        <thead>
+          <tr><th>Component</th><th>Use for</th><th>Behaviour</th><th>API</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="_78-badge _78-badge-accent">Modal</span></td>
+            <td>Needs acknowledgement — errors, confirms</td>
+            <td>Blocks. Requires a click.</td>
+            <td><code class="tok">_78.modal.open/confirm/alert</code></td>
+          </tr>
+          <tr>
+            <td><span class="_78-badge _78-badge-green">Toast</span></td>
+            <td>Informational — “Saved”, “Copied”</td>
+            <td>Auto-dismisses. Never blocks.</td>
+            <td><code class="tok">_78.notify()</code></td>
+          </tr>
+          <tr>
+            <td><span class="_78-badge _78-badge-warn">Inline alert</span></td>
+            <td>Tied to a region — form errors, empty states</td>
+            <td>Sits in the layout. Persists.</td>
+            <td><code class="tok">._78-alert</code> (CSS)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================ MODAL ============================ -->
+  <section id="modal">
+    <h2>Modal <span class="_78-badge _78-badge-dim">native &lt;dialog&gt; · showModal()</span></h2>
+    <div class="_78-card">
+      <p class="_78-text-dim _78-mb-12">Opened with <code class="tok">showModal()</code>, never
+        <code class="tok">show()</code> — that is what gives the top layer, the
+        <code class="tok">::backdrop</code>, the focus trap and Escape. Every opener returns a
+        <strong>Promise</strong>; dismissing (Escape, backdrop, ×) resolves <code class="tok">null</code>/
+        <code class="tok">false</code>.</p>
+      <div class="row">
+        <button class="_78-btn _78-btn-primary" id="m-open">Open a modal</button>
+        <button class="_78-btn" id="m-confirm">Confirm</button>
+        <button class="_78-btn _78-btn-danger" id="m-danger">Destructive confirm</button>
+        <button class="_78-btn _78-btn-ghost" id="m-alert">Alert</button>
+        <button class="_78-btn _78-btn-ghost" id="m-declarative">Declarative &lt;dialog&gt;</button>
+      </div>
+      <p class="_78-text-sm _78-text-dim _78-mt-12" id="m-result">Result: <span class="_78-mono">—</span></p>
+    </div>
+
+    <!-- A modal written in markup, opened with _78.modal.show() -->
+    <dialog class="_78-modal" id="declarative-modal" aria-labelledby="dm-title">
+      <div class="_78-modal-head">
+        <h2 class="_78-modal-title" id="dm-title">Written in HTML</h2>
+        <form method="dialog" class="_78-modal-close">
+          <button class="_78-icon-btn" type="submit" value="" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </form>
+      </div>
+      <div class="_78-modal-body">
+        <p>No JS built this one — it is plain markup in the page, opened with
+          <code class="tok">_78.modal.show(el)</code>.</p>
+        <p class="_78-text-dim">The close button is a <code class="tok">&lt;form method="dialog"&gt;</code>,
+          so it would close even with JavaScript disabled.</p>
+      </div>
+      <div class="_78-modal-foot">
+        <form method="dialog"><button class="_78-btn _78-btn-primary" value="ok">Got it</button></form>
+      </div>
+    </dialog>
+  </section>
+
+  <!-- ============================ TOASTS ============================ -->
+  <section id="toasts">
+    <h2>Toasts <span class="_78-badge _78-badge-dim">_78.notify()</span></h2>
+    <div class="_78-card">
+      <p class="_78-text-dim _78-mb-12">Stack in the corner, auto-dismiss (4s; errors 6s), never block.
+        <code class="tok">duration: 0</code> makes one sticky — it then only leaves by its close button.</p>
+      <div class="row">
+        <button class="_78-btn" id="t-default">Default</button>
+        <button class="_78-btn" id="t-success">Success</button>
+        <button class="_78-btn" id="t-error">Error</button>
+        <button class="_78-btn" id="t-warn">Warning</button>
+        <button class="_78-btn" id="t-info">Info</button>
+        <button class="_78-btn _78-btn-ghost" id="t-sticky">Sticky (duration: 0)</button>
+        <button class="_78-btn _78-btn-ghost" id="t-burst">Three at once</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ INLINE ALERTS ============================ -->
+  <section id="alerts">
+    <h2>Inline alerts <span class="_78-badge _78-badge-dim">._78-alert</span></h2>
+    <div class="_78-card">
+      <div class="_78-alert _78-alert-info" role="status">
+        <svg class="_78-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        <div class="_78-alert-body">
+          <div class="_78-alert-title">Market data delayed</div>
+          Quotes on this page are delayed by 15 minutes.
+        </div>
+      </div>
+
+      <div class="_78-alert _78-alert-success" role="status">
+        <svg class="_78-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+        <div class="_78-alert-body"><div class="_78-alert-title">Import complete</div>142 trades added.</div>
+        <button class="_78-alert-close" type="button" aria-label="Dismiss">×</button>
+      </div>
+
+      <div class="_78-alert _78-alert-warn" role="alert">
+        <svg class="_78-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 3 2 20h20L12 3zM12 9v5M12 17h.01"/></svg>
+        <div class="_78-alert-body"><div class="_78-alert-title">Margin above 70%</div>Reduce exposure before the next roll.</div>
+        <button class="_78-alert-close" type="button" aria-label="Dismiss">×</button>
+      </div>
+
+      <div class="_78-alert _78-alert-danger" role="alert">
+        <svg class="_78-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <div class="_78-alert-body"><div class="_78-alert-title">Order rejected</div>Insufficient margin for this size.</div>
+        <button class="_78-alert-close" type="button" aria-label="Dismiss">×</button>
+      </div>
+
+      <div class="_78-alert _78-alert-accent">
+        <div class="_78-alert-body">Accent variant — for a neutral highlight tied to a region.</div>
+      </div>
+
+      <div class="_78-alert">
+        <div class="_78-alert-body">Plain variant — no semantic colour.</div>
+      </div>
+
+      <div class="_78-empty _78-mt-16">
+        <div class="_78-empty-title">No open positions</div>
+        <div class="_78-text-sm">Anything you open today will show up here.</div>
+        <button class="_78-btn _78-btn-primary _78-btn-sm _78-mt-8">New trade</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ TABS ============================ -->
+  <section id="tabs">
+    <h2>Tabs <span class="_78-badge _78-badge-dim">._78-tabs · _78.tabs</span></h2>
+    <div class="_78-card">
+      <p class="_78-text-dim _78-mb-12">Click, or focus a tab and use ←/→ (Home/End too). Roles,
+        <code class="tok">aria-selected</code> and roving tabindex are wired on load; each change fires
+        <code class="tok">_78:tabchange</code>.</p>
+
+      <div class="_78-tabs">
+        <button class="_78-tab" data-tab="tab-positions">Positions <span class="_78-badge _78-badge-accent">12</span></button>
+        <button class="_78-tab" data-tab="tab-orders">Orders</button>
+        <button class="_78-tab" data-tab="tab-history">History</button>
+      </div>
+      <div id="tab-positions">
+        <p>Twelve open positions across four instruments.</p>
+        <p class="_78-text-dim _78-text-sm _78-mt-8">Panel one.</p>
+      </div>
+      <div id="tab-orders"><p>Two working orders, both limit.</p></div>
+      <div id="tab-history"><p>Filled orders from the last 30 days.</p></div>
+
+      <div class="_78-mt-16">
+        <div class="_78-eyebrow _78-mb-8">Segmented variant</div>
+        <div class="_78-tabs _78-tabs-segmented" style="display:inline-flex">
+          <button class="_78-tab" data-tab="seg-day">Day</button>
+          <button class="_78-tab" data-tab="seg-week">Week</button>
+          <button class="_78-tab" data-tab="seg-month">Month</button>
+        </div>
+        <div id="seg-day"><p class="_78-text-sm">Today's fills.</p></div>
+        <div id="seg-week"><p class="_78-text-sm">This week's fills.</p></div>
+        <div id="seg-month"><p class="_78-text-sm">This month's fills.</p></div>
+      </div>
+
+      <p class="_78-text-sm _78-text-dim _78-mt-12" id="tab-result">Last <code class="tok">_78:tabchange</code>: <span class="_78-mono">—</span></p>
+    </div>
+  </section>
+
+  <!-- ============================ TABLE ============================ -->
+  <section id="table">
+    <h2>Table <span class="_78-badge _78-badge-dim">._78-table</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">The kit's own plain <code class="tok">&lt;table&gt;</code>
+      style, for static or simple tables. A real data grid — sorting, filtering, paging, editing — is still
+      Tabulator plus its <a href="adapters.html">adapter</a>; this doesn't try to replace it.</p>
+
+    <div class="_78-table-wrap">
+      <table class="_78-table">
+        <caption class="_78-sr-only">Open positions</caption>
+        <thead>
+          <tr>
+            <th>Instrument</th><th>Side</th><th class="_78-right">Size</th>
+            <th class="_78-right">P/L</th><th class="_78-center">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="_78-fw-600">EUR/USD</td>
+            <td><span class="_78-badge _78-badge-green">Buy</span></td>
+            <td class="_78-right">25,000</td>
+            <td class="_78-right _78-text-green">+1,240.50</td>
+            <td class="_78-center"><span class="_78-score-pill _78-high">92</span></td>
+          </tr>
+          <tr class="_78-selected">
+            <td class="_78-fw-600">GBP/JPY</td>
+            <td><span class="_78-badge _78-badge-warn">Sell</span></td>
+            <td class="_78-right">12,000</td>
+            <td class="_78-right _78-text-red">−380.20</td>
+            <td class="_78-center"><span class="_78-score-pill _78-mid">61</span></td>
+          </tr>
+          <tr>
+            <td class="_78-fw-600">AAPL</td>
+            <td><span class="_78-badge _78-badge-green">Buy</span></td>
+            <td class="_78-right">400</td>
+            <td class="_78-right _78-text-green">+2,210.00</td>
+            <td class="_78-center"><span class="_78-score-pill _78-high">88</span></td>
+          </tr>
+          <tr>
+            <td class="_78-fw-600">TSLA</td>
+            <td><span class="_78-badge _78-badge-warn">Sell</span></td>
+            <td class="_78-right">150</td>
+            <td class="_78-right _78-text-red">−1,120.40</td>
+            <td class="_78-center"><span class="_78-score-pill _78-low">18</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3">Net</td><td class="_78-right _78-text-green">+1,949.90</td><td></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="_78-mt-16">
+      <div class="_78-eyebrow _78-mb-8">Compact + striped</div>
+      <div class="_78-table-wrap">
+        <table class="_78-table _78-table-compact _78-table-striped">
+          <thead><tr><th>Ticket</th><th>Event</th><th class="_78-right">Time</th></tr></thead>
+          <tbody>
+            <tr><td class="_78-mono">#48213</td><td>Order placed</td><td class="_78-right _78-nums">09:31:04</td></tr>
+            <tr><td class="_78-mono">#48213</td><td>Partially filled</td><td class="_78-right _78-nums">09:31:07</td></tr>
+            <tr><td class="_78-mono">#48213</td><td>Filled</td><td class="_78-right _78-nums">09:31:12</td></tr>
+            <tr><td class="_78-mono">#48214</td><td>Order cancelled</td><td class="_78-right _78-nums">10:02:55</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="../js/_78.js"></script>
+<script>
+/* ---------- modal ---------- */
+var result = document.querySelector("#m-result span");
+function showResult(value) { result.textContent = JSON.stringify(value); }
+
+document.getElementById("m-open").addEventListener("click", function () {
+  _78.modal.open({
+    title: "Close position",
+    body: "EUR/USD, 25,000 at 1.0842.\nClosing now realises +£1,240.50.",
+    actions: [
+      { label: "Cancel", value: null, variant: "ghost" },
+      { label: "Close at market", value: "market", variant: "primary", autofocus: true }
+    ]
+  }).then(showResult);
+});
+
+document.getElementById("m-confirm").addEventListener("click", function () {
+  _78.modal.confirm("This will cancel both working orders.").then(function (ok) {
+    showResult(ok);
+    if (ok) _78.notify.success("Orders cancelled");
+  });
+});
+
+document.getElementById("m-danger").addEventListener("click", function () {
+  _78.modal.confirm("Delete this account and everything in it? This cannot be undone.", {
+    title: "Delete account",
+    tone: "danger",
+    confirmLabel: "Delete account"
+  }).then(function (ok) {
+    showResult(ok);
+    if (ok) _78.notify.error("Account deleted");
+  });
+});
+
+document.getElementById("m-alert").addEventListener("click", function () {
+  _78.modal.alert("Your session expires in five minutes.", { title: "Session expiring" }).then(function () {
+    showResult("acknowledged");
+  });
+});
+
+document.getElementById("m-declarative").addEventListener("click", function () {
+  _78.modal.show(document.getElementById("declarative-modal")).then(showResult);
+});
+
+/* ---------- toasts ---------- */
+document.getElementById("t-default").addEventListener("click", function () { _78.notify("Draft saved"); });
+document.getElementById("t-success").addEventListener("click", function () { _78.notify.success("Trade booked", { title: "Saved" }); });
+document.getElementById("t-error").addEventListener("click", function () { _78.notify.error("Could not reach the broker", { title: "Connection lost" }); });
+document.getElementById("t-warn").addEventListener("click", function () { _78.notify.warn("Margin above 70%"); });
+document.getElementById("t-info").addEventListener("click", function () { _78.notify.info("Market closes in 10 minutes"); });
+document.getElementById("t-sticky").addEventListener("click", function () {
+  _78.notify("This one stays until you dismiss it.", { title: "Sticky", duration: 0 });
+});
+document.getElementById("t-burst").addEventListener("click", function () {
+  _78.notify.info("First");
+  setTimeout(function () { _78.notify.success("Second"); }, 250);
+  setTimeout(function () { _78.notify.warn("Third"); }, 500);
+});
+
+/* ---------- tabs ---------- */
+var tabOut = document.querySelector("#tab-result span");
+document.addEventListener("_78:tabchange", function (e) {
+  tabOut.textContent = e.detail.tab.textContent.trim() + " (index " + e.detail.index + ")";
+});
+
+/* ---------- theme readout (demo only) ---------- */
+var out = document.getElementById("theme-state");
+function show(e) {
+  var d = (e && e.detail) || { theme: _78.theme.current, pref: _78.theme.pref };
+  out.textContent = "pref: " + d.pref + " → " + d.theme;
+}
+document.addEventListener("_78:themechange", show);
+show();
+</script>
+</body>
+</html>

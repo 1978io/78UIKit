@@ -1,0 +1,82 @@
+/* ==========================================================================
+   78 UI Kit — toasts
+   Informational only — "Saved", "Copied", "Export queued". A toast never
+   blocks and never asks a question; if the user must acknowledge it, it is a
+   modal, and if it belongs to a region of the page, it is an inline alert.
+
+   Created by _78.notify() / .success() / .error() / .warn() / .info();
+   the container is built on first use.
+   ========================================================================== */
+
+._78-toasts {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  width: min(360px, calc(100vw - (var(--space-4) * 2)));
+  pointer-events: none;              /* clicks pass through the empty stack */
+}
+
+._78-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--dim);
+  border-radius: var(--radius);
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-base);
+  pointer-events: auto;
+  animation: _78-toast-in var(--transition-slow) both;
+}
+._78-toast._78-toast-out { animation: _78-toast-out var(--transition-slow) both; }
+
+@keyframes _78-toast-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes _78-toast-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(12px); }
+}
+
+._78-toast-body { flex: 1 1 auto; min-width: 0; }
+._78-toast-title { font-weight: 600; margin-bottom: 2px; }
+._78-toast-msg { color: var(--text); overflow-wrap: anywhere; }
+._78-toast-close {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--dim);
+  font-size: var(--fs-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+._78-toast-close:hover { background: var(--row-hover); color: var(--text); }
+._78-toast-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Type variants — the tint carries the meaning, the text stays readable */
+._78-toast-success { border-left-color: var(--success); background: var(--bg2); }
+._78-toast-success ._78-toast-title { color: var(--success); }
+._78-toast-error { border-left-color: var(--danger); }
+._78-toast-error ._78-toast-title { color: var(--danger); }
+._78-toast-warn { border-left-color: var(--warn); }
+._78-toast-warn ._78-toast-title { color: var(--warn); }
+._78-toast-info { border-left-color: var(--info); }
+._78-toast-info ._78-toast-title { color: var(--info); }
+
+/* Bottom-left / top corners, if a project prefers them */
+._78-toasts-left { right: auto; left: var(--space-4); align-items: flex-start; }
+._78-toasts-top { bottom: auto; top: var(--space-4); }

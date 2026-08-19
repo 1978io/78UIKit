@@ -1,0 +1,86 @@
+/* ==========================================================================
+   78 UI Kit — modal (native <dialog>)
+
+   ⭐ Which notification? — the rule, so nobody has to guess:
+      MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
+      TOAST  informational ("Saved", "Copied")        — auto-dismisses, never blocks
+      INLINE tied to a region (form errors, empty)    — sits in the layout, persists
+
+   Always opened with `showModal()`, never `show()`: that is what gives you the
+   top layer, the ::backdrop, the focus trap and Escape for free.
+   Drive it with _78.modal.open() / .confirm() / .alert(), or write the markup
+   yourself and call _78.modal.mount(el).
+   ========================================================================== */
+
+._78-modal {
+  /* the reset zeroes every margin — a dialog needs `auto` back, or it is
+     pinned to the top-left corner instead of centred */
+  margin: auto;
+  width: min(520px, calc(100vw - (var(--space-4) * 2)));
+  max-height: calc(100vh - (var(--space-5) * 2));
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  overflow: visible;
+}
+._78-modal-lg { width: min(760px, calc(100vw - (var(--space-4) * 2))); }
+._78-modal-sm { width: min(400px, calc(100vw - (var(--space-4) * 2))); }
+
+._78-modal::backdrop {
+  background: var(--overlay);
+  animation: _78-fade-in var(--transition) both;
+}
+._78-modal[open] { animation: _78-modal-in var(--transition-slow) both; }
+
+@keyframes _78-modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes _78-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- Structure ------------------------------------------------------------ */
+._78-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+._78-modal-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: 1.35;
+}
+._78-modal-body {
+  padding: var(--space-4);
+  max-height: 60vh;
+  overflow-y: auto;
+  color: var(--text);
+}
+._78-modal-body p + p { margin-top: var(--space-3); }
+._78-modal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+  background: var(--bg3);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+._78-modal-foot._78-modal-foot-split { justify-content: space-between; }
+
+/* The head's close control — a <form method="dialog"> button closes with no JS */
+._78-modal-close { margin: -4px -4px 0 0; }
+
+/* Tone accents for alert-style modals */
+._78-modal-danger ._78-modal-title { color: var(--danger); }
+._78-modal-warn ._78-modal-title { color: var(--warn); }

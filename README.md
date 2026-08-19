@@ -4,9 +4,10 @@
 HTML / CSS / JS you drop in. **Re-theme the whole thing — components *and* your libraries — by editing
 ~15 lines.** MIT — a 1978.io give-away and the shared component layer for every 1978 product.
 
-> 🌱 **Status: foundation + adapters built, 2026-08-18** — tokens, theming (`_78.theme`), buttons, cards,
-> form controls, badges/pills, and the three library theme adapters (Tabulator, FullCalendar, Chart.js),
-> each proved light+dark in `demo/`. Notifications, tabs and the theme generator are next.
+> 🌱 **Status: briefs 1–3 built, 2026-08-18** — tokens + theming (`_78.theme`), the four primitives, the
+> three library theme adapters (Tabulator, FullCalendar, Chart.js), and notifications (modal / toast /
+> inline alert) + tabs + table, each proved light+dark in `demo/`. KPIs + data-viz, the `_78` helpers and
+> the theme generator are next; the app shell/nav needs a design session first.
 > Decisions live in `JamesHQ\projects\1978-ui-kit\notes.md` (the
 > strategy/decision log); this README is the **buildable spec**. Structure reference = the AlchemyQM
 > mockup; code is built fresh from James's own projects (Brashli / Lake House). Dogfooded on **78trade** first.
@@ -55,7 +56,7 @@ distinct from AQM so nothing links AQM to 1978). AQM's violet never ships; every
 `--accent-lo-hover` · `--accent-hover` · `--accent-text` (text on an accent fill) · `--accent-glow` ·
 semantic `--success` `#15803d`/`#4ade80` · `--warn` `#b45309`/`#fbbf24` · `--danger` `#dc2626`/`#f87171` ·
 ✅ `--info` `#0369a1`/`#38bdf8` — each with a `-lo` tint at the same alpha · `--row-hover` ·
-`--row-border` · `--row-selected` · `--ring` (focus) · `--shadow`/`--shadow-lg`.
+`--row-border` · `--row-selected` · `--ring` (focus) · `--overlay` (modal backdrop) · `--shadow`/`--shadow-lg`.
 
 **Non-colour (shared `:root`):** `--radius-sm`(6px) `--radius`(8px) `--radius-lg`(10px) `--radius-pill` ·
 `--font`/`--font-mono` · `--fs-xs`…`--fs-xl` · `--lh` · `--control-h`(36px)/`--control-h-sm`(28px)/
@@ -142,11 +143,9 @@ Build order: **foundation → adapters → notifications/components → theme ge
 - **Foundation** 🟢 ✅ **built** — tokens+theming+toggle; buttons (`_78-btn` + `-primary/-ghost/-danger/
   -sm/-full`, `_78-icon-btn`); cards (`_78-card`, `_78-stat-card`); form controls (`_78-field` + focus
   ring); badges/pills (`_78-badge` variants, `_78-tag`, `_78-eyebrow`, `_78-score-pill`); utilities.
-- **Notifications** 🔵 — modal / toast / inline alert, from James's native `<dialog>` (Brashli/Lake House).
-  🔴 Fix two flaws before shipping: use `showModal()` not `show()` (modal, focus-trapped); and expose a
-  **`_78.notify("Saved") / _78.notify.error(…)` API**, not order-dependent globals. ⭐ Ship the **rule** for
-  choosing: **modal** = needs acknowledgement (errors/confirms, blocks) · **toast** = info ("Saved",
-  auto-dismiss) · **inline alert** = tied to a region (form errors, empty states).
+- **Notifications** 🔵 ✅ **built** — modal / toast / inline alert (see the rule below). Native `<dialog>`
+  via `showModal()`, function API (`_78.modal.open/confirm/alert`, `_78.notify…`) — no order-dependent
+  globals. `_78.modal.mount()`/`.show()` for a `<dialog>` you wrote yourself.
 - **Dashboard/data** 🔵 — KPI card (value/label/delta/trend) + responsive KPI grid; status pill (where
   `-lo` tints earn their keep); table styling that works **with** Tabulator, doesn't replace it. 🔴 **Include
   the Hub's KPIs + data-viz** (its stat/analytics widgets + AQM's `bar-row`/`score-bar`/`heatmap` primitives).
@@ -154,7 +153,23 @@ Build order: **foundation → adapters → notifications/components → theme ge
   trend arrow. (Chart.js for anything deeper.)
 - **Shell + states** 🔵 — app shell (sidebar + main), empty state, loading state, filter bar. ⬜ **Nav is
   its own design session** (sidebar vs top-bar, mobile, active/nested/badges).
-- **Tabs**, **toggle switch / checkbox** 🔵 — neither AQM nor the Hub had a real switch.
+- **Tabs** 🔵 ✅ **built** — `._78-tabs` (+ `._78-tabs-segmented`), `_78.tabs` auto-mounts: roles,
+  `aria-selected`, roving tabindex, ←/→/Home/End, a `_78:tabchange` event. **Toggle switch / checkbox** 🔵
+  still pending — neither AQM nor the Hub had a real switch.
+- **Table** 🔵 ✅ **built** — `._78-table` (+ `-compact`/`-striped`/`-sticky`, `._78-table-wrap` to scroll
+  on narrow screens). The kit's own plain `<table>`; a data grid is still Tabulator + its adapter.
+
+### ⭐ The notification rule (ship the rule, not just the widgets)
+
+| | Use for | Behaviour | API |
+|---|---|---|---|
+| **Modal** | needs acknowledgement — errors, confirms | blocks; requires a click | `_78.modal.open({title, body, actions})` → `Promise<value\|null>` · `.confirm(msg)` → `Promise<boolean>` · `.alert(msg)` |
+| **Toast** | informational — "Saved", "Copied" | auto-dismisses (4s, errors 6s; `duration: 0` = sticky); never blocks | `_78.notify(msg, {type, duration, title})` · `.success/.error/.warn/.info` |
+| **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ `-success/-warn/-danger/-info/-accent`), `._78-empty` |
+
+Modals are always `showModal()`, never `show()` — that is what buys the top layer, the `::backdrop`, the
+focus trap and Escape. Body text goes in with `textContent`; pass `html: true` when you mean markup.
+**Demo: `demo/components.html`.**
 
 ## JS helpers (the `_78` lib)
 
@@ -174,11 +189,13 @@ repo is canonical, `_78` includes it.
 css/  kit.css            ✅ the one stylesheet a project links (@imports everything below)
       tokens.css        ✅ light + dark colour blocks + shared non-colour tokens
       reset.css         ✅ minimal reset, themed scrollbars, focus ring
-      components/       ✅ buttons · cards · forms · badges · theme-toggle · utilities
+      components/       ✅ buttons · cards · forms · badges · table · tabs · modal · toast ·
+                           alert · theme-toggle · utilities
       adapters/         ✅ tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js            ✅ _78.theme (notify + helpers land in later briefs)
+js/   _78.js            ✅ _78.theme · _78.modal · _78.notify · _78.tabs (helpers still pending)
       adapters/         ✅ chartjs.js — _78.adapters.chartjs
-demo/ index.html        ✅ kitchen-sink, light+dark
+demo/ index.html        ✅ kitchen-sink (tokens + the four primitives), light+dark
+      components.html   ✅ notifications (modal/toast/alert) · tabs · table
       adapters.html     ✅ live Tabulator + FullCalendar + Chart.js, all re-theming off one toggle
 docs/                   🔜 per-component notes as they stabilise
 ```

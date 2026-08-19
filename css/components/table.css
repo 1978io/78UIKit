@@ -1,0 +1,88 @@
+/* ==========================================================================
+   78 UI Kit — table
+   The kit's own plain-<table> style, for static or simple tables. For a real
+   data grid — sorting, filtering, paging, editing, virtual scroll — use
+   Tabulator and its adapter (css/adapters/tabulator.css); this file styles a
+   <table> you wrote by hand, it does not try to replace one.
+
+     <div class="_78-table-wrap">
+       <table class="_78-table">…</table>
+     </div>
+   ========================================================================== */
+
+._78-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-base);
+  color: var(--text);
+}
+
+._78-table th {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+._78-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--row-border);
+  vertical-align: middle;
+}
+
+._78-table tbody tr { transition: background var(--transition); }
+._78-table tbody tr:hover { background: var(--row-hover); }
+._78-table tbody tr:last-child td { border-bottom: 0; }
+._78-table tbody tr._78-selected { background: var(--row-selected); }
+
+._78-table tfoot td {
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+._78-table caption {
+  padding-bottom: var(--space-2);
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  text-align: left;
+}
+
+/* Sticky header — needs a scroll container with a height */
+._78-table-sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg2);
+}
+
+/* Alignment helpers (numbers read best right-aligned + tabular) */
+._78-table ._78-right,
+._78-table th._78-right { text-align: right; font-variant-numeric: tabular-nums; }
+._78-table ._78-center,
+._78-table th._78-center { text-align: center; }
+
+/* Density */
+._78-table-compact th { padding: var(--space-1) var(--space-2); }
+._78-table-compact td { padding: var(--space-2); }
+
+/* Zebra, for long unbroken tables */
+._78-table-striped tbody tr:nth-child(even) { background: var(--bg3); }
+._78-table-striped tbody tr:nth-child(even):hover { background: var(--row-hover); }
+
+/* Scroll wrapper — narrow screens scroll the table, never the page */
+._78-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg2);
+}
+._78-table-wrap ._78-table th:first-child,
+._78-table-wrap ._78-table td:first-child { padding-left: var(--space-3); }
