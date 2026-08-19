@@ -42,25 +42,25 @@ window._78 = window._78 || {};
     try { localStorage.setItem(KEY, value); } catch (e) { /* no-op */ }
   }
 
-  function normalise(pref) {
+  function normalize(pref) {
     return ORDER.indexOf(pref) === -1 ? "system" : pref;
   }
 
   /* The user's preference: "dark" | "light" | "system" */
   function pref() {
-    return normalise(read());
+    return normalize(read());
   }
 
   /* What the preference resolves to right now: "dark" | "light" */
   function resolve(p) {
-    p = normalise(p || pref());
+    p = normalize(p || pref());
     if (p !== "system") return p;
     return window.matchMedia(LIGHT_MQ).matches ? "light" : "dark";
   }
 
   /* Write the attributes the CSS keys off, then tell the page */
   function apply(p) {
-    p = normalise(p);
+    p = normalize(p);
     var theme = resolve(p);
     root.dataset.theme = theme;
     root.dataset.themePref = p;
@@ -73,7 +73,7 @@ window._78 = window._78 || {};
 
   /* Set + persist */
   function set(p) {
-    p = normalise(p);
+    p = normalize(p);
     write(p);
     return apply(p);
   }
@@ -715,28 +715,28 @@ window._78 = window._78 || {};
     el.insertBefore(svg, el.firstChild);
 
     /* Center text — respected if the markup already provides it */
-    var centre = el.querySelector("._78-donut-center");
-    if (!centre) {
-      centre = document.createElement("div");
-      centre.className = "_78-donut-center";
-      el.appendChild(centre);
+    var center = el.querySelector("._78-donut-center");
+    if (!center) {
+      center = document.createElement("div");
+      center.className = "_78-donut-center";
+      el.appendChild(center);
     }
-    var valueEl = centre.querySelector("._78-donut-value");
+    var valueEl = center.querySelector("._78-donut-value");
     if (!valueEl) {
       valueEl = document.createElement("div");
       valueEl.className = "_78-donut-value";
-      centre.insertBefore(valueEl, centre.firstChild);
+      center.insertBefore(valueEl, center.firstChild);
     }
     if (!valueEl.textContent.trim() || opts.value != null || el.dataset.pct != null) {
       valueEl.textContent = opts.value != null ? opts.value : round(pct) + "%";
     }
 
     var label = opts.label || el.dataset.label || "";
-    if (label && !centre.querySelector("._78-donut-label")) {
+    if (label && !center.querySelector("._78-donut-label")) {
       var labelEl = document.createElement("div");
       labelEl.className = "_78-donut-label";
       labelEl.textContent = label;
-      centre.appendChild(labelEl);
+      center.appendChild(labelEl);
     }
 
     el.setAttribute("role", "img");

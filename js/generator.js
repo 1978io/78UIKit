@@ -51,11 +51,11 @@ window._78 = window._78 || {};
      The browser parses (hex, names, rgb, hsl, oklch…); we normalize whatever
      notation it gives back, because modern engines no longer flatten
      everything to rgb(). */
-  function resolve(colour) {
-    if (resolveCache[colour]) return resolveCache[colour];
+  function resolve(color) {
+    if (resolveCache[color]) return resolveCache[color];
     var el = probe();
     el.style.color = "";
-    el.style.color = colour;
+    el.style.color = color;
     var computed = (getComputedStyle(el).color || "").trim();
     var nums = (computed.match(/-?[\d.]+%?/g) || []).map(function (n) {
       return n.indexOf("%") > -1 ? parseFloat(n) / 100 : parseFloat(n);
@@ -69,7 +69,7 @@ window._78 = window._78 || {};
     } else {
       rgb = { r: Math.round(nums[0] || 0), g: Math.round(nums[1] || 0), b: Math.round(nums[2] || 0) };
     }
-    resolveCache[colour] = rgb;
+    resolveCache[color] = rgb;
     return rgb;
   }
 
@@ -263,7 +263,7 @@ window._78 = window._78 || {};
     }
   };
 
-  function normalise(config) {
+  function normalize(config) {
     var c = Object.assign({}, DEFAULTS, config || {});
     c.accent = /^#?[0-9a-f]{3,8}$/i.test(String(c.accent).trim())
       ? (String(c.accent).trim()[0] === "#" ? c.accent.trim() : "#" + c.accent.trim())
@@ -283,13 +283,13 @@ window._78 = window._78 || {};
     /* A tint has to fade as a gray approaches black or white, or near-white
        surfaces read as "pale blue" rather than "cool gray". */
     var tintAt = function (l) { return n.c * (1 - 0.65 * Math.abs(2 * l - 1)); };
-    var grey = function (l, chroma) { return fromOklch(l, chroma == null ? tintAt(l) : chroma, n.h); };
+    var gray = function (l, chroma) { return fromOklch(l, chroma == null ? tintAt(l) : chroma, n.h); };
 
-    var bg = grey(t.bg);
-    var bg2 = grey(t.bg2, t.bg2 >= 1 ? 0 : n.c);  /* pure white stays pure white */
-    var bg3 = grey(t.bg3);
-    var border = grey(t.border);
-    var rowBorder = grey(t.rowBorder);
+    var bg = gray(t.bg);
+    var bg2 = gray(t.bg2, t.bg2 >= 1 ? 0 : n.c);  /* pure white stays pure white */
+    var bg3 = gray(t.bg3);
+    var border = gray(t.border);
+    var rowBorder = gray(t.rowBorder);
 
     /* Text + dim, nudged until they clear AA on the busiest surface (bg2) */
     var text = nudge({ l: t.text, c: n.c, h: n.h }, bg2, 4.5, dir);
@@ -388,7 +388,7 @@ window._78 = window._78 || {};
 
   /* The whole job: config in, both token sets + notes out. */
   function derive(config) {
-    config = normalise(config);
+    config = normalize(config);
     var accentLch = toOklch(resolve(config.accent));
     var neutral = Object.assign({}, NEUTRALS[config.neutral]);
     if (neutral.h == null) neutral.h = accentLch.h;
@@ -547,7 +547,7 @@ window._78 = window._78 || {};
 
   /* ?theme=0073ea.cool.8.cozy — short, readable, no backend */
   function encode(config) {
-    config = normalise(config);
+    config = normalize(config);
     return [config.accent.replace("#", ""), config.neutral, config.radius, config.density].join(".");
   }
 
@@ -555,7 +555,7 @@ window._78 = window._78 || {};
     if (!value) return null;
     var bits = String(value).split(".");
     if (!bits[0]) return null;
-    return normalise({ accent: bits[0], neutral: bits[1], radius: bits[2], density: bits[3] });
+    return normalize({ accent: bits[0], neutral: bits[1], radius: bits[2], density: bits[3] });
   }
 
   function fromUrl(search) {

@@ -71,9 +71,9 @@ window._78 = window._78 || {};
      Handles #rgb / #rrggbb / #rrggbbaa / rgb() / rgba(); anything else is
      returned untouched rather than mangled.
      ---------------------------------------------------------------------- */
-  function alpha(colour, a) {
-    if (!colour) return colour;
-    var c = String(colour).trim(), m;
+  function alpha(color, a) {
+    if (!color) return color;
+    var c = String(color).trim(), m;
 
     if (c.charAt(0) === "#") {
       var hex = c.slice(1);
@@ -104,9 +104,9 @@ window._78 = window._78 || {};
     var count = typeof n === "number" && n > 0 ? n : base.length;
 
     for (var i = 0; i < count; i++) {
-      var colour = base[i % base.length];
+      var color = base[i % base.length];
       var fade = fades[Math.min(Math.floor(i / base.length), fades.length - 1)];
-      out.push(fade === 1 ? colour : alpha(colour, fade));
+      out.push(fade === 1 ? color : alpha(color, fade));
     }
     return out;
   }
@@ -178,15 +178,15 @@ window._78 = window._78 || {};
     return ds.$_78;
   }
 
-  function styleDataset(ds, type, index, colours, t) {
-    var colour = colours[index % colours.length];
+  function styleDataset(ds, type, index, colors, t) {
+    var color = colors[index % colors.length];
 
     if (type === "line" || type === "radar") {
-      ds.borderColor = colour;
-      ds.backgroundColor = alpha(colour, .16);
-      ds.pointBackgroundColor = colour;
+      ds.borderColor = color;
+      ds.backgroundColor = alpha(color, .16);
+      ds.pointBackgroundColor = color;
       ds.pointBorderColor = t.bg2;
-      ds.pointHoverBackgroundColor = colour;
+      ds.pointHoverBackgroundColor = color;
       return;
     }
 
@@ -201,20 +201,20 @@ window._78 = window._78 || {};
     }
 
     /* bar, bubble, scatter, everything else */
-    ds.backgroundColor = colour;
-    ds.borderColor = colour;
-    ds.hoverBackgroundColor = alpha(colour, .8);
+    ds.backgroundColor = color;
+    ds.borderColor = color;
+    ds.hoverBackgroundColor = alpha(color, .8);
   }
 
   var palettePlugin = {
     id: "_78palette",
     beforeUpdate: function (chart) {
       var datasets = (chart.data && chart.data.datasets) || [];
-      var colours = palette(datasets.length);
+      var colors = palette(datasets.length);
       var t = tokens();
       datasets.forEach(function (ds, i) {
         if (!adopts(ds)) return;
-        styleDataset(ds, ds.type || chart.config.type, i, colours, t);
+        styleDataset(ds, ds.type || chart.config.type, i, colors, t);
       });
     }
   };
