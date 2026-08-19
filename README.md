@@ -38,9 +38,9 @@ first paint (no flash of the wrong theme):
   var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
   </script>
 
-  <!-- 2. the kit -->
-  <link rel="stylesheet" href="/78UIKit/css/kit.css">
-  <script defer src="/78UIKit/js/_78.js"></script>
+  <!-- 2. the kit — via CDN (jsDelivr serves it straight from GitHub) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
 
   <!-- 3. your ~15-line re-theme, AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
@@ -49,6 +49,10 @@ first paint (no flash of the wrong theme):
 
 That's it. Use the classes, and let the theme generator on [78uikit.com](https://78uikit.com) write your
 override block for you.
+
+**CDN or self-host.** `@v0.1.0` pins a release; use `@main` for the latest (moves on every push), or download
+the repo and serve the files yourself. jsDelivr also serves minified builds — swap in `kit.min.css` /
+`_78.min.js`. The library adapters live on the same CDN under `/css/adapters/` and `/js/adapters/`.
 
 ## Theming
 
