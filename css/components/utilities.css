@@ -1,0 +1,47 @@
+/* ==========================================================================
+   78 UI Kit — utilities (a deliberately small set: text, flex, spacing)
+   ========================================================================== */
+
+/* Text */
+._78-text-dim { color: var(--dim); }
+._78-text-sm  { font-size: var(--fs-sm); }
+._78-text-xs  { font-size: var(--fs-xs); }
+._78-text-accent { color: var(--accent); }
+._78-text-green  { color: var(--success); }
+._78-text-warn   { color: var(--warn); }
+._78-text-red    { color: var(--danger); }
+._78-fw-600 { font-weight: 600; }
+._78-mono   { font-family: var(--font-mono); }
+._78-nums   { font-variant-numeric: tabular-nums; }
+._78-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Layout */
+._78-flex { display: flex; align-items: center; }
+._78-flex-between { display: flex; align-items: center; justify-content: space-between; }
+._78-flex-wrap { flex-wrap: wrap; }
+._78-flex-col { display: flex; flex-direction: column; }
+._78-grow { flex: 1 1 auto; }
+._78-gap-8  { gap: var(--space-2); }
+._78-gap-12 { gap: var(--space-3); }
+._78-gap-16 { gap: var(--space-4); }
+
+/* Spacing */
+._78-mt-8  { margin-top: var(--space-2); }
+._78-mt-12 { margin-top: var(--space-3); }
+._78-mt-16 { margin-top: var(--space-4); }
+._78-mb-4  { margin-bottom: var(--space-1); }
+._78-mb-8  { margin-bottom: var(--space-2); }
+._78-mb-12 { margin-bottom: var(--space-3); }
+._78-mb-16 { margin-bottom: var(--space-4); }
+
+/* Accessibility */
+._78-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

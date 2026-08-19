@@ -1,0 +1,90 @@
+/* ==========================================================================
+   78 UI Kit — buttons
+   ._78-btn  ·  -primary / -ghost / -danger  ·  -sm / -full  ·  ._78-icon-btn
+   ========================================================================== */
+
+._78-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-h);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg2);
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition),
+              color var(--transition), box-shadow var(--transition);
+}
+._78-btn:hover { background: var(--bg3); border-color: var(--dim); }
+._78-btn:active { transform: translateY(1px); }
+._78-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+._78-btn:disabled,
+._78-btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* Primary — accent fill + glow */
+._78-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  box-shadow: var(--accent-glow);
+}
+._78-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+/* Ghost — bordered transparent, accent on hover */
+._78-btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--dim);
+}
+._78-btn-ghost:hover {
+  background: var(--accent-lo);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Danger — tinted, not shouty; fills on hover */
+._78-btn-danger {
+  background: var(--danger-lo);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+._78-btn-danger:hover { background: var(--danger); border-color: var(--danger); color: var(--bg2); }
+
+/* Sizes / layout */
+._78-btn-sm {
+  height: var(--control-h-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--fs-sm);
+  border-radius: var(--radius-sm);
+}
+._78-btn-full { width: 100%; }
+
+/* Icon button — square, borderless until hovered */
+._78-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  flex: 0 0 auto;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--dim);
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition),
+              border-color var(--transition);
+}
+._78-icon-btn:hover { background: var(--bg3); border-color: var(--border); color: var(--text); }
+._78-icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+._78-icon-btn svg { width: 16px; height: 16px; }
+
+/* Button group */
+._78-btn-group { display: inline-flex; gap: var(--space-2); flex-wrap: wrap; }

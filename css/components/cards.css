@@ -1,0 +1,90 @@
+/* ==========================================================================
+   78 UI Kit — cards
+   ._78-card (+ ._78-card-title)  ·  ._78-stat-card (__label / __num / __sub)
+   ========================================================================== */
+
+._78-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow);
+}
+._78-card + ._78-card { margin-top: var(--space-4); }
+
+._78-card-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+._78-card-title ._78-eyebrow { display: block; margin-bottom: var(--space-1); }
+
+._78-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+._78-card-head ._78-card-title { margin-bottom: 0; }
+
+._78-card-foot {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Interactive card (link/button wrapper) */
+._78-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition);
+}
+._78-card-link:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* --- Stat card ---------------------------------------------------------- */
+._78-stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow);
+}
+._78-stat-card__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+._78-stat-card__num {
+  margin-top: var(--space-2);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+._78-stat-card__num._78-accent { color: var(--accent); }
+._78-stat-card__num._78-green  { color: var(--success); }
+._78-stat-card__num._78-warn   { color: var(--warn); }
+._78-stat-card__num._78-red    { color: var(--danger); }
+._78-stat-card__sub {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--dim);
+}
+
+/* Simple responsive card grid */
+._78-card-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}

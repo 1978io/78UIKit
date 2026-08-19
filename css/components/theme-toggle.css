@@ -1,0 +1,19 @@
+/* ==========================================================================
+   78 UI Kit — theme toggle
+   Markup: an ._78-icon-btn carrying three icons; CSS shows the one that
+   matches <html data-theme-pref>. Wire it with _78.theme.mount(el) or
+   onclick="_78.theme.cycle()".
+   ========================================================================== */
+
+._78-theme-toggle ._78-theme-icon { display: none; }
+
+:root[data-theme-pref="dark"]   ._78-theme-toggle ._78-theme-icon[data-pref="dark"],
+:root[data-theme-pref="light"]  ._78-theme-toggle ._78-theme-icon[data-pref="light"],
+:root[data-theme-pref="system"] ._78-theme-toggle ._78-theme-icon[data-pref="system"] {
+  display: block;
+}
+
+/* No pref attribute yet (JS not run): fall back to the system icon */
+:root:not([data-theme-pref]) ._78-theme-toggle ._78-theme-icon[data-pref="system"] { display: block; }
+
+._78-theme-toggle:hover { color: var(--accent); }

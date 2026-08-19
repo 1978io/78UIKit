@@ -1,0 +1,19 @@
+# internal working context — keep the repo fingerprint-clean (public give-away)
+CLAUDE.md
+_build-brief.md
+HANDOFF.md
+
+# dependencies / build bulk
+node_modules/
+vendor/
+.cache/
+dist/
+build/
+
+# editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

@@ -1,0 +1,90 @@
+/* ==========================================================================
+   78 UI Kit — badges & pills
+   ._78-badge (+ -accent/-green/-warn/-red/-dim)  ·  ._78-tag
+   ._78-score-pill (.high/.mid/.low)              ·  ._78-eyebrow
+   Every variant is a `-lo` tint + solid text — this is where the tints earn
+   their keep (no opacity washing out the label).
+   ========================================================================== */
+
+._78-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+._78-badge-accent { background: var(--accent-lo);  border-color: transparent; color: var(--accent); }
+._78-badge-green  { background: var(--success-lo); border-color: transparent; color: var(--success); }
+._78-badge-warn   { background: var(--warn-lo);    border-color: transparent; color: var(--warn); }
+._78-badge-red    { background: var(--danger-lo);  border-color: transparent; color: var(--danger); }
+._78-badge-info   { background: var(--info-lo);    border-color: transparent; color: var(--info); }
+._78-badge-dim    { background: var(--bg3);        border-color: var(--border); color: var(--dim); }
+
+/* A dot before the label — status without a colour-only signal */
+._78-badge-dot::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+/* Tag — softer, pill-shaped, for keywords/filters */
+._78-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  white-space: nowrap;
+}
+._78-tag-accent { background: var(--accent-lo); border-color: transparent; color: var(--accent); }
+._78-tag button,
+._78-tag ._78-tag-x {
+  color: var(--dim);
+  font-size: var(--fs-base);
+  line-height: 1;
+  cursor: pointer;
+}
+._78-tag button:hover { color: var(--danger); }
+
+/* Score pill — numeric, tabular, banded high / mid / low */
+._78-score-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--bg3);
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.7;
+}
+._78-score-pill._78-high { background: var(--success-lo); color: var(--success); }
+._78-score-pill._78-mid  { background: var(--warn-lo);    color: var(--warn); }
+._78-score-pill._78-low  { background: var(--danger-lo);  color: var(--danger); }
+
+/* Eyebrow — the small uppercase label above a title */
+._78-eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}

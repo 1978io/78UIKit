@@ -1,0 +1,113 @@
+/* ==========================================================================
+   78 UI Kit — form controls
+   ._78-field wrapper  ·  ._78-input / ._78-select / ._78-textarea
+   ========================================================================== */
+
+._78-field { display: block; margin-bottom: var(--space-4); }
+._78-field > label,
+._78-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--dim);
+}
+._78-field-hint {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--dim);
+}
+._78-field-error {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--danger);
+}
+
+._78-input,
+._78-select,
+._78-textarea {
+  display: block;
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--fs-base);
+  transition: border-color var(--transition), box-shadow var(--transition),
+              background var(--transition);
+}
+._78-textarea {
+  height: auto;
+  min-height: 88px;
+  padding: var(--space-2) var(--space-3);
+  line-height: var(--lh);
+  resize: vertical;
+}
+
+._78-input::placeholder,
+._78-textarea::placeholder { color: var(--dim); }
+
+._78-input:hover,
+._78-select:hover,
+._78-textarea:hover { border-color: var(--dim); }
+
+._78-input:focus,
+._78-select:focus,
+._78-textarea:focus,
+._78-input:focus-visible,
+._78-select:focus-visible,
+._78-textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 var(--ring-w) var(--ring);
+}
+
+._78-input:disabled,
+._78-select:disabled,
+._78-textarea:disabled { opacity: .55; cursor: not-allowed; }
+
+._78-input[aria-invalid="true"],
+._78-textarea[aria-invalid="true"],
+._78-input._78-invalid { border-color: var(--danger); }
+._78-input[aria-invalid="true"]:focus,
+._78-textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 var(--ring-w) var(--danger-lo);
+}
+
+/* Select — native arrow replaced with a token-coloured chevron */
+._78-select {
+  appearance: none;
+  padding-right: var(--space-6);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 17px) center, calc(100% - 12px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/* Checkbox / radio — accent-tinted natives (color-scheme keeps them themed) */
+._78-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--fs-base);
+}
+._78-check input[type="checkbox"],
+._78-check input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Inline row of fields */
+._78-field-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+._78-field-row > ._78-field { flex: 1 1 180px; margin-bottom: var(--space-4); }
