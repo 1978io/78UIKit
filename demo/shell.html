@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>78 UI Kit — the app shell</title>
+
+<!-- Pre-paint state — FIRST in <head>, before any CSS. No FOUC, no sidebar snap. -->
+<script>
+(function(){var p=localStorage.getItem('_78-theme')||'system';
+var t=p==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):p;
+var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
+</script>
+<script>
+(function(){try{var s=localStorage.getItem('_78-sidebar');
+document.documentElement.dataset.sidebar=s==='rail'?'rail':'full';}
+catch(e){document.documentElement.dataset.sidebar='full';}})();
+</script>
+
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700">
+<link rel="stylesheet" href="../css/kit.css">
+
+<style>
+  /* Demo page chrome only — NOT part of the kit. */
+  .demo-nav a { color: var(--dim); font-size: var(--fs-sm); margin-right: var(--space-3); }
+  .demo-nav a:hover, .demo-nav a[aria-current] { color: var(--accent); text-decoration: none; }
+  section { margin-top: var(--space-6); }
+  section > h2 {
+    font-size: var(--fs-lg); padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border); margin-bottom: var(--space-4);
+  }
+  code.tok { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+  @media (max-width: 900px) { .demo-nav { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ============================== TOPBAR ================================== -->
+<header class="_78-topbar">
+  <button class="_78-nav-toggle" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+
+  <a class="_78-topbar-brand" href="shell.html">78 UI Kit</a>
+  <span class="_78-topbar-sub">Dashboard</span>
+
+  <span class="_78-topbar-spacer"></span>
+
+  <div class="_78-topbar-actions">
+    <nav class="demo-nav" aria-label="Kit demos">
+      <a href="index.html">Foundation</a><a href="components.html">Components</a><a href="adapters.html">Adapters</a><a href="generator.html">Generator</a><a href="shell.html" aria-current="page">Shell</a>
+    </nav>
+
+    <button class="_78-icon-btn _78-theme-toggle" type="button">
+      <svg class="_78-theme-icon" data-pref="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="_78-theme-icon" data-pref="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="_78-theme-icon" data-pref="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+
+    <!-- Account menu — ._78-menu is a plain reusable dropdown, not shell-only -->
+    <div class="_78-menu-wrap">
+      <button class="_78-btn _78-btn-sm" id="acct-btn" aria-haspopup="true">
+        <span class="_78-avatar">J</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="_78-menu" aria-labelledby="acct-btn">
+        <a class="_78-menu-item" href="#account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account
+        </a>
+        <a class="_78-menu-item" href="#settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+        <button class="_78-menu-item _78-theme-toggle" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Cycle theme
+        </button>
+        <div class="_78-menu-sep"></div>
+        <a class="_78-menu-item _78-danger" href="#logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Log out
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================== SIDEBAR ================================= -->
+<aside class="_78-sidebar" aria-label="Primary">
+  <nav class="_78-nav">
+    <div class="_78-nav-heading">Overview</div>
+
+    <a class="_78-nav-item _78-active" href="shell.html">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span>
+      <span class="_78-nav-label">Dashboard</span>
+    </a>
+
+    <a class="_78-nav-item" href="#activity">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+      <span class="_78-nav-label">Activity</span>
+      <span class="_78-nav-badge">12</span>
+    </a>
+
+    <a class="_78-nav-item" href="#reports">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg></span>
+      <span class="_78-nav-label">Reports</span>
+    </a>
+
+    <div class="_78-nav-heading">Manage</div>
+
+    <a class="_78-nav-item" href="#orders">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></span>
+      <span class="_78-nav-label">Orders</span>
+      <span class="_78-nav-badge">3</span>
+    </a>
+
+    <a class="_78-nav-item" href="#customers">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span>
+      <span class="_78-nav-label">Customers</span>
+    </a>
+
+    <a class="_78-nav-item" href="#inventory">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span class="_78-nav-label">Inventory</span>
+    </a>
+
+    <div class="_78-nav-heading">System</div>
+
+    <a class="_78-nav-item" href="#settings">
+      <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+      <span class="_78-nav-label">Settings</span>
+    </a>
+  </nav>
+
+  <span class="_78-nav-spacer"></span>
+
+  <button class="_78-nav-item _78-nav-collapse" aria-label="Collapse sidebar">
+    <span class="_78-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg></span>
+    <span class="_78-nav-label">Collapse</span>
+  </button>
+</aside>
+
+<div class="_78-scrim"></div>
+
+<!-- =============================== MAIN =================================== -->
+<main class="_78-app-main">
+<div class="_78-app-body">
+
+  <section style="margin-top:0">
+    <h2>The app shell <span class="_78-badge _78-badge-accent">_78.shell</span></h2>
+    <p class="_78-text-dim _78-mb-16">
+      A fixed <code class="tok">._78-topbar</code>, an optional
+      <code class="tok">._78-sidebar</code> that collapses to an icon rail, and a
+      <code class="tok">._78-app-main</code> that makes its own room for both — so page content
+      never has to be re-wrapped. Section headings plus flat items: no nested menus, on purpose.
+    </p>
+
+    <div class="_78-alert _78-alert-info _78-mb-16">
+      <strong>Try it.</strong> The hamburger collapses the sidebar to a rail (hover an icon for its
+      label) and the state survives a reload with no flash — it is restored before the first paint,
+      like the theme. Narrow the window under 768px and the same button opens an off-canvas drawer
+      with a scrim; Escape, the scrim or a nav click closes it.
+    </div>
+
+    <div class="_78-flex _78-flex-wrap _78-gap-8 _78-mb-16">
+      <button class="_78-btn" type="button" onclick="_78.shell.toggleRail()">toggleRail()</button>
+      <button class="_78-btn" type="button" onclick="_78.shell.openDrawer()">openDrawer()</button>
+      <button class="_78-btn" type="button" onclick="_78.shell.setActive('#reports')">setActive('#reports')</button>
+      <span class="_78-text-xs _78-text-dim _78-mono" id="shell-state">state: …</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>A page inside it</h2>
+
+    <div class="_78-kpi-grid _78-mb-16">
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head"><span class="_78-stat-card__label">Open orders</span></div>
+        <div class="_78-stat-card__num">1,284</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="8.2"></span>
+          <span class="_78-stat-card__sub">vs last week</span>
+        </div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head"><span class="_78-stat-card__label">Fill rate</span></div>
+        <div class="_78-stat-card__num _78-green">96.4%</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="1.1"></span>
+          <span class="_78-stat-card__sub">7-day average</span>
+        </div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head"><span class="_78-stat-card__label">Backorders</span></div>
+        <div class="_78-stat-card__num _78-warn">37</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta _78-invert" data-delta="4.6" data-invert="true"></span>
+          <span class="_78-stat-card__sub">up is bad</span>
+        </div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head"><span class="_78-stat-card__label">Revenue</span></div>
+        <div class="_78-stat-card__num _78-accent">$82,410</div>
+        <div class="_78-stat-card__spark" data-values="41,44,39,48,52,49,58,61" data-tone="auto"></div>
+      </div>
+    </div>
+
+    <div class="_78-card">
+      <div class="_78-card-head">
+        <div class="_78-card-title">Recent orders</div>
+        <button class="_78-btn _78-btn-sm" type="button">Export</button>
+      </div>
+      <div class="_78-table-wrap">
+        <table class="_78-table _78-table-striped">
+          <thead><tr><th>Order</th><th>Customer</th><th>Status</th><th class="_78-right">Total</th></tr></thead>
+          <tbody>
+            <tr><td>#10482</td><td>Nordic Supply</td><td><span class="_78-badge _78-badge-green">Shipped</span></td><td class="_78-right">$4,120</td></tr>
+            <tr><td>#10481</td><td>Ridgeline Co.</td><td><span class="_78-badge _78-badge-warn">Packing</span></td><td class="_78-right">$1,860</td></tr>
+            <tr><td>#10480</td><td>Halcyon Ltd</td><td><span class="_78-badge _78-badge-red">On hold</span></td><td class="_78-right">$940</td></tr>
+            <tr><td>#10479</td><td>Meridian Works</td><td><span class="_78-badge _78-badge-green">Shipped</span></td><td class="_78-right">$7,305</td></tr>
+            <tr><td>#10478</td><td>Cobalt Trading</td><td><span class="_78-badge _78-badge-dim">Draft</span></td><td class="_78-right">$0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Markup</h2>
+    <div class="_78-card">
+      <pre style="margin:0;overflow-x:auto"><code class="_78-text-sm _78-mono">&lt;header class="_78-topbar"&gt;
+  &lt;button class="_78-nav-toggle" aria-label="Toggle navigation"&gt;…&lt;/button&gt;
+  &lt;a class="_78-topbar-brand" href="/"&gt;Your app&lt;/a&gt;
+  &lt;span class="_78-topbar-spacer"&gt;&lt;/span&gt;
+  &lt;div class="_78-topbar-actions"&gt;
+    &lt;button class="_78-icon-btn _78-theme-toggle"&gt;…&lt;/button&gt;
+    &lt;div class="_78-menu-wrap"&gt;
+      &lt;button class="_78-btn _78-btn-sm" aria-haspopup="true"&gt;…&lt;/button&gt;
+      &lt;div class="_78-menu"&gt;
+        &lt;a class="_78-menu-item" href="/account"&gt;Account&lt;/a&gt;
+        &lt;div class="_78-menu-sep"&gt;&lt;/div&gt;
+        &lt;a class="_78-menu-item _78-danger" href="/logout"&gt;Log out&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;aside class="_78-sidebar" aria-label="Primary"&gt;
+  &lt;nav class="_78-nav"&gt;
+    &lt;div class="_78-nav-heading"&gt;Overview&lt;/div&gt;
+    &lt;a class="_78-nav-item _78-active" href="/"&gt;
+      &lt;span class="_78-nav-icon"&gt;&lt;svg …&gt;&lt;/svg&gt;&lt;/span&gt;
+      &lt;span class="_78-nav-label"&gt;Dashboard&lt;/span&gt;
+      &lt;span class="_78-nav-badge"&gt;12&lt;/span&gt;
+    &lt;/a&gt;
+  &lt;/nav&gt;
+  &lt;span class="_78-nav-spacer"&gt;&lt;/span&gt;
+  &lt;button class="_78-nav-item _78-nav-collapse" aria-label="Collapse sidebar"&gt;…&lt;/button&gt;
+&lt;/aside&gt;
+
+&lt;div class="_78-scrim"&gt;&lt;/div&gt;
+
+&lt;main class="_78-app-main"&gt;&lt;div class="_78-app-body"&gt; … &lt;/div&gt;&lt;/main&gt;</code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>Notes</h2>
+    <ul class="_78-text-dim" style="padding-left:1.1rem;display:flex;flex-direction:column;gap:var(--space-2)">
+      <li><strong>Two pre-paint snippets, same idea.</strong> The theme one sets
+        <code class="tok">data-theme</code>; the shell one sets <code class="tok">data-sidebar</code> from
+        <code class="tok">localStorage['_78-sidebar']</code>. Both live on <code class="tok">&lt;html&gt;</code>
+        so the very first paint is already right. <code class="tok">_78.shell.PREPAINT</code> holds the exact string.</li>
+      <li><strong>The sidebar is optional.</strong> A topbar-only app just leaves out the
+        <code class="tok">&lt;aside&gt;</code> <em>and</em> the shell pre-paint snippet —
+        <code class="tok">._78-app-main</code> then only clears the topbar.</li>
+      <li><strong>The rail keeps its labels.</strong> They are visually hidden, not removed, so they are
+        still each item's accessible name; the hover/focus tooltip is a decorative
+        <code class="tok">aria-hidden</code> chip.</li>
+      <li><strong>Flat items only.</strong> Headings group them. No nested or expandable menus — if a
+        section needs sub-pages, they belong in the page, not the nav.</li>
+      <li><strong>Width changes fire <code class="tok">_78:railchange</code></strong> — the hook for
+        anything that has to re-measure (a Tabulator table, a Chart.js canvas).</li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<script src="../js/_78.js"></script>
+<script>
+/* ---------- demo readout only ---------- */
+var out = document.getElementById("shell-state");
+function show() {
+  out.textContent = "sidebar: " + (_78.shell.rail ? "rail" : "full")
+                  + " · drawer: " + (_78.shell.drawer ? "open" : "closed")
+                  + " · theme: " + _78.theme.current;
+}
+document.addEventListener("_78:railchange", show);
+document.addEventListener("_78:drawerchange", show);
+document.addEventListener("_78:themechange", show);
+show();
+</script>
+</body>
+</html>

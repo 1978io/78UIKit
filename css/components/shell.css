@@ -1,0 +1,430 @@
+/* ==========================================================================
+   78 UI Kit — the app shell
+   ._78-topbar  ·  ._78-sidebar (collapse-to-rail + mobile drawer)  ·  ._78-menu
+
+   Layout model — the topbar and the sidebar are position:fixed, so page
+   content never has to be re-wrapped: put ._78-app-main on your <main> and it
+   makes its own room. Nothing here styles <body>, so the shell drops into an
+   existing page.
+
+   State lives on <html>, like the theme, so it can be restored before the
+   first paint:
+     data-sidebar="full" | "rail"     desktop width (persisted)
+     data-drawer="open"               mobile off-canvas drawer (runtime only)
+
+   🔴 A page WITH a sidebar must declare it: the sidebar offset is driven by
+   [data-sidebar] being present at all. The pre-paint snippet below sets it
+   (see _78.shell.PREPAINT); _78.shell sets it on load as a fallback, at the
+   cost of one frame.
+
+   FLAT items only — a heading plus its items, no nested/expandable menus.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Topbar
+   -------------------------------------------------------------------------- */
+._78-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 120;                       /* over the sidebar (110) and scrim (105) */
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--header-h);
+  padding: 0 var(--space-4);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+
+._78-topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  color: var(--text);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+._78-topbar-brand:hover { color: var(--accent); text-decoration: none; }
+._78-topbar-brand svg { width: 20px; height: 20px; }
+
+/* Subtitle beside the brand — the current page, a greeting, a breadcrumb */
+._78-topbar-sub {
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+._78-topbar-spacer { flex: 1 1 auto; }
+
+._78-topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 1 auto;
+}
+
+/* The hamburger: collapses the sidebar to a rail on desktop, opens the
+   drawer on mobile. Same button, both jobs — that is what users expect. */
+._78-nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
+  flex: 0 0 auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg3);
+  color: var(--text);
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+._78-nav-toggle:hover { color: var(--accent); border-color: var(--accent); }
+._78-nav-toggle svg { width: 18px; height: 18px; }
+
+/* --------------------------------------------------------------------------
+   Sidebar
+   -------------------------------------------------------------------------- */
+._78-sidebar {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  bottom: 0;
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: var(--sidebar-w);
+  padding: var(--space-3) var(--space-2);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width var(--transition-slow), transform var(--transition-slow);
+}
+:root[data-sidebar="rail"] ._78-sidebar { width: var(--rail-w); }
+
+/* A <nav> wrapper is optional — items work as direct children too */
+._78-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+._78-nav-heading {
+  padding: var(--space-4) var(--space-3) var(--space-1);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+._78-nav-item {
+  position: relative;                 /* the rail badge is positioned in here */
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--dim);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+._78-nav-item:hover {
+  background: var(--row-hover);
+  color: var(--text);
+  text-decoration: none;
+}
+/* Active = a filled accent block. Loud on purpose: on a page of cards the
+   nav is the one place you should never have to hunt for "where am I". */
+._78-nav-item._78-active,
+._78-nav-item._78-active:hover {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+._78-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  height: 20px;
+  font-size: var(--fs-lg);
+  line-height: 1;
+}
+._78-nav-icon svg { width: 18px; height: 18px; }
+
+._78-nav-label {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+._78-nav-badge {
+  flex: 0 0 auto;
+  min-width: 20px;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--accent-lo);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+/* On the accent-filled active item the tint would vanish — invert it */
+._78-nav-item._78-active ._78-nav-badge {
+  background: var(--accent-text);
+  color: var(--accent);
+}
+
+._78-nav-spacer { flex: 1 1 auto; }
+
+/* The collapse control is a nav item (class="_78-nav-item _78-nav-collapse"),
+   so it only needs the chevron flip. */
+._78-nav-collapse ._78-nav-icon { transition: transform var(--transition-slow); }
+:root[data-sidebar="rail"] ._78-nav-collapse ._78-nav-icon { transform: rotate(180deg); }
+
+/* --- Rail (desktop, collapsed) ------------------------------------------- */
+:root[data-sidebar="rail"] ._78-nav-item {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+/* The label stays in the DOM — it is still the item's accessible name, it is
+   only visually replaced by the hover/focus tooltip (._78-nav-tip). */
+:root[data-sidebar="rail"] ._78-nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+:root[data-sidebar="rail"] ._78-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  min-width: 0;
+  padding: 0 5px;
+  font-size: 10px;
+}
+/* A section heading has no room for its text — it becomes a hairline rule */
+:root[data-sidebar="rail"] ._78-nav-heading {
+  height: 0;
+  margin: var(--space-2) var(--space-2) var(--space-1);
+  padding: 0;
+  font-size: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* Rail tooltip — position:fixed and appended to <body> by _78.shell, because
+   the sidebar scrolls: an absolutely-positioned label inside an overflow-y
+   container is clipped no matter what overflow-x says. */
+._78-nav-tip {
+  position: fixed;
+  z-index: 130;
+  padding: 5px var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg3);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+._78-nav-tip._78-open { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   Main content — makes its own room for the fixed topbar + sidebar
+   -------------------------------------------------------------------------- */
+._78-app-main {
+  padding-top: var(--header-h);
+}
+:root[data-sidebar] ._78-app-main {
+  margin-left: var(--sidebar-w);
+  transition: margin-left var(--transition-slow);
+}
+:root[data-sidebar="rail"] ._78-app-main { margin-left: var(--rail-w); }
+
+/* Optional inner wrapper: the readable column every app page wants */
+._78-app-body {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) 64px;
+}
+
+/* --------------------------------------------------------------------------
+   Scrim — the mobile drawer's backdrop (desktop: not rendered at all)
+   -------------------------------------------------------------------------- */
+._78-scrim {
+  display: none;
+  position: fixed;
+  inset: var(--header-h) 0 0 0;
+  z-index: 105;
+  background: var(--overlay);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+/* --------------------------------------------------------------------------
+   Dropdown menu — the account menu in the topbar, and anywhere else
+   ._78-menu-wrap > [aria-haspopup] + ._78-menu > ._78-menu-item / -sep
+   -------------------------------------------------------------------------- */
+._78-menu-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+._78-menu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;                           /* ._78-menu-left flips it */
+  z-index: 200;
+  display: block;
+  min-width: 190px;
+  padding: var(--space-1);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+._78-menu[hidden] { display: none; }
+._78-menu-left { right: auto; left: 0; }
+
+._78-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+._78-menu-item:hover,
+._78-menu-item:focus-visible {
+  background: var(--row-hover);
+  color: var(--text);
+  text-decoration: none;
+}
+._78-menu-item svg { width: 16px; height: 16px; flex: 0 0 auto; color: var(--dim); }
+._78-menu-item._78-danger { color: var(--danger); }
+._78-menu-item._78-danger svg { color: var(--danger); }
+
+._78-menu-sep {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--border);
+}
+
+/* Small round initial — the usual account-menu trigger */
+._78-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile (≤768px) — the sidebar becomes an off-canvas drawer
+   ⚠️ Keep this breakpoint in sync with MOBILE in js/_78.js (_78.shell).
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  ._78-app-main,
+  :root[data-sidebar] ._78-app-main,
+  :root[data-sidebar="rail"] ._78-app-main { margin-left: 0; }
+
+  ._78-topbar { padding: 0 var(--space-3); gap: var(--space-2); }
+  ._78-topbar-sub { display: none; }
+
+  ._78-sidebar,
+  :root[data-sidebar="rail"] ._78-sidebar {
+    width: var(--sidebar-w);
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+  :root[data-drawer="open"] ._78-sidebar { transform: none; }
+
+  /* The rail is a desktop idea — a drawer you opened on purpose always shows
+     its labels, so every rail-mode rule is undone here. */
+  :root[data-sidebar="rail"] ._78-nav-item {
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+  :root[data-sidebar="rail"] ._78-nav-label {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+  :root[data-sidebar="rail"] ._78-nav-badge {
+    position: static;
+    min-width: 20px;
+    padding: 1px var(--space-2);
+    font-size: var(--fs-xs);
+  }
+  :root[data-sidebar="rail"] ._78-nav-heading {
+    height: auto;
+    margin: 0;
+    padding: var(--space-4) var(--space-3) var(--space-1);
+    font-size: var(--fs-xs);
+    border-top: 0;
+  }
+  ._78-nav-collapse { display: none; }
+  ._78-nav-tip { display: none; }
+
+  ._78-scrim { display: block; }
+  :root[data-drawer="open"] ._78-scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* A drawer that slides and a sidebar that animates its width are decoration.
+   Honor the preference and just move. */
+@media (prefers-reduced-motion: reduce) {
+  ._78-sidebar,
+  ._78-app-main,
+  ._78-scrim,
+  ._78-nav-tip,
+  ._78-nav-collapse ._78-nav-icon { transition: none; }
+}

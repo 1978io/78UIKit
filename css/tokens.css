@@ -44,6 +44,7 @@
 
   /* Layout */
   --sidebar-w: 240px;
+  --rail-w: 60px;                 /* the collapsed sidebar (icons only) */
   --header-h: 56px;
   --content-max: 1120px;
 

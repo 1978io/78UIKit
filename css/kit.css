@@ -7,6 +7,7 @@
 @import url("tokens.css");
 @import url("reset.css");
 
+@import url("components/shell.css");
 @import url("components/buttons.css");
 @import url("components/cards.css");
 @import url("components/forms.css");

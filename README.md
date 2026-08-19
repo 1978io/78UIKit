@@ -65,8 +65,8 @@ override.
 `--row-selected` · `--ring` (focus) · `--overlay` (modal backdrop) · `--shadow` / `--shadow-lg`.
 
 **Non-color (shared `:root`):** `--radius-sm/-/-lg/-pill` · `--font` / `--font-mono` · `--fs-xs`…`--fs-xl` ·
-`--lh` · `--control-h` / `--control-h-sm` / `--icon-btn-size` / `--ring-w` · `--sidebar-w` / `--header-h` /
-`--content-max` · `--transition` / `--transition-slow` · a `--space-1`…`--space-6` scale (4·8·12·16·24·32px).
+`--lh` · `--control-h` / `--control-h-sm` / `--icon-btn-size` / `--ring-w` · `--sidebar-w` / `--rail-w` /
+`--header-h` / `--content-max` · `--transition` / `--transition-slow` · a `--space-1`…`--space-6` scale (4·8·12·16·24·32px).
 
 ### The mechanism
 
@@ -122,6 +122,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 
 ## Components
 
+- **App shell** — `._78-topbar` + an optional `._78-sidebar` that collapses to an icon rail and turns
+  into an off-canvas drawer on mobile, driven by `_78.shell`. See [The app shell](#the-app-shell) below.
 - **Buttons** — `._78-btn` (+ `-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`.
 - **Cards** — `._78-card`, `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
   `._78-stat-delta` colored by sign, `._78-invert` where up is bad), laid out by `._78-kpi-grid`
@@ -130,6 +132,9 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **Badges / pills** — `._78-badge` variants, `._78-tag`, `._78-eyebrow`, `._78-score-pill`.
 - **Table** — `._78-table` (+ `-compact` / `-striped` / `-sticky`, `._78-table-wrap` to scroll on narrow
   screens). For a full data grid, use Tabulator + its adapter.
+- **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu` (`._78-menu-item`, `._78-menu-sep`).
+  Auto-wired: click to open, outside-click / Escape / choosing an item to close, arrow-key navigation and
+  the full `menu` / `menuitem` ARIA. Built for the account menu; reusable anywhere.
 - **Tabs** — `._78-tabs` (+ `._78-tabs-segmented`). `_78.tabs` auto-mounts with roles, `aria-selected`,
   roving tabindex, arrow / Home / End keys, and a `_78:tabchange` event.
 - **Data-viz, no library** — `._78-sparkline` · `._78-progress` · `._78-bar-row` · `._78-donut` /
@@ -149,6 +154,67 @@ Everything in `_78.viz` auto-mounts from attributes on load, or call it directly
 Each primitive renders its value as text or gets `role="img"` + an `aria-label`, and progress / bar tracks
 are real `role="progressbar"`s — **color is never the only signal.**
 
+### The app shell
+
+```html
+<header class="_78-topbar">
+  <button class="_78-nav-toggle" aria-label="Toggle navigation">☰</button>
+  <a class="_78-topbar-brand" href="/">Your app</a>
+  <span class="_78-topbar-spacer"></span>
+  <div class="_78-topbar-actions"> … </div>
+</header>
+
+<aside class="_78-sidebar" aria-label="Primary">
+  <nav class="_78-nav">
+    <div class="_78-nav-heading">Overview</div>
+    <a class="_78-nav-item _78-active" href="/">
+      <span class="_78-nav-icon"><svg …></svg></span>
+      <span class="_78-nav-label">Dashboard</span>
+      <span class="_78-nav-badge">12</span>
+    </a>
+  </nav>
+  <span class="_78-nav-spacer"></span>
+  <button class="_78-nav-item _78-nav-collapse" aria-label="Collapse sidebar">…</button>
+</aside>
+
+<div class="_78-scrim"></div>
+<main class="_78-app-main"><div class="_78-app-body"> … </div></main>
+```
+
+The topbar and sidebar are `position: fixed` and `._78-app-main` makes its own room for both, so **page
+content never has to be re-wrapped**. One button does two jobs: `._78-nav-toggle` collapses the sidebar to
+an icon rail on desktop and opens the drawer below 768px.
+
+**Flat items only** — section headings group them, and there are no nested or expandable sub-menus. If a
+section needs sub-pages, they belong in the page rather than in the nav.
+
+State lives on `<html>` exactly like the theme, so it can be restored **before the first paint** —
+`data-sidebar="full" | "rail"` (persisted in `localStorage['_78-sidebar']`) and `data-drawer="open"`.
+Add the second pre-paint snippet next to the theme one on any page that **has** a sidebar; its presence is
+also what reserves the space in the CSS, so a topbar-only page leaves it out.
+
+```html
+<script>
+(function(){try{var s=localStorage.getItem('_78-sidebar');
+document.documentElement.dataset.sidebar=s==='rail'?'rail':'full';}
+catch(e){document.documentElement.dataset.sidebar='full';}})();
+</script>
+```
+
+```js
+_78.shell.rail            // true when collapsed   ·   .drawer  — mobile drawer open
+_78.shell.toggleRail()    // .setRail(bool) — persists
+_78.shell.openDrawer()    // .closeDrawer() · .toggleDrawer()
+_78.shell.setActive(x)    // an element, an href ('#reports', '/orders.php'), or a selector
+_78.shell.PREPAINT        // the snippet above, as a string
+```
+
+Width changes fire **`_78:railchange`** (`e.detail = { rail }`) and the drawer fires
+`_78:drawerchange` — the hook for anything that has to re-measure, like a table or a canvas chart.
+In the rail, labels are visually hidden rather than removed (they are still each item's accessible name)
+and reappear as a hover/focus tooltip; `aria-expanded`, `aria-current="page"` and focus return on close
+are handled for you.
+
 ### Notifications — the rule, not just the widgets
 
 | | Use for | Behavior | API |
@@ -163,7 +229,8 @@ in with `textContent`; pass `html: true` when you mean markup.
 ## Naming
 
 - **CSS classes** use the `_78-` prefix (`._78-btn`, `._78-card`) — digit-safe and matches the JS namespace.
-- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.notify()`, `_78.tabs`, `_78.viz`, `_78.sortAlpha`).
+- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.viz`,
+  `_78.sortAlpha`).
 
 ## The theme generator
 
@@ -185,9 +252,9 @@ previews it live on real components, contrast-checks it, and hands back paste-re
 css/  kit.css            the one stylesheet a project links (@imports everything below)
       tokens.css         light + dark color blocks + shared non-color tokens
       reset.css          minimal reset, themed scrollbars, focus ring
-      components/        buttons · cards · forms · badges · viz · table · tabs · modal · toast · alert · …
+      components/        shell · buttons · cards · forms · badges · viz · table · tabs · modal · toast · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js             _78.theme · _78.modal · _78.notify · _78.tabs · _78.viz · helpers
+js/   _78.js             _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.viz · helpers
       adapters/          chartjs.js — _78.adapters.chartjs
 demo/                    living examples, every page in light + dark
 ```
@@ -195,7 +262,7 @@ demo/                    living examples, every page in light + dark
 ## Status
 
 Active development (v0.x). Foundation, the three library adapters, notifications / tabs / table, KPI +
-data-viz primitives, and the theme generator are built. The app shell / nav and a few helpers are next.
+data-viz primitives, the theme generator and the app shell are built. A few helpers are next.
 
 ## License
 

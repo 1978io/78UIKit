@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.modal · _78.notify · _78.tabs · _78.viz
+   Surface: _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.viz
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -811,5 +811,374 @@ window._78 = window._78 || {};
     donut: donut,
     trend: trend,
     mountAll: mountAll
+  };
+})(window._78);
+
+
+/* ==========================================================================
+   _78.shell — the app shell: topbar + sidebar (rail / drawer) + dropdown menus
+
+   State lives on <html>, like the theme, so it survives a reload with no flash:
+     data-sidebar="full" | "rail"    desktop width — persisted in localStorage
+     data-drawer="open"              the mobile off-canvas drawer (runtime only)
+
+   One button does both jobs: ._78-nav-toggle collapses the sidebar to a rail
+   on desktop and opens the drawer on mobile.
+
+   PRE-PAINT SNIPPET — paste this inline in <head> on any page that HAS a
+   sidebar, next to the theme one, so the sidebar never flashes expanded and
+   then snaps to a rail. It is duplicated here as _78.shell.PREPAINT.
+
+   <script>
+   (function(){try{var s=localStorage.getItem('_78-sidebar');
+   document.documentElement.dataset.sidebar=s==='rail'?'rail':'full';}
+   catch(e){document.documentElement.dataset.sidebar='full';}})();
+   </script>
+
+   🔴 Presence of [data-sidebar] is what makes room for the sidebar in the CSS,
+   so a topbar-only page must NOT run the snippet. Without it, _78.shell sets
+   the attribute on load instead — correct, but one frame late.
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var KEY = "_78-sidebar";        /* "rail" | "full" — separate from _78-theme */
+  var MOBILE = 768;               /* ⚠️ keep in sync with components/shell.css */
+  var root = document.documentElement;
+  var seq = 0;
+
+  /* localStorage can throw (private mode, blocked cookies) — never break the page */
+  function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function write(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* no-op */ } }
+
+  function all(sel, scope) {
+    return Array.prototype.slice.call((scope || document).querySelectorAll(sel));
+  }
+  function emit(name, detail) {
+    document.dispatchEvent(new CustomEvent(name, { detail: detail }));
+  }
+
+  function isMobile() { return window.innerWidth <= MOBILE; }
+  function sidebar() { return document.querySelector("._78-sidebar"); }
+  function isRail() { return root.dataset.sidebar === "rail"; }
+  function isDrawerOpen() { return root.dataset.drawer === "open"; }
+
+  /* The toggle's aria-expanded answers "is the nav showing its labels?" —
+     on mobile that is the drawer, on desktop it is full-vs-rail. */
+  function syncToggles() {
+    var expanded = isMobile() ? isDrawerOpen() : !isRail();
+    all("._78-nav-toggle").forEach(function (t) {
+      t.setAttribute("aria-expanded", expanded ? "true" : "false");
+    });
+  }
+
+  /* --- Rail (desktop) ------------------------------------------------------ */
+  function setRail(on) {
+    if (!sidebar()) return;
+    root.dataset.sidebar = on ? "rail" : "full";
+    write(on ? "rail" : "full");
+    syncToggles();
+    hideTip();
+    emit("_78:railchange", { rail: !!on });
+  }
+  function toggleRail() { setRail(!isRail()); }
+
+  /* --- Drawer (mobile) ----------------------------------------------------- */
+  var lastFocus = null;
+
+  function openDrawer() {
+    var side = sidebar();
+    if (!side || isDrawerOpen()) return;
+    lastFocus = document.activeElement;
+    root.dataset.drawer = "open";
+    syncToggles();
+    var first = side.querySelector("._78-nav-item, a[href], button");
+    if (first) first.focus();
+    emit("_78:drawerchange", { open: true });
+  }
+
+  /* returnFocus defaults to true; a nav click that navigates passes false */
+  function closeDrawer(returnFocus) {
+    if (!isDrawerOpen()) return;
+    delete root.dataset.drawer;
+    syncToggles();
+    if (returnFocus !== false && lastFocus && document.contains(lastFocus)) lastFocus.focus();
+    lastFocus = null;
+    emit("_78:drawerchange", { open: false });
+  }
+  function toggleDrawer() { isDrawerOpen() ? closeDrawer() : openDrawer(); }
+
+  /* What the hamburger does, which depends on the width */
+  function toggleNav() { isMobile() ? toggleDrawer() : toggleRail(); }
+
+  /* --- Rail tooltip -------------------------------------------------------- */
+  /* Fixed-position and parented to <body>: the sidebar is an overflow-y
+     scroller, so a tooltip inside an item would be clipped. */
+  var tip = null;
+
+  function showTip(item) {
+    if (!isRail() || isMobile()) return;
+    var label = item.querySelector("._78-nav-label");
+    if (!label) return;
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.className = "_78-nav-tip";
+      tip.setAttribute("aria-hidden", "true");   /* the label itself is the a11y name */
+      document.body.appendChild(tip);
+    }
+    tip.textContent = label.textContent.trim();
+    var r = item.getBoundingClientRect();
+    /* Anchored to the RAIL's edge, not the item's: the item is inset by the
+       sidebar padding, so measuring from it would tuck the tooltip back under
+       the rail's own border. */
+    var edge = item.closest("._78-sidebar");
+    tip.style.top = Math.round(r.top + r.height / 2) + "px";
+    tip.style.left = Math.round((edge ? edge.getBoundingClientRect().right : r.right) + 8) + "px";
+    tip.style.transform = "translateY(-50%)";
+    tip.classList.add("_78-open");
+  }
+  function hideTip() { if (tip) tip.classList.remove("_78-open"); }
+
+  /* --- Active item --------------------------------------------------------- */
+  function markActive(item) {
+    all("._78-nav-item").forEach(function (el) {
+      var on = el === item;
+      el.classList.toggle("_78-active", on);
+      if (on) el.setAttribute("aria-current", "page");
+      else el.removeAttribute("aria-current");
+    });
+    return item || null;
+  }
+
+  /* The last meaningful part of a URL: no query, no hash, no trailing slash.
+     "/app/orders.php?x=1" and "orders.php" both reduce to "orders.php". */
+  function tail(url) {
+    var u = String(url).split("?")[0].split("#")[0].replace(/\/+$/, "");
+    return u.slice(u.lastIndexOf("/") + 1).toLowerCase();
+  }
+
+  /* setActive(el | "href" | "selector") — an element wins, then an href written
+     exactly as the item writes it (which is how "#reports" resolves — stripping
+     the hash first would leave nothing to match), then a CSS selector, then the
+     last path segment, so location.pathname finds the right item. */
+  function setActive(match) {
+    if (!match) return null;
+    if (match.nodeType === 1) return markActive(match.closest("._78-nav-item") || match);
+
+    var want = String(match);
+    var exact = null;
+    all("._78-nav-item[href]").forEach(function (el) {
+      if (el.getAttribute("href") === want) exact = el;
+    });
+    if (exact) return markActive(exact);
+
+    var found = null;
+    try { found = document.querySelector(want); } catch (e) { /* not a selector */ }
+    if (found && found.closest("._78-nav-item")) return markActive(found.closest("._78-nav-item"));
+
+    var wantTail = tail(want);
+    var hit = null;
+    if (wantTail) {
+      all("._78-nav-item[href]").forEach(function (el) {
+        if (tail(el.getAttribute("href")) === wantTail) hit = el;
+      });
+    }
+    return hit ? markActive(hit) : null;
+  }
+
+  /* --- Dropdown menus ------------------------------------------------------ */
+  function menuItems(menu) {
+    return all("._78-menu-item", menu).filter(function (el) {
+      return !el.disabled && el.offsetParent !== null;
+    });
+  }
+
+  function openMenu(wrap, focusFirst) {
+    var m = wrap._78menu;
+    if (!m || !m.menu.hidden) return;
+    closeMenus(wrap);
+    m.menu.hidden = false;
+    m.btn.setAttribute("aria-expanded", "true");
+    if (focusFirst) {
+      var first = menuItems(m.menu)[0];
+      if (first) first.focus();
+    }
+  }
+
+  function closeMenu(wrap, returnFocus) {
+    var m = wrap._78menu;
+    if (!m || m.menu.hidden) return;
+    m.menu.hidden = true;
+    m.btn.setAttribute("aria-expanded", "false");
+    if (returnFocus) m.btn.focus();
+  }
+
+  function closeMenus(except) {
+    all("._78-menu-wrap").forEach(function (w) { if (w !== except) closeMenu(w); });
+  }
+
+  function mountMenu(wrap) {
+    if (!wrap || wrap._78menu) return wrap ? wrap._78menu : null;
+    var menu = wrap.querySelector("._78-menu");
+    var btn = wrap.querySelector("[aria-haspopup]")
+           || wrap.querySelector("button, a[href]");
+    if (!menu || !btn || menu.contains(btn)) return null;
+
+    if (!menu.id) menu.id = "_78-menu-" + (++seq);
+    menu.setAttribute("role", "menu");
+    menu.hidden = true;
+    if (btn.tagName === "BUTTON" && !btn.hasAttribute("type")) btn.type = "button";
+    btn.setAttribute("aria-haspopup", "true");
+    btn.setAttribute("aria-controls", menu.id);
+    btn.setAttribute("aria-expanded", "false");
+
+    all("._78-menu-item", menu).forEach(function (item) {
+      if (!item.hasAttribute("role")) item.setAttribute("role", "menuitem");
+      item.tabIndex = -1;
+      if (item.tagName === "BUTTON" && !item.hasAttribute("type")) item.type = "button";
+    });
+    all("._78-menu-sep", menu).forEach(function (s) { s.setAttribute("role", "separator"); });
+
+    wrap._78menu = { wrap: wrap, btn: btn, menu: menu };
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      menu.hidden ? openMenu(wrap) : closeMenu(wrap);
+    });
+    btn.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        openMenu(wrap, true);
+        if (e.key === "ArrowUp") {
+          var list = menuItems(menu);
+          if (list.length) list[list.length - 1].focus();
+        }
+      }
+    });
+
+    menu.addEventListener("keydown", function (e) {
+      var list = menuItems(menu);
+      var i = list.indexOf(document.activeElement);
+      if (e.key === "Escape") { closeMenu(wrap, true); }
+      else if (e.key === "ArrowDown") { if (list.length) list[(i + 1 + list.length) % list.length].focus(); }
+      else if (e.key === "ArrowUp") { if (list.length) list[(i - 1 + list.length) % list.length].focus(); }
+      else if (e.key === "Home") { if (list.length) list[0].focus(); }
+      else if (e.key === "End") { if (list.length) list[list.length - 1].focus(); }
+      else if (e.key === "Tab") { closeMenu(wrap); return; }
+      else { return; }
+      e.preventDefault();
+    });
+    /* Choosing an item is the end of the interaction — close, like a real menu */
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("._78-menu-item")) closeMenu(wrap);
+    });
+
+    return wrap._78menu;
+  }
+
+  function mountMenus(scope) { return all("._78-menu-wrap", scope).map(mountMenu); }
+
+  /* --- Wiring -------------------------------------------------------------- */
+  function init() {
+    /* Fallback for a page that skipped the pre-paint snippet: declaring
+       [data-sidebar] is what reserves the space in the CSS. */
+    if (sidebar() && !root.dataset.sidebar) {
+      root.dataset.sidebar = read() === "rail" ? "rail" : "full";
+    }
+    syncToggles();
+    mountMenus();
+
+    all("._78-nav-toggle").forEach(function (t) {
+      if (t.tagName === "BUTTON" && !t.hasAttribute("type")) t.type = "button";
+      var side = sidebar();
+      if (side) {
+        if (!side.id) side.id = "_78-sidebar";
+        t.setAttribute("aria-controls", side.id);
+      }
+      t.addEventListener("click", toggleNav);
+    });
+
+    all("._78-nav-collapse").forEach(function (b) {
+      if (b.tagName === "BUTTON" && !b.hasAttribute("type")) b.type = "button";
+      b.addEventListener("click", function () { setRail(!isRail()); });
+    });
+
+    all("._78-scrim").forEach(function (s) {
+      s.addEventListener("click", function () { closeDrawer(); });
+    });
+
+    var side = sidebar();
+    if (side) {
+      if (!side.hasAttribute("aria-label") && !side.hasAttribute("aria-labelledby")) {
+        side.setAttribute("aria-label", "Primary");
+      }
+      /* Following a link closes the drawer — and focus goes with the link, so
+         it is deliberately not sent back to the hamburger. */
+      side.addEventListener("click", function (e) {
+        if (e.target.closest("._78-nav-item") && isMobile()) closeDrawer(false);
+      });
+      /* Rail tooltips: mouseenter/focus don't bubble, so delegate the ones that do */
+      side.addEventListener("mouseover", function (e) {
+        var item = e.target.closest("._78-nav-item");
+        if (item) showTip(item);
+      });
+      side.addEventListener("focusin", function (e) {
+        var item = e.target.closest("._78-nav-item");
+        if (item) showTip(item);
+      });
+      side.addEventListener("mouseout", hideTip);
+      side.addEventListener("focusout", hideTip);
+      side.addEventListener("scroll", hideTip);
+    }
+
+    /* Markup that hardcodes ._78-active still needs aria-current — run it
+       through the same path so the two can never disagree. Nothing marked at
+       all: fall back to the current URL. */
+    var marked = document.querySelector("._78-nav-item._78-active");
+    if (marked) markActive(marked);
+    else setActive(location.pathname);
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest("._78-menu-wrap")) closeMenus();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      closeMenus();
+      closeDrawer();
+    });
+    /* Grown past the breakpoint: a drawer left open would be a stuck overlay */
+    window.addEventListener("resize", function () {
+      if (!isMobile()) closeDrawer(false);
+      hideTip();
+      syncToggles();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  _78.shell = {
+    get rail() { return isRail(); },
+    get drawer() { return isDrawerOpen(); },
+    setRail: setRail,
+    toggleRail: toggleRail,
+    openDrawer: openDrawer,
+    closeDrawer: closeDrawer,
+    toggleDrawer: toggleDrawer,
+    toggleNav: toggleNav,
+    setActive: setActive,
+    mountMenu: mountMenu,
+    mountMenus: mountMenus,
+    closeMenus: closeMenus,
+    KEY: KEY,
+    MOBILE: MOBILE,
+    /* The exact pre-paint snippet, for docs/tooling */
+    PREPAINT: "(function(){try{var s=localStorage.getItem('_78-sidebar');"
+            + "document.documentElement.dataset.sidebar=s==='rail'?'rail':'full';}"
+            + "catch(e){document.documentElement.dataset.sidebar='full';}})();"
   };
 })(window._78);
