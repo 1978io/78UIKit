@@ -1,5 +1,9 @@
 # 78 UI Kit
 
+[![Release](https://img.shields.io/github/v/release/1978io/78UIKit)](https://github.com/1978io/78UIKit/releases)
+[![jsDelivr hits](https://img.shields.io/jsdelivr/gh/hm/1978io/78UIKit)](https://www.jsdelivr.com/package/gh/1978io/78UIKit)
+[![License: MIT](https://img.shields.io/github/license/1978io/78UIKit)](LICENSE)
+
 **A vanilla UI component kit you can re-theme in ~15 lines.** No framework, no build step — just
 HTML / CSS / JS you drop in. Change a handful of CSS variables and the whole thing recolors:
 the components *and* your third-party tables and charts. MIT.
