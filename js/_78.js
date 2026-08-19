@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.modal · _78.notify · _78.tabs
+   Surface: _78.theme · _78.modal · _78.notify · _78.tabs · _78.viz
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -499,4 +499,317 @@ window._78 = window._78 || {};
   }
 
   _78.tabs = { mount: mount, mountAll: mountAll };
+})(window._78);
+
+
+/* ==========================================================================
+   _78.viz — the no-library data-viz primitives
+   Sparkline, progress bar, bar row, donut/gauge. Everything is inline SVG or
+   plain elements painted with kit tokens, so a theme switch needs no redraw
+   (unlike canvas — that's what js/adapters/chartjs.js is for).
+
+   Call it, or let it auto-mount from attributes on load:
+     <div data-values="4,7,6,9,12">…</div>        → sparkline
+     <div class="_78-progress" data-pct="72">      → progress fill + aria
+     <div class="_78-bar-row" data-pct="82">       → bar fill + aria
+     <div class="_78-donut" data-pct="68">         → ring + centre value
+     <div class="_78-donut _78-gauge" data-pct="41">
+
+   🔴 Every primitive gets a text value or role="img" + aria-label. A shape or
+   a colour is never the only carrier of the meaning.
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function svgEl(name, attrs) {
+    var node = document.createElementNS(SVG_NS, name);
+    Object.keys(attrs || {}).forEach(function (k) { node.setAttribute(k, attrs[k]); });
+    return node;
+  }
+
+  function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+
+  function numbers(value) {
+    if (Array.isArray(value)) return value.map(Number).filter(function (n) { return !isNaN(n); });
+    if (typeof value !== "string") return [];
+    return value.split(/[\s,]+/).map(Number).filter(function (n) { return !isNaN(n); });
+  }
+
+  function round(n) { return Math.round(n * 100) / 100; }
+
+  /* --- Sparkline ---------------------------------------------------------
+     sparkline(el, data, { width, height, fill, dot, tone, label })
+     `data` may be omitted when the element carries data-values.
+     ---------------------------------------------------------------------- */
+  function sparkline(el, data, opts) {
+    if (!el) return null;
+    opts = opts || {};
+
+    var values = numbers(data != null ? data : el.dataset.values);
+    if (values.length < 2) return null;
+
+    var W = opts.width || 120;
+    var H = opts.height || 32;
+    var pad = 2;                                  /* room for the stroke/dot */
+    var showFill = opts.fill !== false && el.dataset.fill !== "false";
+    var showDot = opts.dot !== false && el.dataset.dot !== "false";
+
+    var min = Math.min.apply(null, values);
+    var max = Math.max.apply(null, values);
+    var span = max - min;
+
+    var points = values.map(function (v, i) {
+      var x = values.length === 1 ? W / 2 : pad + (i / (values.length - 1)) * (W - pad * 2);
+      /* a flat series draws down the middle rather than dividing by zero */
+      var t = span === 0 ? 0.5 : (v - min) / span;
+      var y = (H - pad) - t * (H - pad * 2);
+      return [round(x), round(y)];
+    });
+
+    var line = points.map(function (p, i) { return (i ? "L" : "M") + p[0] + " " + p[1]; }).join(" ");
+    var area = line + " L" + points[points.length - 1][0] + " " + H + " L" + points[0][0] + " " + H + " Z";
+
+    var svg = svgEl("svg", {
+      class: "_78-sparkline",
+      viewBox: "0 0 " + W + " " + H,
+      preserveAspectRatio: "none",
+      role: "img",
+      focusable: "false"
+    });
+
+    var tone = opts.tone || el.dataset.tone;
+    if (tone === "auto") tone = values[values.length - 1] >= values[0] ? "success" : "danger";
+    if (tone) svg.classList.add("_78-tone-" + tone);
+
+    /* Label: explicit, else a plain-English summary of the series */
+    var change = values[values.length - 1] - values[0];
+    var label = opts.label || el.dataset.label ||
+      ("Trend, " + values.length + " points: " + values[0] + " to " + values[values.length - 1] +
+       " (" + (change > 0 ? "up" : change < 0 ? "down" : "flat") + ")");
+    svg.setAttribute("aria-label", label);
+    svg.appendChild(svgEl("title", {})).textContent = label;
+
+    if (showFill) svg.appendChild(svgEl("path", { class: "_78-sparkline-area", d: area }));
+    svg.appendChild(svgEl("path", {
+      class: "_78-sparkline-line",
+      d: line,
+      "vector-effect": "non-scaling-stroke"    /* stretch the box, not the line */
+    }));
+    if (showDot) {
+      var last = points[points.length - 1];
+      svg.appendChild(svgEl("circle", {
+        class: "_78-sparkline-dot", cx: last[0], cy: last[1], r: 2.5,
+        "vector-effect": "non-scaling-stroke"
+      }));
+    }
+
+    var existing = el.querySelector("svg._78-sparkline");
+    if (existing) existing.remove();
+    el.appendChild(svg);
+    return svg;
+  }
+
+  /* --- Progress / score bar ----------------------------------------------
+     progress(el, pct, { text, label })
+     ---------------------------------------------------------------------- */
+  function progress(el, pct, opts) {
+    if (!el) return null;
+    opts = opts || {};
+    pct = clamp(parseFloat(pct != null ? pct : el.dataset.pct) || 0, 0, 100);
+
+    var track = el.querySelector("._78-progress-track");
+    if (!track) {
+      track = document.createElement("div");
+      track.className = "_78-progress-track";
+      el.appendChild(track);
+    }
+    var fill = track.querySelector("._78-progress-fill");
+    if (!fill) {
+      fill = document.createElement("div");
+      fill.className = "_78-progress-fill";
+      track.appendChild(fill);
+    }
+    fill.style.width = pct + "%";
+
+    var label = opts.label || el.dataset.label ||
+      (el.querySelector("._78-progress-label") || {}).textContent || "";
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-valuenow", String(round(pct)));
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    if (label) track.setAttribute("aria-label", label.trim());
+
+    var value = el.querySelector("._78-progress-value");
+    if (value && opts.text !== false && !value.textContent.trim()) {
+      value.textContent = round(pct) + "%";
+    }
+    return el;
+  }
+
+  /* --- Bar row ------------------------------------------------------------ */
+  function bar(el, pct, opts) {
+    if (!el) return null;
+    opts = opts || {};
+    pct = clamp(parseFloat(pct != null ? pct : el.dataset.pct) || 0, 0, 100);
+
+    var track = el.querySelector("._78-bar-track");
+    if (!track) return null;
+    var fill = track.querySelector("._78-bar-fill");
+    if (!fill) {
+      fill = document.createElement("span");
+      fill.className = "_78-bar-fill";
+      track.appendChild(fill);
+    }
+    fill.style.width = pct + "%";
+
+    var label = opts.label || (el.querySelector("._78-bar-label") || {}).textContent || "";
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-valuenow", String(round(pct)));
+    track.setAttribute("aria-valuemin", "0");
+    track.setAttribute("aria-valuemax", "100");
+    if (label) track.setAttribute("aria-label", label.trim());
+    return el;
+  }
+
+  /* --- Donut / gauge -------------------------------------------------------
+     donut(el, pct, { size, stroke, gauge, label, value })
+     A gauge is the same ring drawn as a 240° arc with the gap at the bottom.
+     ------------------------------------------------------------------------ */
+  function donut(el, pct, opts) {
+    if (!el) return null;
+    opts = opts || {};
+    pct = clamp(parseFloat(pct != null ? pct : el.dataset.pct) || 0, 0, 100);
+
+    var isGauge = opts.gauge != null ? opts.gauge : el.classList.contains("_78-gauge");
+    var size = opts.size || 100;
+    var stroke = opts.stroke || (isGauge ? 11 : 12);
+    var r = (size - stroke) / 2;
+    var c = 2 * Math.PI * r;
+    var sweep = isGauge ? c * (240 / 360) : c;     /* how much of the ring is track */
+    var filled = sweep * (pct / 100);
+    var rotate = isGauge ? 150 : -90;              /* gauge gap at the bottom */
+    var transform = "rotate(" + rotate + " " + (size / 2) + " " + (size / 2) + ")";
+    var height = isGauge ? size * 0.86 : size;     /* trim the unused bottom */
+
+    var svg = svgEl("svg", {
+      viewBox: "0 0 " + size + " " + height,
+      focusable: "false",
+      "aria-hidden": "true"                        /* the wrapper carries the label */
+    });
+    var ring = { cx: size / 2, cy: size / 2, r: round(r), "stroke-width": stroke, transform: transform };
+
+    svg.appendChild(svgEl("circle", Object.assign({}, ring, {
+      class: "_78-donut-track",
+      "stroke-dasharray": round(sweep) + " " + round(c - sweep + 0.001),
+      "stroke-linecap": isGauge ? "round" : "butt"
+    })));
+    svg.appendChild(svgEl("circle", Object.assign({}, ring, {
+      class: "_78-donut-fill",
+      "stroke-dasharray": round(filled) + " " + round(c - filled + 0.001)
+    })));
+
+    var old = el.querySelector("svg");
+    if (old) old.remove();
+    el.insertBefore(svg, el.firstChild);
+
+    /* Centre text — respected if the markup already provides it */
+    var centre = el.querySelector("._78-donut-center");
+    if (!centre) {
+      centre = document.createElement("div");
+      centre.className = "_78-donut-center";
+      el.appendChild(centre);
+    }
+    var valueEl = centre.querySelector("._78-donut-value");
+    if (!valueEl) {
+      valueEl = document.createElement("div");
+      valueEl.className = "_78-donut-value";
+      centre.insertBefore(valueEl, centre.firstChild);
+    }
+    if (!valueEl.textContent.trim() || opts.value != null || el.dataset.pct != null) {
+      valueEl.textContent = opts.value != null ? opts.value : round(pct) + "%";
+    }
+
+    var label = opts.label || el.dataset.label || "";
+    if (label && !centre.querySelector("._78-donut-label")) {
+      var labelEl = document.createElement("div");
+      labelEl.className = "_78-donut-label";
+      labelEl.textContent = label;
+      centre.appendChild(labelEl);
+    }
+
+    el.setAttribute("role", "img");
+    el.setAttribute("aria-label", (label ? label + ": " : "") + valueEl.textContent);
+    return el;
+  }
+
+  /* --- Trend arrow ---------------------------------------------------------
+     trend(el, value, { invert, label }) — sets the direction class, the arrow
+     and the text. Direction comes from the number's sign; "flat" at exactly 0.
+     Markup-only use is fine too: <span class="_78-trend _78-up">▲ 12.4%</span>
+     ------------------------------------------------------------------------ */
+  var ARROWS = {
+    up: "M12 5l7 8h-5v6h-4v-6H5z",
+    down: "M12 19l-7-8h5V5h4v6h5z",
+    flat: "M5 11h14v2H5z"
+  };
+
+  function trend(el, value, opts) {
+    if (!el) return null;
+    opts = opts || {};
+    var n = parseFloat(value != null ? value : el.dataset.delta);
+    var dir = isNaN(n) ? "flat" : (n > 0 ? "up" : n < 0 ? "down" : "flat");
+
+    el.classList.add("_78-trend");
+    el.classList.remove("_78-up", "_78-down", "_78-flat");
+    el.classList.add("_78-" + dir);
+    if (opts.invert || el.dataset.invert === "true") el.classList.add("_78-invert");
+
+    /* an empty data-unit means "no unit" — hence != null, not || */
+    var unit = opts.unit != null ? opts.unit
+             : (el.dataset.unit != null ? el.dataset.unit : "%");
+    var text = opts.text != null ? opts.text
+             : (isNaN(n) ? el.textContent.trim() : (n > 0 ? "+" : "") + n + unit);
+
+    el.textContent = "";
+    var icon = svgEl("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", focusable: "false" });
+    icon.appendChild(svgEl("path", { d: ARROWS[dir], fill: "currentColor" }));
+    el.appendChild(icon);
+    el.appendChild(document.createTextNode(text));
+
+    /* the word, for anyone who can't see the arrow or the colour */
+    var sr = document.createElement("span");
+    sr.className = "_78-sr-only";
+    sr.textContent = " " + (opts.label || (dir === "up" ? "up" : dir === "down" ? "down" : "no change"));
+    el.appendChild(sr);
+    return el;
+  }
+
+  /* --- Auto-mount ---------------------------------------------------------- */
+  function mountAll(scope) {
+    scope = scope || document;
+    var all = function (sel) { return Array.prototype.slice.call(scope.querySelectorAll(sel)); };
+
+    all("[data-values]").forEach(function (el) { sparkline(el); });
+    all("._78-progress[data-pct]").forEach(function (el) { progress(el); });
+    all("._78-bar-row[data-pct]").forEach(function (el) { bar(el); });
+    all("._78-donut[data-pct]").forEach(function (el) { donut(el); });
+    all("._78-trend[data-delta], ._78-stat-delta[data-delta]").forEach(function (el) { trend(el); });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { mountAll(); });
+  } else {
+    mountAll();
+  }
+
+  _78.viz = {
+    sparkline: sparkline,
+    progress: progress,
+    bar: bar,
+    donut: donut,
+    trend: trend,
+    mountAll: mountAll
+  };
 })(window._78);

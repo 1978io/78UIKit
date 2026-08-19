@@ -4,10 +4,11 @@
 HTML / CSS / JS you drop in. **Re-theme the whole thing — components *and* your libraries — by editing
 ~15 lines.** MIT — a 1978.io give-away and the shared component layer for every 1978 product.
 
-> 🌱 **Status: briefs 1–3 built, 2026-08-18** — tokens + theming (`_78.theme`), the four primitives, the
-> three library theme adapters (Tabulator, FullCalendar, Chart.js), and notifications (modal / toast /
-> inline alert) + tabs + table, each proved light+dark in `demo/`. KPIs + data-viz, the `_78` helpers and
-> the theme generator are next; the app shell/nav needs a design session first.
+> 🌱 **Status: briefs 1–4 built, 2026-08-19** — tokens + theming (`_78.theme`), the four primitives, the
+> three library theme adapters (Tabulator, FullCalendar, Chart.js), notifications (modal / toast / inline
+> alert) + tabs + table, and the KPI card + no-library data-viz primitives (`_78.viz`) — each proved
+> light+dark in `demo/`. The `_78` helpers and the theme generator are next; the app shell/nav needs a
+> design session first.
 > Decisions live in `JamesHQ\projects\1978-ui-kit\notes.md` (the
 > strategy/decision log); this README is the **buildable spec**. Structure reference = the AlchemyQM
 > mockup; code is built fresh from James's own projects (Brashli / Lake House). Dogfooded on **78trade** first.
@@ -146,11 +147,14 @@ Build order: **foundation → adapters → notifications/components → theme ge
 - **Notifications** 🔵 ✅ **built** — modal / toast / inline alert (see the rule below). Native `<dialog>`
   via `showModal()`, function API (`_78.modal.open/confirm/alert`, `_78.notify…`) — no order-dependent
   globals. `_78.modal.mount()`/`.show()` for a `<dialog>` you wrote yourself.
-- **Dashboard/data** 🔵 — KPI card (value/label/delta/trend) + responsive KPI grid; status pill (where
-  `-lo` tints earn their keep); table styling that works **with** Tabulator, doesn't replace it. 🔴 **Include
-  the Hub's KPIs + data-viz** (its stat/analytics widgets + AQM's `bar-row`/`score-bar`/`heatmap` primitives).
-- **Simple viz — CSS/SVG, no library** 🔵 — sparkline · progress bar · donut/gauge · horizontal-bar row ·
-  trend arrow. (Chart.js for anything deeper.)
+- **Dashboard/data** 🔵 ✅ **built** — the brief-1 `._78-stat-card` grown into a KPI card:
+  `._78-stat-card__head/__icon/__row/__spark` + `._78-stat-delta` (direction arrow, coloured by sign,
+  `._78-invert` where up is bad), laid out by `._78-kpi-grid` (auto-fit, 2–6 across). Status pills and the
+  table style shipped earlier. 🔜 still to lift from AQM: the `heatmap` primitive.
+- **Simple viz — CSS/SVG, no library** 🔵 ✅ **built** — `._78-sparkline` · `._78-progress` · `._78-bar-row`
+  · `._78-donut`/`._78-gauge` · `._78-trend`, all in `css/components/viz.css` + `_78.viz`. Colour flows
+  through two inherited vars (`--viz`/`--viz-lo`, defaulting to the accent), so a tone is one class —
+  `._78-tone-success` and friends — and every shape re-themes with no redraw. Deeper charts stay Chart.js.
 - **Shell + states** 🔵 — app shell (sidebar + main), empty state, loading state, filter bar. ⬜ **Nav is
   its own design session** (sidebar vs top-bar, mobile, active/nested/badges).
 - **Tabs** 🔵 ✅ **built** — `._78-tabs` (+ `._78-tabs-segmented`), `_78.tabs` auto-mounts: roles,
@@ -158,6 +162,26 @@ Build order: **foundation → adapters → notifications/components → theme ge
   still pending — neither AQM nor the Hub had a real switch.
 - **Table** 🔵 ✅ **built** — `._78-table` (+ `-compact`/`-striped`/`-sticky`, `._78-table-wrap` to scroll
   on narrow screens). The kit's own plain `<table>`; a data grid is still Tabulator + its adapter.
+
+### Data-viz, declaratively
+
+Everything in `_78.viz` auto-mounts from attributes on load (or call it directly — `_78.viz.sparkline(el,
+data)`, `.progress(el, pct)`, `.bar(el, pct)`, `.donut(el, pct)`, `.trend(el, delta)`, `.mountAll(scope)`
+after you inject markup):
+
+```html
+<div class="_78-stat-card__spark" data-values="18,22,19,27,31" data-tone="auto"></div>
+<div class="_78-progress _78-tone-warn" data-pct="68">…</div>
+<div class="_78-bar-row" data-pct="82">…</div>
+<div class="_78-donut" data-pct="68" data-label="Margin used"></div>
+<div class="_78-donut _78-gauge" data-pct="41" data-label="Risk score"></div>
+<span class="_78-trend" data-delta="12.4"></span>
+<span class="_78-trend" data-delta="3.1" data-invert="true"></span>  <!-- up is bad here -->
+```
+
+`data-tone="auto"` colours a sparkline by its own direction. Each primitive renders its value as text or
+gets `role="img"` + an `aria-label`, and progress/bar tracks are real `role="progressbar"`s — **colour is
+never the only signal**.
 
 ### ⭐ The notification rule (ship the rule, not just the widgets)
 
@@ -189,13 +213,13 @@ repo is canonical, `_78` includes it.
 css/  kit.css            ✅ the one stylesheet a project links (@imports everything below)
       tokens.css        ✅ light + dark colour blocks + shared non-colour tokens
       reset.css         ✅ minimal reset, themed scrollbars, focus ring
-      components/       ✅ buttons · cards · forms · badges · table · tabs · modal · toast ·
-                           alert · theme-toggle · utilities
+      components/       ✅ buttons · cards (+ KPI) · forms · badges · viz · table · tabs · modal ·
+                           toast · alert · theme-toggle · utilities
       adapters/         ✅ tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js            ✅ _78.theme · _78.modal · _78.notify · _78.tabs (helpers still pending)
+js/   _78.js            ✅ _78.theme · _78.modal · _78.notify · _78.tabs · _78.viz (helpers pending)
       adapters/         ✅ chartjs.js — _78.adapters.chartjs
 demo/ index.html        ✅ kitchen-sink (tokens + the four primitives), light+dark
-      components.html   ✅ notifications (modal/toast/alert) · tabs · table
+      components.html   ✅ KPIs + data-viz · notifications (modal/toast/alert) · tabs · table
       adapters.html     ✅ live Tabulator + FullCalendar + Chart.js, all re-theming off one toggle
 docs/                   🔜 per-component notes as they stabilise
 ```

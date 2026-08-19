@@ -82,6 +82,73 @@
   color: var(--dim);
 }
 
+/* --- KPI extras (brief 4) — the stat card grown up, not a second component --
+     <div class="_78-stat-card">
+       <div class="_78-stat-card__head">
+         <span class="_78-stat-card__label">Realised P/L</span>
+         <span class="_78-stat-card__icon">…</span>
+       </div>
+       <div class="_78-stat-card__num _78-green">+£4,820</div>
+       <div class="_78-stat-card__row">
+         <span class="_78-stat-delta _78-up">▲ 12.4%</span>
+         <span class="_78-stat-card__sub">vs last month</span>
+       </div>
+       <div class="_78-stat-card__spark"><svg class="_78-sparkline" …></svg></div>
+     </div>
+   `._78-stat-delta` itself is styled with `._78-trend` in components/viz.css.
+   -------------------------------------------------------------------------- */
+._78-stat-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+._78-stat-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: var(--accent-lo);
+  color: var(--accent);
+}
+._78-stat-card__icon svg { width: 15px; height: 15px; }
+
+/* delta + caption on one line under the number */
+._78-stat-card__row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+._78-stat-card__row ._78-stat-card__sub { margin-top: 0; }
+
+/* sparkline slot — full-bleed to the card edge, clipped to its radius so the
+   area fill can't square off the bottom corners (the padding leaves the
+   last-point dot somewhere to sit) */
+._78-stat-card__spark {
+  margin: var(--space-3) calc(var(--space-4) * -1) calc(var(--space-4) * -1);
+  padding: 0 var(--space-1);
+  overflow: hidden;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+/* Whole-card link (a KPI that drills through) */
+._78-stat-card._78-card-link:hover { border-color: var(--accent); }
+
+/* --- KPI grid — the standard dashboard row, 2–6 across ------------------- */
+._78-kpi-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+._78-kpi-grid-sm { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+._78-kpi-grid-lg { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
 /* Simple responsive card grid */
 ._78-card-grid {
   display: grid;

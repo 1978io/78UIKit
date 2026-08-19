@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>78 UI Kit — notifications, tabs, table</title>
+<title>78 UI Kit — KPIs, data-viz, notifications, tabs, table</title>
 
 <!-- Pre-paint theme snippet — FIRST thing in <head>, before any CSS. No FOUC. -->
 <script>
@@ -57,8 +57,140 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
 <main class="page">
 
+  <!-- ============================ KPIs & DATA-VIZ ============================ -->
+  <section id="kpis" style="margin-top:0">
+    <h2>KPIs &amp; data-viz <span class="_78-badge _78-badge-dim">no library · _78.viz</span></h2>
+    <p class="_78-text-dim _78-mb-16">The dashboard essentials, drawn in CSS and inline SVG off the same
+      tokens — so they re-theme with everything else, no redraw. Anything deeper (axes, tooltips,
+      interaction) is the <a href="adapters.html">Chart.js adapter's</a> job.</p>
+
+    <div class="_78-kpi-grid _78-mb-16">
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Realised P/L</span>
+          <span class="_78-stat-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/></svg>
+          </span>
+        </div>
+        <div class="_78-stat-card__num _78-green">+£4,820</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="12.4"></span>
+          <span class="_78-stat-card__sub">vs last month</span>
+        </div>
+        <div class="_78-stat-card__spark" data-values="18,22,19,27,25,31,29,38,44,41,52" data-tone="auto"></div>
+      </div>
+
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Win rate</span>
+        </div>
+        <div class="_78-stat-card__num _78-accent">61%</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="-2.8"></span>
+          <span class="_78-stat-card__sub">last 30 days</span>
+        </div>
+        <div class="_78-stat-card__spark" data-values="66,64,65,62,63,60,61" data-tone="auto"></div>
+      </div>
+
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Open positions</span>
+        </div>
+        <div class="_78-stat-card__num">12</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="0" data-unit=""></span>
+          <span class="_78-stat-card__sub">unchanged today</span>
+        </div>
+        <div class="_78-stat-card__spark" data-values="12,11,13,12,12,13,12" data-tone="dim" data-dot="false"></div>
+      </div>
+
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Drawdown</span>
+        </div>
+        <div class="_78-stat-card__num _78-red">−9.4%</div>
+        <div class="_78-stat-card__row">
+          <!-- up is BAD here: data-invert flips the colour, not the arrow -->
+          <span class="_78-stat-delta" data-delta="3.1" data-invert="true"></span>
+          <span class="_78-stat-card__sub">peak to trough</span>
+        </div>
+        <div class="_78-stat-card__spark _78-tone-danger" data-values="2,3,3,5,6,6,8,9,9.4"></div>
+      </div>
+    </div>
+
+    <div class="_78-card-grid">
+      <div class="_78-card">
+        <div class="_78-card-title">Progress / score bars</div>
+        <div class="_78-progress _78-mb-16" data-pct="72">
+          <div class="_78-progress-head"><span class="_78-progress-label">Win rate</span><span class="_78-progress-value"></span></div>
+        </div>
+        <div class="_78-progress _78-tone-success _78-progress-lg _78-mb-16" data-pct="88">
+          <div class="_78-progress-head"><span class="_78-progress-label">Plan adherence</span><span class="_78-progress-value"></span></div>
+        </div>
+        <div class="_78-progress _78-tone-warn _78-mb-16" data-pct="68">
+          <div class="_78-progress-head"><span class="_78-progress-label">Margin used</span><span class="_78-progress-value"></span></div>
+        </div>
+        <div class="_78-progress _78-tone-danger _78-progress-sm" data-pct="23">
+          <div class="_78-progress-head"><span class="_78-progress-label">Cash buffer</span><span class="_78-progress-value"></span></div>
+        </div>
+      </div>
+
+      <div class="_78-card">
+        <div class="_78-card-title">Bar rows <span class="_78-text-dim _78-text-sm _78-fw-600">— ranked lists</span></div>
+        <div class="_78-bar-list">
+          <div class="_78-bar-row" data-pct="100">
+            <span class="_78-bar-label">EUR/USD</span>
+            <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+            <span class="_78-bar-value">1,240</span>
+          </div>
+          <div class="_78-bar-row" data-pct="72">
+            <span class="_78-bar-label">AAPL</span>
+            <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+            <span class="_78-bar-value">890</span>
+          </div>
+          <div class="_78-bar-row" data-pct="48">
+            <span class="_78-bar-label">SAP.DE</span>
+            <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+            <span class="_78-bar-value">596</span>
+          </div>
+          <div class="_78-bar-row _78-tone-danger" data-pct="31">
+            <span class="_78-bar-label">TSLA</span>
+            <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+            <span class="_78-bar-value">−384</span>
+          </div>
+          <div class="_78-bar-row _78-tone-dim" data-pct="12">
+            <span class="_78-bar-label">AUD/NZD</span>
+            <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+            <span class="_78-bar-value">148</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="_78-card _78-mt-16">
+      <div class="_78-card-title">Donuts, gauges &amp; trend arrows</div>
+      <div class="row" style="gap:var(--space-5)">
+        <div class="_78-donut" data-pct="68" data-label="Margin used"></div>
+        <div class="_78-donut _78-tone-success" data-pct="88" data-label="Adherence"></div>
+        <div class="_78-donut _78-donut-sm _78-tone-danger" data-pct="23" data-label="Cash"></div>
+        <div class="_78-donut _78-gauge _78-tone-warn _78-donut-lg" data-pct="41" data-label="Risk score"></div>
+        <div class="_78-flex-col _78-gap-8">
+          <span class="_78-trend" data-delta="12.4"></span>
+          <span class="_78-trend" data-delta="-2.8"></span>
+          <span class="_78-trend" data-delta="0" data-unit=""></span>
+          <span class="_78-trend _78-trend-pill" data-delta="4.6"></span>
+          <span class="_78-trend _78-trend-pill" data-delta="3.1" data-invert="true"></span>
+        </div>
+      </div>
+      <p class="_78-text-sm _78-text-dim _78-mt-16">Every one of these carries its value as text or an
+        <code class="tok">aria-label</code> — the colour and the shape are reinforcement, never the only
+        signal. <code class="tok">_78-invert</code> flips the colour for metrics where up is bad
+        (the last pill: drawdown rising).</p>
+    </div>
+  </section>
+
   <!-- ============================ THE RULE ============================ -->
-  <section id="rule" style="margin-top:0">
+  <section id="rule">
     <h2>Notifications — which one?</h2>
     <p class="_78-text-dim _78-mb-16">Three components, one rule. Ship the rule, not just the widgets:
       pick by <em>what the user has to do</em>, not by how it looks.</p>

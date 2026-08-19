@@ -1,0 +1,234 @@
+/* ==========================================================================
+   78 UI Kit — data-viz primitives (CSS + inline SVG, no library)
+
+   The lightweight essentials: a sparkline, a progress/score bar, a labelled
+   bar row, a donut/gauge ring and a trend arrow. Anything deeper — axes,
+   tooltips, interaction, real charts — is the Chart.js adapter's job
+   (js/adapters/chartjs.js); these exist so you don't load a chart library to
+   draw one 40px trend line.
+
+   Colour comes through two inherited variables, so every shape re-themes for
+   free and a tone is one class — on the primitive OR on any ancestor:
+     --viz     the solid colour   (falls back to --accent)
+     --viz-lo  its tint           (falls back to --accent-lo)
+   Set them with ._78-tone-accent/-success/-warn/-danger/-info/-dim (bottom of
+   this file), or by hand: style="--viz: var(--info)".
+
+   🔴 Accessibility: a shape is never the only carrier of meaning. Every
+   primitive here either renders its value as text or gets role="img" +
+   aria-label from _78.viz — colour alone never says "good" or "bad".
+   ========================================================================== */
+
+/* --- Sparkline ------------------------------------------------------------
+   Rendered by _78.viz.sparkline(el, data) into an <svg class="_78-sparkline">.
+   The stroke is non-scaling, so the SVG can stretch to any width without the
+   line getting fat.
+   -------------------------------------------------------------------------- */
+._78-sparkline {
+  display: block;
+  width: 100%;
+  height: 32px;
+  overflow: visible;
+}
+._78-sparkline-area { fill: var(--viz-lo, var(--accent-lo)); stroke: none; }
+._78-sparkline-line {
+  fill: none;
+  stroke: var(--viz, var(--accent));
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+._78-sparkline-dot { fill: var(--viz, var(--accent)); stroke: var(--bg2); stroke-width: 1.5; }
+._78-sparkline-base { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 3; }
+
+/* --- Progress / score bar -------------------------------------------------
+     <div class="_78-progress" data-pct="72">
+       <div class="_78-progress-head">
+         <span class="_78-progress-label">Win rate</span>
+         <span class="_78-progress-value">72%</span>
+       </div>
+       <div class="_78-progress-track"><div class="_78-progress-fill"></div></div>
+     </div>
+   -------------------------------------------------------------------------- */
+._78-progress { width: 100%; }
+._78-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+._78-progress-label { font-size: var(--fs-sm); color: var(--dim); }
+._78-progress-value {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+._78-progress-track {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+._78-progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--viz, var(--accent));
+  transition: width var(--transition-slow);
+}
+._78-progress-lg ._78-progress-track { height: 10px; }
+._78-progress-sm ._78-progress-track { height: 4px; }
+
+/* --- Bar row (ranked lists) -----------------------------------------------
+     <div class="_78-bar-list">
+       <div class="_78-bar-row" data-pct="82">
+         <span class="_78-bar-label">EUR/USD</span>
+         <span class="_78-bar-track"><span class="_78-bar-fill"></span></span>
+         <span class="_78-bar-value">82</span>
+       </div>
+     </div>
+   -------------------------------------------------------------------------- */
+._78-bar-list { display: flex; flex-direction: column; gap: var(--space-2); }
+
+._78-bar-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 26%) 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+}
+._78-bar-label {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+._78-bar-track {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+._78-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--viz, var(--accent));
+  transition: width var(--transition-slow);
+}
+._78-bar-value {
+  min-width: 44px;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--dim);
+}
+
+/* --- Donut / gauge --------------------------------------------------------
+   Rendered by _78.viz.donut(el, pct). ._78-gauge is the same ring drawn as a
+   240° arc with the value sitting in the gap.
+   -------------------------------------------------------------------------- */
+._78-donut {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+}
+._78-donut svg { display: block; width: 100%; height: auto; overflow: visible; }
+._78-donut-track { fill: none; stroke: var(--border); }
+._78-donut-fill {
+  fill: none;
+  stroke: var(--viz, var(--accent));
+  stroke-linecap: round;
+  transition: stroke-dasharray var(--transition-slow);
+}
+._78-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  pointer-events: none;
+  text-align: center;
+}
+._78-donut-value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  line-height: 1;
+}
+._78-donut-label {
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  line-height: 1.2;
+  max-width: 80%;
+}
+._78-donut-sm { width: 72px; }
+._78-donut-sm ._78-donut-value { font-size: var(--fs-base); }
+._78-donut-lg { width: 136px; }
+._78-donut-lg ._78-donut-value { font-size: var(--fs-xl); }
+
+/* The gauge's arc leaves a gap at the bottom, so the centre text sits higher */
+._78-gauge ._78-donut-center { justify-content: center; padding-bottom: 6%; }
+
+/* --- Trend arrow ----------------------------------------------------------
+   The direction word is in the markup (or an aria-label) — the arrow and the
+   colour are reinforcement, never the only signal.
+     <span class="_78-trend _78-up">▲ 12.4%</span>
+   -------------------------------------------------------------------------- */
+._78-trend,
+._78-stat-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--dim);
+  white-space: nowrap;
+}
+._78-trend svg,
+._78-stat-delta svg { width: 12px; height: 12px; flex: 0 0 auto; }
+
+._78-trend._78-up,
+._78-stat-delta._78-up { color: var(--success); }
+._78-trend._78-down,
+._78-stat-delta._78-down { color: var(--danger); }
+._78-trend._78-flat,
+._78-stat-delta._78-flat { color: var(--dim); }
+
+/* Inverted meaning — for metrics where "up" is bad (drawdown, latency, spend) */
+._78-trend._78-invert._78-up,
+._78-stat-delta._78-invert._78-up { color: var(--danger); }
+._78-trend._78-invert._78-down,
+._78-stat-delta._78-invert._78-down { color: var(--success); }
+
+/* Pill treatment, when a delta needs to stand away from the number */
+._78-trend-pill {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--bg3);
+}
+._78-trend-pill._78-up { background: var(--success-lo); }
+._78-trend-pill._78-down { background: var(--danger-lo); }
+._78-trend-pill._78-invert._78-up { background: var(--danger-lo); }
+._78-trend-pill._78-invert._78-down { background: var(--success-lo); }
+
+/* --- Tones ----------------------------------------------------------------
+   One class re-colours any primitive above. Last in the file on purpose.
+   -------------------------------------------------------------------------- */
+._78-tone-accent  { --viz: var(--accent);  --viz-lo: var(--accent-lo); }
+._78-tone-success { --viz: var(--success); --viz-lo: var(--success-lo); }
+._78-tone-warn    { --viz: var(--warn);    --viz-lo: var(--warn-lo); }
+._78-tone-danger  { --viz: var(--danger);  --viz-lo: var(--danger-lo); }
+._78-tone-info    { --viz: var(--info);    --viz-lo: var(--info-lo); }
+._78-tone-dim     { --viz: var(--dim);     --viz-lo: var(--row-hover); }
