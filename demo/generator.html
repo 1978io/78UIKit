@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>78 UI Kit — theme generator</title>
+
+<!-- 1. pre-paint theme (light/dark choice) — before any CSS -->
+<script>
+(function(){var p=localStorage.getItem('_78-theme')||'system';
+var t=p==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):p;
+var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
+</script>
+<!-- 2. pre-paint the GENERATED theme, if one was applied — same idea, no re-derivation -->
+<script>
+(function(){try{var s=JSON.parse(localStorage.getItem('_78-gen')||'null');if(!s||!s.css)return;
+var e=document.createElement('style');e.id='_78-gen-style';e.textContent=s.css;
+document.documentElement.appendChild(e);document.documentElement.dataset._78Gen='on';}catch(e){}})();
+</script>
+
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700">
+<link rel="stylesheet" href="../css/kit.css">
+
+<style>
+  /* Demo page chrome only — NOT part of the kit. */
+  .page { max-width: 1280px; margin: 0 auto; padding: var(--space-5) var(--space-4) 64px; }
+  .site-head {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    height: var(--header-h); padding: 0 var(--space-4);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+  }
+  .site-head h1 { font-size: var(--fs-lg); }
+  .site-head .mark { color: var(--accent); }
+  .site-head nav a { color: var(--dim); font-size: var(--fs-sm); margin-right: var(--space-3); }
+  .site-head nav a:hover, .site-head nav a[aria-current] { color: var(--accent); text-decoration: none; }
+
+  .layout { display: grid; grid-template-columns: 320px 1fr; gap: var(--space-4); align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  .controls { position: sticky; top: calc(var(--header-h) + var(--space-4)); }
+
+  .previews { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 1100px) { .previews { grid-template-columns: 1fr; } }
+
+  /* A preview pane is just a box carrying the generated tokens as inline
+     custom properties — everything inside it inherits them. */
+  .pane {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    overflow: hidden;
+  }
+  .pane[data-scheme="dark"] { color-scheme: dark; }
+  .pane[data-scheme="light"] { color-scheme: light; }
+  .pane-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: var(--space-3);
+  }
+  .pane-title { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 6px; }
+  .sw { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .sw i { display: block; height: 26px; }
+  .sw span { display: block; padding: 2px 4px; font-family: var(--font-mono); font-size: 9px; color: var(--dim); }
+
+  pre.out {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: var(--space-3); overflow: auto; max-height: 340px;
+    font-size: var(--fs-sm); line-height: 1.5; color: var(--text);
+  }
+  .colour-row { display: flex; gap: var(--space-2); align-items: center; }
+  .colour-row input[type="color"] {
+    width: 44px; height: 36px; padding: 2px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;
+  }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .presets button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border); cursor: pointer; }
+  .ratio { font-variant-numeric: tabular-nums; }
+  code.tok { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+  #gen-active[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <h1><span class="mark">78</span> UI Kit <span class="_78-badge _78-badge-accent">theme generator</span></h1>
+  <div class="_78-flex _78-gap-8">
+    <nav>
+      <a href="index.html">Foundation</a><a href="components.html">Components</a><a href="adapters.html">Adapters</a><a href="generator.html" aria-current="page">Generator</a>
+    </nav>
+    <button class="_78-icon-btn _78-theme-toggle" type="button">
+      <svg class="_78-theme-icon" data-pref="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="_78-theme-icon" data-pref="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="_78-theme-icon" data-pref="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <p class="_78-text-dim _78-mb-16">Pick a colour. The generator derives the <strong>whole token set for
+    light and dark</strong> in OKLCH — dark is <em>not</em> an inverted light — checks every important pair
+    against WCAG AA, and hands you the paste-ready CSS. That's the kit's pitch, automated: re-theme by
+    editing ~15 lines, except you don't write them.</p>
+
+  <div class="_78-alert _78-alert-accent _78-mb-16" id="gen-active" hidden>
+    <div class="_78-alert-body">
+      <div class="_78-alert-title">A generated theme is applied to this page</div>
+      It's saved in <code class="tok">localStorage</code> and restored pre-paint on reload. Every demo page
+      you visit next will use it too.
+    </div>
+    <button class="_78-btn _78-btn-ghost _78-btn-sm" type="button" id="btn-reset-inline">Reset</button>
+  </div>
+
+  <div class="layout">
+
+    <!-- ============================ CONTROLS ============================ -->
+    <div class="controls">
+      <div class="_78-card">
+        <div class="_78-card-title">Inputs</div>
+
+        <div class="_78-field">
+          <label for="in-accent">Accent</label>
+          <div class="colour-row">
+            <input type="color" id="in-accent" value="#0073ea" aria-label="Accent colour picker">
+            <input class="_78-input _78-mono" id="in-hex" value="#0073ea" spellcheck="false" aria-label="Accent hex">
+          </div>
+          <div class="_78-field-hint">The one input that matters — everything else follows it.</div>
+          <div class="row presets _78-mt-8" role="group" aria-label="Accent presets">
+            <button type="button" data-preset="#0073ea" style="background:#0073ea" aria-label="Hub blue" title="Hub blue"></button>
+            <button type="button" data-preset="#7c5cff" style="background:#7c5cff" aria-label="Violet" title="Violet"></button>
+            <button type="button" data-preset="#10a37f" style="background:#10a37f" aria-label="Green" title="Green"></button>
+            <button type="button" data-preset="#e0483d" style="background:#e0483d" aria-label="Red" title="Red"></button>
+            <button type="button" data-preset="#f5a524" style="background:#f5a524" aria-label="Amber" title="Amber"></button>
+            <button type="button" data-preset="#0f766e" style="background:#0f766e" aria-label="Teal" title="Teal"></button>
+          </div>
+        </div>
+
+        <div class="_78-field">
+          <label for="in-neutral">Neutral tint</label>
+          <select class="_78-select" id="in-neutral">
+            <option value="neutral">Neutral — true grey</option>
+            <option value="cool">Cool — blue-grey</option>
+            <option value="warm">Warm — sand-grey</option>
+            <option value="accent">Match accent hue</option>
+          </select>
+          <div class="_78-field-hint">Greys are never truly grey in good UI; they lean.</div>
+        </div>
+
+        <div class="_78-field">
+          <label for="in-radius">Radius — <span id="out-radius" class="_78-mono">8px</span></label>
+          <input type="range" id="in-radius" min="0" max="20" step="1" value="8">
+          <div class="_78-field-hint">Scales <code class="tok">--radius-sm/--radius/--radius-lg</code>.</div>
+        </div>
+
+        <div class="_78-field">
+          <label for="in-density">Density</label>
+          <select class="_78-select" id="in-density">
+            <option value="compact">Compact</option>
+            <option value="cozy">Cozy</option>
+            <option value="comfortable">Comfortable</option>
+          </select>
+          <div class="_78-field-hint">Scales the spacing scale and control heights.</div>
+        </div>
+
+        <div class="_78-flex-col _78-gap-8 _78-mt-16">
+          <button class="_78-btn _78-btn-primary _78-btn-full" type="button" id="btn-apply">Apply to this page</button>
+          <div class="row">
+            <button class="_78-btn _78-btn-sm _78-grow" type="button" id="btn-copy-css">Copy CSS</button>
+            <button class="_78-btn _78-btn-sm _78-grow" type="button" id="btn-copy-link">Copy link</button>
+          </div>
+          <button class="_78-btn _78-btn-ghost _78-btn-sm _78-btn-full" type="button" id="btn-reset">Reset to kit default</button>
+        </div>
+      </div>
+
+      <!-- ============================ CONTRAST ============================ -->
+      <div class="_78-card _78-mt-16">
+        <div class="_78-card-head">
+          <div class="_78-card-title">Contrast — WCAG AA</div>
+          <span class="_78-badge" id="aa-summary">—</span>
+        </div>
+        <div class="_78-tabs" id="aa-tabs">
+          <button class="_78-tab" data-tab="aa-light">Light</button>
+          <button class="_78-tab" data-tab="aa-dark">Dark</button>
+        </div>
+        <div id="aa-light"><table class="_78-table _78-table-compact"><tbody id="aa-light-rows"></tbody></table></div>
+        <div id="aa-dark"><table class="_78-table _78-table-compact"><tbody id="aa-dark-rows"></tbody></table></div>
+        <p class="_78-text-xs _78-text-dim _78-mt-12">4.5:1 for body text, 3:1 for large text and UI edges.
+          Lightness is nudged automatically where a pair would otherwise fail — the notes below say when.</p>
+        <div id="notes" class="_78-mt-8"></div>
+      </div>
+    </div>
+
+    <!-- ============================ PREVIEW ============================ -->
+    <div>
+      <div class="previews">
+        <div class="pane" id="pane-light" data-scheme="light">
+          <div class="pane-head">
+            <span class="pane-title">Light</span>
+            <span class="_78-badge _78-badge-accent" id="hex-light">#0073ea</span>
+          </div>
+          <div class="preview-body"></div>
+        </div>
+        <div class="pane" id="pane-dark" data-scheme="dark">
+          <div class="pane-head">
+            <span class="pane-title">Dark</span>
+            <span class="_78-badge _78-badge-accent" id="hex-dark">#4b9eff</span>
+          </div>
+          <div class="preview-body"></div>
+        </div>
+      </div>
+
+      <div class="_78-card _78-mt-16">
+        <div class="_78-card-head">
+          <div class="_78-card-title">Paste-ready CSS</div>
+          <button class="_78-btn _78-btn-sm" type="button" id="btn-copy-css-2">Copy</button>
+        </div>
+        <p class="_78-text-sm _78-text-dim _78-mb-12">Drop this into a <code class="tok">&lt;style&gt;</code>
+          (or your own stylesheet) <em>after</em> <code class="tok">kit.css</code>. Components, adapters and
+          the data-viz primitives all follow it — nothing else to change.</p>
+        <pre class="out _78-mono" id="out-css">…</pre>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- The markup each preview pane gets, cloned into both -->
+<template id="preview-template">
+  <div class="_78-flex-col _78-gap-12">
+    <div class="row">
+      <button class="_78-btn _78-btn-primary _78-btn-sm" type="button">Primary</button>
+      <button class="_78-btn _78-btn-sm" type="button">Default</button>
+      <button class="_78-btn _78-btn-ghost _78-btn-sm" type="button">Ghost</button>
+      <button class="_78-btn _78-btn-danger _78-btn-sm" type="button">Delete</button>
+    </div>
+
+    <div class="_78-tabs">
+      <button class="_78-tab" type="button">Overview</button>
+      <button class="_78-tab" type="button">Activity</button>
+      <button class="_78-tab" type="button">Settings</button>
+    </div>
+
+    <div class="_78-stat-card">
+      <div class="_78-stat-card__head">
+        <span class="_78-stat-card__label">Realised P/L</span>
+        <span class="_78-badge _78-badge-green">Live</span>
+      </div>
+      <div class="_78-stat-card__num _78-accent">+£4,820</div>
+      <div class="_78-stat-card__row">
+        <span class="_78-stat-delta" data-delta="12.4"></span>
+        <span class="_78-stat-card__sub">vs last month</span>
+      </div>
+      <div class="_78-stat-card__spark" data-values="18,22,19,27,25,31,29,38,44,41,52"></div>
+    </div>
+
+    <div class="_78-card">
+      <div class="_78-field" style="margin-bottom:0">
+        <label>Instrument</label>
+        <input class="_78-input" type="text" placeholder="e.g. EUR/USD">
+      </div>
+      <div class="row _78-mt-12">
+        <span class="_78-badge _78-badge-accent">Accent</span>
+        <span class="_78-badge _78-badge-green">Filled</span>
+        <span class="_78-badge _78-badge-warn">Pending</span>
+        <span class="_78-badge _78-badge-red">Rejected</span>
+        <span class="_78-badge _78-badge-info">Info</span>
+      </div>
+      <div class="_78-progress _78-mt-12" data-pct="72">
+        <div class="_78-progress-head"><span class="_78-progress-label">Win rate</span><span class="_78-progress-value"></span></div>
+      </div>
+    </div>
+
+    <div class="_78-alert _78-alert-warn">
+      <div class="_78-alert-body"><div class="_78-alert-title">Margin above 70%</div>Reduce exposure before the roll.</div>
+    </div>
+
+    <table class="_78-table _78-table-compact">
+      <thead><tr><th>Instrument</th><th class="_78-right">P/L</th></tr></thead>
+      <tbody>
+        <tr><td>EUR/USD</td><td class="_78-right _78-text-green">+1,240</td></tr>
+        <tr class="_78-selected"><td>GBP/JPY</td><td class="_78-right _78-text-red">−380</td></tr>
+        <tr><td>AAPL</td><td class="_78-right _78-text-green">+2,210</td></tr>
+      </tbody>
+    </table>
+
+    <div class="swatches"></div>
+  </div>
+</template>
+
+<script src="../js/_78.js"></script>
+<script src="../js/generator.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var gen = _78.gen;
+  var SWATCHES = ["--bg", "--bg2", "--bg3", "--border", "--text", "--dim",
+                  "--accent", "--accent-lo", "--success", "--warn", "--danger", "--info"];
+
+  var els = {
+    accent: document.getElementById("in-accent"),
+    hex: document.getElementById("in-hex"),
+    neutral: document.getElementById("in-neutral"),
+    radius: document.getElementById("in-radius"),
+    radiusOut: document.getElementById("out-radius"),
+    density: document.getElementById("in-density"),
+    css: document.getElementById("out-css"),
+    active: document.getElementById("gen-active"),
+    summary: document.getElementById("aa-summary"),
+    notes: document.getElementById("notes")
+  };
+
+  var panes = {
+    light: document.getElementById("pane-light"),
+    dark: document.getElementById("pane-dark")
+  };
+
+  /* Fill both panes from the template once */
+  Object.keys(panes).forEach(function (mode) {
+    var body = panes[mode].querySelector(".preview-body");
+    body.appendChild(document.getElementById("preview-template").content.cloneNode(true));
+    var sw = body.querySelector(".swatches");
+    SWATCHES.forEach(function (name) {
+      var box = document.createElement("div");
+      box.className = "sw";
+      box.innerHTML = '<i style="background:var(' + name + ')"></i><span>' + name.replace("--", "") + "</span>";
+      sw.appendChild(box);
+    });
+  });
+
+  var current = null;
+
+  function config() {
+    return {
+      accent: els.hex.value,
+      neutral: els.neutral.value,
+      radius: els.radius.value,
+      density: els.density.value
+    };
+  }
+
+  function fill(config) {
+    els.accent.value = config.accent;
+    els.hex.value = config.accent;
+    els.neutral.value = config.neutral;
+    els.radius.value = config.radius;
+    els.density.value = config.density;
+    els.radiusOut.textContent = config.radius + "px";
+  }
+
+  function rowsFor(tbody, checks) {
+    tbody.textContent = "";
+    checks.forEach(function (check) {
+      var tr = document.createElement("tr");
+      /* the border row is an advisory of ours, not a WCAG rule — it never
+         shouts, it just tells you the edge is getting hard to see */
+      var badge = check.pass
+        ? '<span class="_78-badge _78-badge-green">' + (check.large ? "AA large" : "AA") + "</span>"
+        : check.soft
+          ? '<span class="_78-badge _78-badge-dim">faint</span>'
+          : '<span class="_78-badge _78-badge-red">fails ' + check.need + ":1</span>";
+      tr.innerHTML = '<td class="_78-mono _78-text-xs">' + check.label + "</td>" +
+                     '<td class="_78-right ratio">' + check.ratio.toFixed(2) + ":1</td>" +
+                     '<td class="_78-right">' + badge + "</td>";
+      tbody.appendChild(tr);
+    });
+  }
+
+  function render() {
+    var result = current = gen.derive(config());
+
+    /* preview panes: the generated tokens as inline custom properties */
+    gen.preview(panes.light, result.light, result.base);
+    gen.preview(panes.dark, result.dark, result.base);
+    document.getElementById("hex-light").textContent = result.light["--accent"];
+    document.getElementById("hex-dark").textContent = result.dark["--accent"];
+
+    /* the viz primitives are re-rendered so their SVG picks up the new tokens
+       (the colours are CSS, but a fresh mount keeps the demo honest) */
+    _78.viz.mountAll(panes.light);
+    _78.viz.mountAll(panes.dark);
+
+    /* contrast */
+    var light = gen.report(result.light, "light");
+    var dark = gen.report(result.dark, "dark");
+    rowsFor(document.getElementById("aa-light-rows"), light);
+    rowsFor(document.getElementById("aa-dark-rows"), dark);
+
+    var fails = light.concat(dark).filter(function (c) { return !c.pass && !c.soft; }).length;
+    els.summary.textContent = fails ? fails + " failing" : "all pass";
+    els.summary.className = "_78-badge " + (fails ? "_78-badge-red" : "_78-badge-green");
+
+    els.notes.textContent = "";
+    result.notes.forEach(function (note) {
+      var p = document.createElement("p");
+      p.className = "_78-text-xs _78-text-dim";
+      p.textContent = "• " + note;
+      els.notes.appendChild(p);
+    });
+
+    /* output + shareable URL */
+    els.css.textContent = gen.css(result);
+    history.replaceState(null, "", gen.shareUrl(result.config));
+    return result;
+  }
+
+  function markApplied(on) {
+    els.active.hidden = !on;
+  }
+
+  /* --- inputs ------------------------------------------------------------- */
+
+  els.accent.addEventListener("input", function () { els.hex.value = els.accent.value; render(); });
+  els.hex.addEventListener("input", function () {
+    if (/^#?[0-9a-f]{6}$/i.test(els.hex.value.trim())) {
+      els.accent.value = els.hex.value.trim()[0] === "#" ? els.hex.value.trim() : "#" + els.hex.value.trim();
+      render();
+    }
+  });
+  els.neutral.addEventListener("change", render);
+  els.density.addEventListener("change", render);
+  els.radius.addEventListener("input", function () {
+    els.radiusOut.textContent = els.radius.value + "px";
+    render();
+  });
+  document.querySelectorAll("[data-preset]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      els.accent.value = els.hex.value = btn.dataset.preset;
+      render();
+    });
+  });
+
+  /* --- actions ------------------------------------------------------------- */
+
+  document.getElementById("btn-apply").addEventListener("click", function () {
+    gen.apply(current || render());
+    markApplied(true);
+    _78.notify.success("Theme applied and saved", { title: "Applied" });
+  });
+
+  function reset() {
+    gen.clear();
+    markApplied(false);
+    fill(gen.DEFAULTS);
+    render();
+    _78.notify("Back to the kit's default palette");
+  }
+  document.getElementById("btn-reset").addEventListener("click", reset);
+  document.getElementById("btn-reset-inline").addEventListener("click", reset);
+
+  function copy(text, what) {
+    var done = function () { _78.notify.success(what + " copied"); };
+    var failed = function () { _78.notify.error("Couldn't copy — select the text and copy manually"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, failed);
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) { failed(); }
+      ta.remove();
+    }
+  }
+
+  document.getElementById("btn-copy-css").addEventListener("click", function () {
+    copy(gen.css(current || render()), "CSS");
+  });
+  document.getElementById("btn-copy-css-2").addEventListener("click", function () {
+    copy(gen.css(current || render()), "CSS");
+  });
+  document.getElementById("btn-copy-link").addEventListener("click", function () {
+    copy(gen.shareUrl((current || render()).config), "Link");
+  });
+
+  /* --- boot ---------------------------------------------------------------- */
+
+  /* ?theme= wins over what's saved, so a shared link always shows its theme */
+  var start = gen.fromUrl() || gen.stored() || gen.DEFAULTS;
+  fill(gen.decode(gen.encode(start)));
+  render();
+  markApplied(document.documentElement.dataset._78Gen === "on");
+})();
+</script>
+</body>
+</html>

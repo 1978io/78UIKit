@@ -4,11 +4,11 @@
 HTML / CSS / JS you drop in. **Re-theme the whole thing — components *and* your libraries — by editing
 ~15 lines.** MIT — a 1978.io give-away and the shared component layer for every 1978 product.
 
-> 🌱 **Status: briefs 1–4 built, 2026-08-19** — tokens + theming (`_78.theme`), the four primitives, the
+> 🌱 **Status: briefs 1–5 built, 2026-08-19** — tokens + theming (`_78.theme`), the four primitives, the
 > three library theme adapters (Tabulator, FullCalendar, Chart.js), notifications (modal / toast / inline
-> alert) + tabs + table, and the KPI card + no-library data-viz primitives (`_78.viz`) — each proved
-> light+dark in `demo/`. The `_78` helpers and the theme generator are next; the app shell/nav needs a
-> design session first.
+> alert) + tabs + table, the KPI card + no-library data-viz primitives (`_78.viz`), and the **theme
+> generator MVP** (`demo/generator.html`, `_78.gen`) — each proved light+dark in `demo/`. The `_78` helpers
+> and the self-theming docs site are next; the app shell/nav needs a design session first.
 > Decisions live in `JamesHQ\projects\1978-ui-kit\notes.md` (the
 > strategy/decision log); this README is the **buildable spec**. Structure reference = the AlchemyQM
 > mockup; code is built fresh from James's own projects (Brashli / Lake House). Dogfooded on **78trade** first.
@@ -217,21 +217,40 @@ css/  kit.css            ✅ the one stylesheet a project links (@imports everyt
                            toast · alert · theme-toggle · utilities
       adapters/         ✅ tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js            ✅ _78.theme · _78.modal · _78.notify · _78.tabs · _78.viz (helpers pending)
+      generator.js      ✅ _78.gen — opt-in, only the generator page loads it
       adapters/         ✅ chartjs.js — _78.adapters.chartjs
 demo/ index.html        ✅ kitchen-sink (tokens + the four primitives), light+dark
       components.html   ✅ KPIs + data-viz · notifications (modal/toast/alert) · tabs · table
       adapters.html     ✅ live Tabulator + FullCalendar + Chart.js, all re-theming off one toggle
+      generator.html    ✅ the theme generator — derive, preview, contrast-check, apply, share
 docs/                   🔜 per-component notes as they stabilise
 ```
 
-## 🔮 Flagship roadmap — the theme generator + self-theming docs
+## ⭐⭐⭐ The theme generator — `demo/generator.html` ✅ **MVP built**
 
-A colour utility on the kit's site: input 1–3 colours → generate the full token set for **light AND dark**,
-then **apply it to the docs site itself** so a visitor sees every component *in their own brand* live
-(localStorage + pre-paint, shareable `?theme=` URL). The three things that make it good: derive in **OKLCH**
-(perceptually uniform), **WCAG-AA contrast-check** every pair live, and **dark ≠ inverted light**. This is
-the killer demo — "re-theme by editing fifteen lines" proven by a docs site that re-themes itself. Detail in
-the notes.
+The killer demo, and the tool that writes the ~15 lines for you. Pick an accent (plus a neutral tint, a
+radius and a density) and `_78.gen` derives the **whole token set for light AND dark**, live-previews it on
+real components, contrast-checks it, and hands over paste-ready CSS.
+
+- **OKLCH throughout** — perceptually uniform, so ramps don't go muddy the way HSL does. sRGB ⇄ OKLCH are
+  matrix transforms in `js/generator.js`; out-of-gamut colours lose **chroma**, keeping lightness and hue,
+  rather than being channel-clipped into a different colour. No library, no build.
+  ⚠️ The old "read the resolved `rgb()` back from `getComputedStyle`" trick **no longer converts** —
+  since Chrome ~119 the computed value keeps its colour space and hands back `oklch(…)` verbatim.
+- **Dark ≠ inverted light** — each theme has its own lightness/chroma targets; the dark accent is lighter
+  and *less* saturated, the surfaces are not mirrored.
+- **WCAG AA, live** — every pair that matters (text on each surface, `--accent-text` on `--accent`, accent
+  on the card, each semantic on its own `-lo` tint). Lightness is **nudged automatically** where a pair
+  would fail, and the accent is fitted to clear 3:1 on the surface *and* 4.5:1 for its own text — the two
+  pull opposite ways, so it searches outward for the nearest lightness that satisfies both.
+- **Semantics stay conventional** — green/amber/red/blue never follow the accent (a "themed red that isn't
+  red" is a usability trap); only their lightness adapts per theme.
+- **Apply · persist · share** — "Apply to this page" writes a real stylesheet, saves it to `localStorage`
+  and restores it **pre-paint** on reload (the kit's own light/dark toggle keeps working on top of it).
+  Every tweak updates a `?theme=accent.neutral.radius.density` URL, so "look at the theme I made" is a link.
+
+🔜 **Later (not this brief):** the full multi-page docs site re-theming itself from one saved theme —
+`_78.gen` already writes to `:root` + `localStorage`, so it's an extension, not a rewrite.
 
 ---
 
