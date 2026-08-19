@@ -1,23 +1,93 @@
 /* ==========================================================================
    78 UI Kit — FullCalendar theme adapter
-   Target: FullCalendar 6.x **core only** (verified against 6.1.21). MIT, not
-   vendored. ⚠️ Core plugins only — nothing here assumes a premium plugin.
+   Primary target: FullCalendar **7.x core** (verified against 7.0.2, classic
+   theme). A legacy v6 block follows at the bottom. MIT, not vendored.
+   ⚠️ Core only — nothing here assumes a premium plugin.
 
-   Opt-in — NOT imported by kit.css. Load FullCalendar first, this after:
+   Opt-in — NOT imported by kit.css. Load FullCalendar's own CSS first, this
+   after:
 
-     <script src="…/fullcalendar@6/index.global.min.js"></script>
+     <link rel="stylesheet" href="…/fullcalendar@7/skeleton.css">
+     <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/theme.css">
+     <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/palette.css">
      <link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css">
+     <script src="…/fullcalendar@7/all/global.min.js"></script>
+     <script src="…/fullcalendar@7/themes/classic/global.js"></script>
 
-   v6 does the hard part for us: it already resolves every colour through its
-   own `--fc-*` custom properties, so this file is mostly a **remap** of those
-   onto kit tokens. Runtime resolution both ways → the calendar re-themes the
-   instant `data-theme` flips, with no JS and no re-render.
+   🔴 Why this file is only variables now. v7 ships **hashed atomic class
+   names** — the calendar root looks like `fc-classic-dl1 fc-classic-1sP …`,
+   and those strings change between builds. Class-level overrides are
+   therefore off the table; the palette custom properties are the whole
+   supported theming surface, and they are all this adapter touches. That is
+   also why the mapping below is per-theme: the variables are named for the
+   theme that defines them (`--fc-classic-*` for `themes/classic`, the closest
+   to a plain calendar).
 
-   A v7 block follows at the bottom (v7 replaced `--fc-*` with per-theme
-   palettes); it is separate and additive, so this file is safe on either.
+   Everything resolves at runtime, so the calendar re-themes the instant
+   `data-theme` flips — no JS, no re-render.
    ========================================================================== */
 
-/* --- v6: remap FullCalendar's own variables onto kit tokens --------------- */
+/* --- v7: remap the classic palette onto kit tokens ------------------------
+   The second selector covers a consumer who has opted into FullCalendar's own
+   `data-color-scheme` switching: v7 redefines its palette there, and a
+   declaration on a closer element would otherwise beat one on :root.
+   -------------------------------------------------------------------------- */
+:root,
+[data-color-scheme] {
+  /* Surfaces. faint/muted/strong are washes v7 composites over the
+     background; kit surfaces are opaque, which composites to themselves. */
+  --fc-classic-background: var(--bg2);
+  --fc-classic-faint: var(--bg3);
+  --fc-classic-muted: var(--bg3);
+  --fc-classic-strong: var(--row-hover);
+
+  /* Text */
+  --fc-classic-foreground: var(--text);
+  --fc-classic-muted-foreground: var(--dim);
+  --fc-classic-faint-foreground: var(--dim);   /* other-month day numbers */
+
+  /* Grid lines */
+  --fc-classic-border: var(--border);
+  --fc-classic-strong-border: var(--border);
+  --fc-classic-border-style: solid;
+
+  /* Toolbar buttons. One foreground token has to read on both the resting
+     and the pressed background, so the pressed state is an accent *tint*
+     with an accent border — the kit's own ghost-button treatment — rather
+     than a solid fill that would need its own text color. */
+  --fc-classic-button: var(--bg3);
+  --fc-classic-button-border: var(--border);
+  --fc-classic-button-foreground: var(--text);
+  --fc-classic-button-strong: var(--accent-lo);
+  --fc-classic-button-strong-border: var(--accent);
+  --fc-classic-button-outline: var(--ring);
+
+  /* Focus / selection */
+  --fc-classic-primary: var(--accent);
+  --fc-classic-primary-foreground: var(--accent-text);
+  --fc-classic-ring-color: var(--bg2);         /* halo behind dots + badges */
+
+  /* Events. The classic theme plugin sets eventColor to
+     var(--fc-classic-event), so these two are what color an event; an
+     event's own `color` still overrides them per event. */
+  --fc-classic-event: var(--accent);
+  --fc-classic-event-contrast: var(--accent-text);
+  --fc-classic-background-event: var(--success);
+
+  /* State */
+  --fc-classic-today: var(--accent-lo);
+  --fc-classic-highlight: var(--accent-lo);
+  --fc-classic-now: var(--danger);
+}
+
+/* ==========================================================================
+   LEGACY — FullCalendar 6.x core (verified against 6.1.21)
+   v6 resolved every color through its own `--fc-*` variables and used stable
+   class names, so it gets both a remap and a handful of class rules. Keep
+   this block for projects still on v6; v7 is the tested path.
+   ⚠️ v7 removed every `--fc-*` name below — the two blocks do not overlap,
+   so this is inert on a v7 page (and vice versa).
+   ========================================================================== */
 .fc {
   /* surfaces + lines */
   --fc-page-bg-color: var(--bg2);
@@ -25,7 +95,7 @@
   --fc-neutral-text-color: var(--dim);
   --fc-border-color: var(--border);
 
-  /* toolbar buttons — the kit's primary/ghost logic, expressed in fc vars */
+  /* toolbar buttons */
   --fc-button-text-color: var(--text);
   --fc-button-bg-color: var(--bg3);
   --fc-button-border-color: var(--border);
@@ -59,9 +129,7 @@
   color: var(--text);
 }
 
-/* --- The bits v6 hardcodes or leaves to the host page -------------------- */
-
-/* Toolbar */
+/* The bits v6 hardcodes or leaves to the host page */
 .fc .fc-toolbar-title {
   font-size: var(--fs-xl);
   font-weight: 600;
@@ -69,7 +137,6 @@
 }
 .fc .fc-toolbar.fc-header-toolbar { margin-bottom: var(--space-4); }
 
-/* Buttons — kit radius, kit focus ring, accent when active */
 .fc .fc-button {
   border-radius: var(--radius);
   font-size: var(--fs-sm);
@@ -85,7 +152,6 @@
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active { color: var(--accent-text); }
 
-/* Grid frame + column headers */
 .fc .fc-scrollgrid,
 .fc .fc-scrollgrid-section > * { border-color: var(--border); }
 .fc .fc-scrollgrid { border-radius: var(--radius); overflow: hidden; }
@@ -99,7 +165,6 @@
 .fc .fc-col-header-cell-cushion { color: var(--dim); padding: var(--space-2); }
 .fc .fc-col-header-cell-cushion:hover { color: var(--text); }
 
-/* Day cells */
 .fc .fc-daygrid-day-number,
 .fc .fc-list-day-text,
 .fc .fc-list-day-side-text {
@@ -111,7 +176,6 @@
 .fc .fc-day-today .fc-daygrid-day-number { color: var(--accent); font-weight: 700; }
 .fc .fc-daygrid-day.fc-day-today { background-color: var(--accent-lo); }
 
-/* Time grid */
 .fc .fc-timegrid-slot-label-cushion,
 .fc .fc-timegrid-axis-cushion {
   color: var(--dim);
@@ -120,7 +184,6 @@
 .fc .fc-timegrid-now-indicator-arrow,
 .fc .fc-timegrid-now-indicator-line { border-color: var(--danger); }
 
-/* Events */
 .fc .fc-event {
   border-radius: var(--radius-sm);
   font-size: var(--fs-sm);
@@ -133,13 +196,11 @@
 .fc .fc-list-event-dot { border-color: var(--accent); }
 .fc .fc-event-title-container .fc-event-title { font-weight: 500; }
 
-/* List view */
 .fc .fc-list { border-color: var(--border); border-radius: var(--radius); }
 .fc .fc-list-day-cushion { background: var(--bg3); }
 .fc .fc-list-event td { color: var(--text); }
 .fc .fc-list-empty { background: var(--bg3); color: var(--dim); }
 
-/* "+n more" popover */
 .fc .fc-popover {
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
@@ -148,45 +209,6 @@
 .fc .fc-popover-close { color: var(--dim); opacity: 1; }
 .fc .fc-popover-close:hover { color: var(--text); }
 
-/* Misc */
 .fc .fc-highlight { background: var(--accent-lo); }
 .fc a { color: inherit; }
 .fc a:hover { text-decoration: none; }
-
-/* ==========================================================================
-   v7 (optional) — FullCalendar 7 dropped the `--fc-*` set in favour of themed
-   palettes (`themes/<theme>/palette.css`). This block remaps the **classic**
-   theme's palette onto the same kit tokens, so a v7 calendar themes the same
-   way. Harmless on v6 (the variables simply go unused). Load FullCalendar's
-   theme + palette CSS first, then this file.
-   ========================================================================== */
-:root {
-  /* buttons */
-  --fc-classic-button: var(--bg3);
-  --fc-classic-button-border: var(--border);
-  --fc-classic-button-strong: var(--accent);
-  --fc-classic-button-strong-border: var(--accent);
-  --fc-classic-button-outline: var(--ring);
-  --fc-classic-button-foreground: var(--text);
-
-  /* primary / events */
-  --fc-classic-primary: var(--accent);
-  --fc-classic-primary-foreground: var(--accent-text);
-  --fc-classic-event: var(--accent);
-  --fc-classic-event-contrast: var(--accent-text);
-  --fc-classic-background-event: var(--success);
-  --fc-classic-highlight: var(--accent-lo);
-  --fc-classic-today: var(--accent-lo);
-  --fc-classic-now: var(--danger);
-
-  /* neutrals */
-  --fc-classic-background: var(--bg2);
-  --fc-classic-faint: var(--bg3);
-  --fc-classic-muted: var(--row-hover);
-  --fc-classic-strong: var(--row-hover);
-  --fc-classic-foreground: var(--text);
-  --fc-classic-faint-foreground: var(--dim);
-  --fc-classic-muted-foreground: var(--dim);
-  --fc-classic-border: var(--border);
-  --fc-classic-strong-border: var(--border);
-}

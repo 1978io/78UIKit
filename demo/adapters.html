@@ -20,6 +20,9 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
 <!-- The libraries (CDN — nothing is vendored in this repo) … -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/css/tabulator.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/skeleton.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/palette.css">
 
 <!-- … then the adapters, opt-in, one per library you actually use -->
 <link rel="stylesheet" href="../css/adapters/tabulator.css">
@@ -70,7 +73,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
   <p class="_78-text-dim">Three third-party libraries, zero forks, one theme. <strong>Flip the toggle</strong> —
     the table, the calendar and the charts all follow. Tabulator and FullCalendar come along for free (their
-    colours resolve to kit tokens at runtime); the chart is canvas, so
+    colors resolve to kit tokens at runtime); the chart is canvas, so
     <code class="tok">js/adapters/chartjs.js</code> re-reads the tokens on
     <code class="tok">_78:themechange</code> and updates every live chart.</p>
 
@@ -90,10 +93,17 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
   <!-- ============================ FULLCALENDAR ============================ -->
   <section id="fullcalendar">
-    <h2>FullCalendar <span class="_78-badge _78-badge-dim">6.x core · CSS adapter</span></h2>
-    <p class="_78-text-sm _78-text-dim _78-mb-12">v6 resolves everything through its own
-      <code class="tok">--fc-*</code> variables, so the adapter is mostly a remap onto kit tokens — toolbar
-      buttons, today's cell, events, the "+n more" popover, list view.</p>
+    <h2>FullCalendar <span class="_78-badge _78-badge-dim">7.x core · CSS adapter</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">v7 ships <strong>hashed class names</strong>
+      (<code class="tok">fc-classic-dl1</code>…), so its palette custom properties are the entire theming
+      surface — and that is all the adapter touches: <code class="tok">--fc-classic-*</code> remapped onto kit
+      tokens. Toolbar, grid lines, today's cell, events, the list view and the focus ring all follow.
+      <span class="_78-badge _78-badge-dim">v6 stays supported by a legacy block in the same file</span></p>
+    <div class="_78-flex _78-gap-8 _78-mb-12">
+      <button class="_78-btn _78-btn-sm" type="button" id="fc-month">Month</button>
+      <button class="_78-btn _78-btn-sm" type="button" id="fc-week">Week</button>
+      <button class="_78-btn _78-btn-sm" type="button" id="fc-list">List</button>
+    </div>
     <div class="_78-card"><div id="fc-cal"></div></div>
   </section>
 
@@ -102,7 +112,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     <h2>Chart.js <span class="_78-badge _78-badge-dim">4.x · JS adapter</span></h2>
     <p class="_78-text-sm _78-text-dim _78-mb-12">Canvas can't read CSS variables, so
       <code class="tok">Chart.defaults</code> gets the tokens pushed into it — and because defaults are read
-      at construction, every live chart is updated on each theme switch. The series colours come from
+      at construction, every live chart is updated on each theme switch. The series colors come from
       <code class="tok">_78.adapters.chartjs.palette(n)</code>: accent first, then the semantic tokens.</p>
 
     <div class="chart-grid">
@@ -117,7 +127,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     </div>
 
     <div class="_78-card _78-mt-16">
-      <div class="_78-card-title">Monthly P/L <span class="_78-badge _78-badge-accent">bar</span> <span class="_78-badge _78-badge-dim">explicit colours — adapter leaves these alone</span></div>
+      <div class="_78-card-title">Monthly P/L <span class="_78-badge _78-badge-accent">bar</span> <span class="_78-badge _78-badge-dim">explicit colors — adapter leaves these alone</span></div>
       <div class="chart-box"><canvas id="c-bar"></canvas></div>
     </div>
   </section>
@@ -136,8 +146,12 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 &lt;link rel="stylesheet" href="…/tabulator.min.css"&gt;
 &lt;link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css"&gt;
 
-&lt;script src="…/fullcalendar/index.global.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="…/fullcalendar@7/skeleton.css"&gt;
+&lt;link rel="stylesheet" href="…/fullcalendar@7/themes/classic/theme.css"&gt;
+&lt;link rel="stylesheet" href="…/fullcalendar@7/themes/classic/palette.css"&gt;
 &lt;link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css"&gt;
+&lt;script src="…/fullcalendar@7/all/global.min.js"&gt;&lt;/script&gt;
+&lt;script src="…/fullcalendar@7/themes/classic/global.js"&gt;&lt;/script&gt;
 
 &lt;script src="…/chart.umd.js"&gt;&lt;/script&gt;
 &lt;script src="/78UIKit/js/adapters/chartjs.js"&gt;&lt;/script&gt;</pre>
@@ -151,7 +165,8 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
 <!-- Libraries (CDN, demo only) -->
 <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/all/global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
 
 <!-- Kit + adapters -->
@@ -209,7 +224,7 @@ document.getElementById("tab-add").addEventListener("click", function () {
 document.getElementById("tab-clear").addEventListener("click", function () { table.setData([]); });
 document.getElementById("tab-reset").addEventListener("click", function () { table.setData(ROWS.slice()); });
 
-/* ---------- FullCalendar ---------- */
+/* ---------- FullCalendar (v7 core, classic theme) ---------- */
 /* Fixed dates so the demo looks the same every time it is opened. */
 var MONTH = "2026-08-";
 var calendar = new FullCalendar.Calendar(document.getElementById("fc-cal"), {
@@ -229,8 +244,12 @@ var calendar = new FullCalendar.Calendar(document.getElementById("fc-cal"), {
 });
 calendar.render();
 
+document.getElementById("fc-month").addEventListener("click", function () { calendar.changeView("dayGridMonth"); });
+document.getElementById("fc-week").addEventListener("click", function () { calendar.changeView("timeGridWeek"); });
+document.getElementById("fc-list").addEventListener("click", function () { calendar.changeView("listWeek"); });
+
 /* ---------- Chart.js ---------- */
-/* No colours given → the adapter adopts these datasets and re-themes them. */
+/* No colors given → the adapter adopts these datasets and re-themes them. */
 var lineChart = new Chart(document.getElementById("c-line"), {
   type: "line",
   data: {
@@ -252,7 +271,7 @@ var doughnutChart = new Chart(document.getElementById("c-doughnut"), {
   options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } }
 });
 
-/* Explicit colours → the adapter never touches this dataset (your colour wins),
+/* Explicit colors → the adapter never touches this dataset (your color wins),
    but the axes, grid, legend and tooltip still follow the theme. */
 var barChart = new Chart(document.getElementById("c-bar"), {
   type: "bar",
