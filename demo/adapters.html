@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>78 UI Kit — library theme adapters</title>
+
+<!-- Pre-paint theme snippet — FIRST thing in <head>, before any CSS. No FOUC. -->
+<script>
+(function(){var p=localStorage.getItem('_78-theme')||'system';
+var t=p==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):p;
+var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
+</script>
+
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700">
+
+<!-- The kit -->
+<link rel="stylesheet" href="../css/kit.css">
+
+<!-- The libraries (CDN — nothing is vendored in this repo) … -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/css/tabulator.min.css">
+
+<!-- … then the adapters, opt-in, one per library you actually use -->
+<link rel="stylesheet" href="../css/adapters/tabulator.css">
+<link rel="stylesheet" href="../css/adapters/fullcalendar.css">
+
+<style>
+  /* Demo page chrome only — NOT part of the kit. */
+  .page { max-width: var(--content-max); margin: 0 auto; padding: var(--space-5) var(--space-4) 64px; }
+  .site-head {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    height: var(--header-h); padding: 0 var(--space-4);
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+  }
+  .site-head h1 { font-size: var(--fs-lg); }
+  .site-head .mark { color: var(--accent); }
+  .site-head nav a { color: var(--dim); font-size: var(--fs-sm); margin-right: var(--space-3); }
+  .site-head nav a:hover, .site-head nav a[aria-current] { color: var(--accent); text-decoration: none; }
+  section { margin-top: var(--space-6); }
+  section > h2 {
+    font-size: var(--fs-lg); padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border); margin-bottom: var(--space-4);
+  }
+  code.tok { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+  .chart-grid { display: grid; gap: var(--space-4); grid-template-columns: 2fr 1fr; }
+  .chart-box { position: relative; height: 260px; }
+  @media (max-width: 760px) { .chart-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <h1><span class="mark">78</span> UI Kit <span class="_78-badge _78-badge-accent">adapters</span></h1>
+  <div class="_78-flex _78-gap-8">
+    <nav><a href="index.html">Foundation</a><a href="adapters.html" aria-current="page">Adapters</a></nav>
+    <span class="_78-text-xs _78-text-dim _78-mono" id="theme-state">theme: …</span>
+    <button class="_78-icon-btn _78-theme-toggle" type="button">
+      <svg class="_78-theme-icon" data-pref="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="_78-theme-icon" data-pref="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="_78-theme-icon" data-pref="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <p class="_78-text-dim">Three third-party libraries, zero forks, one theme. <strong>Flip the toggle</strong> —
+    the table, the calendar and the charts all follow. Tabulator and FullCalendar come along for free (their
+    colours resolve to kit tokens at runtime); the chart is canvas, so
+    <code class="tok">js/adapters/chartjs.js</code> re-reads the tokens on
+    <code class="tok">_78:themechange</code> and updates every live chart.</p>
+
+  <!-- ============================ TABULATOR ============================ -->
+  <section id="tabulator">
+    <h2>Tabulator <span class="_78-badge _78-badge-dim">6.x · CSS adapter</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">Header, rows, hover, selection, sort arrows, header filters,
+      pagination and popups all map to tokens. Click a row to select it, sort a column, page through — every
+      state is themed. Try the <em>Country</em> header filter and double-click a Rating cell to edit it.</p>
+    <div id="tab-table"></div>
+    <div class="_78-flex _78-gap-8 _78-mt-12">
+      <button class="_78-btn _78-btn-sm" id="tab-add">Add row</button>
+      <button class="_78-btn _78-btn-ghost _78-btn-sm" id="tab-clear">Clear (empty state)</button>
+      <button class="_78-btn _78-btn-ghost _78-btn-sm" id="tab-reset">Reset</button>
+    </div>
+  </section>
+
+  <!-- ============================ FULLCALENDAR ============================ -->
+  <section id="fullcalendar">
+    <h2>FullCalendar <span class="_78-badge _78-badge-dim">6.x core · CSS adapter</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">v6 resolves everything through its own
+      <code class="tok">--fc-*</code> variables, so the adapter is mostly a remap onto kit tokens — toolbar
+      buttons, today's cell, events, the "+n more" popover, list view.</p>
+    <div class="_78-card"><div id="fc-cal"></div></div>
+  </section>
+
+  <!-- ============================ CHART.JS ============================ -->
+  <section id="chartjs">
+    <h2>Chart.js <span class="_78-badge _78-badge-dim">4.x · JS adapter</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">Canvas can't read CSS variables, so
+      <code class="tok">Chart.defaults</code> gets the tokens pushed into it — and because defaults are read
+      at construction, every live chart is updated on each theme switch. The series colours come from
+      <code class="tok">_78.adapters.chartjs.palette(n)</code>: accent first, then the semantic tokens.</p>
+
+    <div class="chart-grid">
+      <div class="_78-card">
+        <div class="_78-card-title">Equity curve <span class="_78-badge _78-badge-accent">line</span></div>
+        <div class="chart-box"><canvas id="c-line"></canvas></div>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title">Allocation <span class="_78-badge _78-badge-accent">doughnut</span></div>
+        <div class="chart-box"><canvas id="c-doughnut"></canvas></div>
+      </div>
+    </div>
+
+    <div class="_78-card _78-mt-16">
+      <div class="_78-card-title">Monthly P/L <span class="_78-badge _78-badge-accent">bar</span> <span class="_78-badge _78-badge-dim">explicit colours — adapter leaves these alone</span></div>
+      <div class="chart-box"><canvas id="c-bar"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ============================ HOW ============================ -->
+  <section id="usage">
+    <h2>Including them</h2>
+    <div class="_78-card">
+      <p class="_78-text-dim _78-mb-12">Adapters are <strong>opt-in</strong> — they are not part of
+        <code class="tok">kit.css</code>. Include only the ones you use, always <em>after</em> the library.</p>
+      <pre style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-3);overflow-x:auto;font-size:var(--fs-sm)">&lt;!-- kit --&gt;
+&lt;link rel="stylesheet" href="/78UIKit/css/kit.css"&gt;
+&lt;script src="/78UIKit/js/_78.js"&gt;&lt;/script&gt;
+
+&lt;!-- library, then its adapter --&gt;
+&lt;link rel="stylesheet" href="…/tabulator.min.css"&gt;
+&lt;link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css"&gt;
+
+&lt;script src="…/fullcalendar/index.global.min.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css"&gt;
+
+&lt;script src="…/chart.umd.js"&gt;&lt;/script&gt;
+&lt;script src="/78UIKit/js/adapters/chartjs.js"&gt;&lt;/script&gt;</pre>
+      <p class="_78-text-sm _78-text-dim _78-mt-12">Nothing is vendored here — bring your own version of each
+        library. The CSS adapters are version-sensitive (class names move between majors); the version each was
+        built against is noted at the top of the file.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Libraries (CDN, demo only) -->
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
+
+<!-- Kit + adapters -->
+<script src="../js/_78.js"></script>
+<script src="../js/adapters/chartjs.js"></script>
+
+<script>
+/* ---------- demo data ---------- */
+var ROWS = [
+  { id: 1, instrument: "EUR/USD",  country: "EU", side: "Buy",  size: 25000, pl:  1240.5, rating: 4 },
+  { id: 2, instrument: "GBP/JPY",  country: "UK", side: "Sell", size: 12000, pl:  -380.2, rating: 2 },
+  { id: 3, instrument: "AAPL",     country: "US", side: "Buy",  size:   400, pl:  2210.0, rating: 5 },
+  { id: 4, instrument: "BP.L",     country: "UK", side: "Buy",  size:  3000, pl:   -95.7, rating: 3 },
+  { id: 5, instrument: "USD/CHF",  country: "US", side: "Sell", size: 18000, pl:   640.9, rating: 3 },
+  { id: 6, instrument: "TSLA",     country: "US", side: "Sell", size:   150, pl: -1120.4, rating: 1 },
+  { id: 7, instrument: "SAP.DE",   country: "EU", side: "Buy",  size:   900, pl:   410.1, rating: 4 },
+  { id: 8, instrument: "AUD/NZD",  country: "AU", side: "Buy",  size: 22000, pl:   180.3, rating: 2 },
+  { id: 9, instrument: "NVDA",     country: "US", side: "Buy",  size:   220, pl:  3890.6, rating: 5 },
+  { id: 10, instrument: "EUR/GBP", country: "EU", side: "Sell", size: 30000, pl:  -220.8, rating: 3 }
+];
+
+/* ---------- Tabulator ---------- */
+function money(cell) {
+  var v = cell.getValue();
+  var cls = v >= 0 ? "_78-text-green" : "_78-text-red";
+  return '<span class="' + cls + ' _78-nums _78-fw-600">' + (v >= 0 ? "+" : "") + v.toFixed(2) + "</span>";
+}
+function sideBadge(cell) {
+  var v = cell.getValue();
+  return '<span class="_78-badge ' + (v === "Buy" ? "_78-badge-green" : "_78-badge-warn") + '">' + v + "</span>";
+}
+
+var table = new Tabulator("#tab-table", {
+  data: ROWS.slice(),
+  layout: "fitColumns",
+  height: 320,
+  pagination: true,
+  paginationSize: 6,
+  selectableRows: true,
+  placeholder: "No trades to show",
+  columns: [
+    { title: "Instrument", field: "instrument", headerFilter: "input", minWidth: 120 },
+    { title: "Country", field: "country", headerFilter: "list", headerFilterParams: { values: ["", "EU", "UK", "US", "AU"] }, width: 120 },
+    { title: "Side", field: "side", formatter: sideBadge, hozAlign: "center", width: 100 },
+    { title: "Size", field: "size", hozAlign: "right", sorter: "number", width: 110 },
+    { title: "P/L", field: "pl", formatter: money, hozAlign: "right", sorter: "number", width: 120,
+      bottomCalc: "sum", bottomCalcFormatter: money },
+    { title: "Rating", field: "rating", editor: "number", editorParams: { min: 1, max: 5 }, hozAlign: "center", width: 100 }
+  ]
+});
+
+document.getElementById("tab-add").addEventListener("click", function () {
+  table.addRow({ id: Date.now(), instrument: "NEW", country: "EU", side: "Buy", size: 1000, pl: 0, rating: 3 }, true);
+});
+document.getElementById("tab-clear").addEventListener("click", function () { table.setData([]); });
+document.getElementById("tab-reset").addEventListener("click", function () { table.setData(ROWS.slice()); });
+
+/* ---------- FullCalendar ---------- */
+/* Fixed dates so the demo looks the same every time it is opened. */
+var MONTH = "2026-08-";
+var calendar = new FullCalendar.Calendar(document.getElementById("fc-cal"), {
+  initialView: "dayGridMonth",
+  initialDate: MONTH + "18",
+  height: 520,
+  headerToolbar: { left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,listWeek" },
+  events: [
+    { title: "Market open", start: MONTH + "17T08:00:00", end: MONTH + "17T16:30:00" },
+    { title: "CPI print", start: MONTH + "18T13:30:00" },
+    { title: "Portfolio review", start: MONTH + "18T15:00:00", end: MONTH + "18T16:00:00" },
+    { title: "Earnings: NVDA", start: MONTH + "19" },
+    { title: "Rebalance", start: MONTH + "20", end: MONTH + "22" },
+    { title: "Quiet period", start: MONTH + "24", end: MONTH + "27", display: "background" },
+    { title: "Month end", start: MONTH + "31" }
+  ]
+});
+calendar.render();
+
+/* ---------- Chart.js ---------- */
+/* No colours given → the adapter adopts these datasets and re-themes them. */
+var lineChart = new Chart(document.getElementById("c-line"), {
+  type: "line",
+  data: {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+    datasets: [
+      { label: "Account", data: [100, 108, 104, 121, 133, 128, 145, 162], fill: true, tension: .35 },
+      { label: "Benchmark", data: [100, 103, 101, 107, 112, 110, 116, 121], fill: false, tension: .35 }
+    ]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } }
+});
+
+var doughnutChart = new Chart(document.getElementById("c-doughnut"), {
+  type: "doughnut",
+  data: {
+    labels: ["FX", "Equities", "Bonds", "Cash"],
+    datasets: [{ data: [42, 31, 15, 12] }]
+  },
+  options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } }
+});
+
+/* Explicit colours → the adapter never touches this dataset (your colour wins),
+   but the axes, grid, legend and tooltip still follow the theme. */
+var barChart = new Chart(document.getElementById("c-bar"), {
+  type: "bar",
+  data: {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+    datasets: [{
+      label: "P/L (£)",
+      data: [1200, -430, 890, 1610, -220, 740, 2050, 1380],
+      backgroundColor: "#8b5cf6"
+    }]
+  },
+  options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+});
+
+/* ---------- theme readout (demo only) ---------- */
+var out = document.getElementById("theme-state");
+function show(e) {
+  var d = (e && e.detail) || { theme: _78.theme.current, pref: _78.theme.pref };
+  out.textContent = "pref: " + d.pref + " → " + d.theme;
+}
+document.addEventListener("_78:themechange", show);
+show();
+</script>
+</body>
+</html>

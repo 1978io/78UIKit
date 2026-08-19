@@ -1,0 +1,331 @@
+/* ==========================================================================
+   78 UI Kit — Tabulator theme adapter
+   Target: Tabulator 6.x (selectors verified against 6.5.2). MIT, not vendored.
+
+   Opt-in — NOT imported by kit.css. Include Tabulator's own stylesheet FIRST,
+   this one after:
+
+     <link rel="stylesheet" href="…/tabulator-tables@6/dist/css/tabulator.css">
+     <link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css">
+
+   Every colour here is a kit token, so the table re-themes with the rest of
+   the page the moment `data-theme` flips — no JS, no redraw.
+   ⚠️ Tabulator renames classes across majors; re-check on a major upgrade.
+   ========================================================================== */
+
+/* --- Frame ---------------------------------------------------------------- */
+.tabulator {
+  background-color: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  overflow: hidden;                 /* keeps rows inside the rounded corners */
+}
+
+.tabulator .tabulator-tableholder .tabulator-table {
+  background-color: transparent;
+  color: var(--text);
+}
+.tabulator .tabulator-tableholder:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* --- Header --------------------------------------------------------------- */
+.tabulator .tabulator-header {
+  background-color: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.tabulator .tabulator-header .tabulator-col {
+  background-color: transparent;
+  border-right: 1px solid var(--border);
+}
+.tabulator .tabulator-header .tabulator-col:last-child { border-right: 0; }
+.tabulator .tabulator-header .tabulator-col.tabulator-moving {
+  background-color: var(--bg3);
+  border: 1px solid var(--border);
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-range-highlight { background-color: var(--row-hover); }
+.tabulator .tabulator-header .tabulator-col.tabulator-range-selected {
+  background-color: var(--accent);
+  color: var(--accent-text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
+    background-color: var(--row-hover);
+    color: var(--text);
+  }
+}
+
+/* Sort arrows are CSS triangles — the visible colour is a border colour */
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter { color: var(--dim); }
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow { border-bottom-color: var(--dim); }
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="ascending"] .tabulator-col-content .tabulator-col-sorter { color: var(--accent); }
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="ascending"] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow { border-bottom-color: var(--accent); }
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="descending"] .tabulator-col-content .tabulator-col-sorter { color: var(--accent); }
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="descending"] .tabulator-col-content .tabulator-col-sorter .tabulator-arrow {
+  border-top-color: var(--accent);
+  color: var(--accent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-col-sorter.tabulator-col-sorter-element .tabulator-arrow:hover,
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="ascending"] .tabulator-col-content .tabulator-col-sorter.tabulator-col-sorter-element .tabulator-arrow:hover { border-bottom-color: var(--text); }
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="descending"] .tabulator-col-content .tabulator-col-sorter.tabulator-col-sorter-element .tabulator-arrow:hover { border-top-color: var(--text); }
+}
+
+/* Header filter inputs — borrow the kit's form tokens */
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter input,
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter select,
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter textarea {
+  width: 100%;
+  padding: 3px var(--space-2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter input:focus,
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter select:focus,
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 var(--ring-w) var(--ring);
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-header-filter svg { fill: var(--dim); }
+
+/* Column groups, frozen edges, resize guides */
+.tabulator .tabulator-header .tabulator-col.tabulator-col-group .tabulator-col-group-cols { border-top: 1px solid var(--border); }
+.tabulator .tabulator-header .tabulator-frozen { border-right: 1px solid var(--border); }
+.tabulator .tabulator-col-resize-guide,
+.tabulator .tabulator-row-resize-guide { background-color: var(--accent); }
+
+/* --- Rows ----------------------------------------------------------------- */
+.tabulator-row {
+  background-color: var(--bg2);
+  border-bottom: 1px solid var(--row-border);
+  color: var(--text);
+}
+.tabulator-row.tabulator-row-even { background-color: var(--bg2); }  /* zebra off — rows read cleaner on tokens */
+
+@media (hover: hover) and (pointer: fine) {
+  .tabulator-row.tabulator-selectable:hover { background-color: var(--row-hover); }
+}
+.tabulator-row.tabulator-selected { background-color: var(--row-selected); }
+@media (hover: hover) and (pointer: fine) {
+  .tabulator-row.tabulator-selected:hover { background-color: var(--accent-lo-hover); }
+}
+.tabulator-row.tabulator-row-moving {
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+}
+.tabulator-row .tabulator-cell {
+  border-right: 1px solid var(--row-border);
+  color: var(--text);
+}
+.tabulator-row .tabulator-cell:last-child { border-right: 0; }
+.tabulator-row .tabulator-cell.tabulator-row-header {
+  background: var(--bg3);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--row-border);
+}
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-left { border-right: 2px solid var(--border); }
+.tabulator-row .tabulator-cell.tabulator-frozen.tabulator-frozen-right { border-left: 2px solid var(--border); }
+.tabulator-row .tabulator-cell .tabulator-tick { fill: var(--success); }
+.tabulator-row .tabulator-cell .tabulator-cross { fill: var(--danger); }
+
+/* In-cell editing — the kit's focus treatment */
+.tabulator-row .tabulator-cell.tabulator-editing {
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  box-shadow: inset 0 0 0 var(--ring-w) var(--ring);
+}
+.tabulator-row .tabulator-cell.tabulator-editing input,
+.tabulator-row .tabulator-cell.tabulator-editing select,
+.tabulator-row .tabulator-cell.tabulator-editing textarea {
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+}
+.tabulator-row .tabulator-cell.tabulator-validation-fail { border: 1px solid var(--danger); }
+.tabulator-row .tabulator-cell.tabulator-validation-fail input,
+.tabulator-row .tabulator-cell.tabulator-validation-fail select { color: var(--danger); }
+
+/* Range selection (spreadsheet mode) */
+.tabulator-row .tabulator-cell.tabulator-range-selected:not(.tabulator-range-only-cell-selected):not(.tabulator-range-row-header) { background-color: var(--accent-lo); }
+.tabulator-row .tabulator-cell.tabulator-range-row-header,
+.tabulator-row.tabulator-range-highlight .tabulator-cell.tabulator-range-row-header {
+  background-color: var(--bg3);
+  color: var(--text);
+}
+.tabulator-row.tabulator-range-selected .tabulator-cell.tabulator-range-row-header,
+.tabulator-row.tabulator-range-highlight.tabulator-range-selected .tabulator-cell.tabulator-range-row-header {
+  background-color: var(--accent);
+  color: var(--accent-text);
+}
+.tabulator .tabulator-tableholder .tabulator-range-overlay .tabulator-range { border: 1px solid var(--accent); }
+.tabulator .tabulator-tableholder .tabulator-range-overlay .tabulator-range.tabulator-range-active::after { background-color: var(--accent); }
+
+/* Data-tree + responsive-collapse controls */
+.tabulator-row .tabulator-cell .tabulator-data-tree-branch {
+  border-left: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+}
+.tabulator-row .tabulator-cell .tabulator-data-tree-control {
+  background: transparent;
+  border: 1px solid var(--dim);
+}
+.tabulator-row .tabulator-cell .tabulator-data-tree-control:hover { background: var(--row-hover); }
+.tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-collapse:after,
+.tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand,
+.tabulator-row .tabulator-cell .tabulator-data-tree-control .tabulator-data-tree-control-expand:after { background: var(--dim); }
+.tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle {
+  background: var(--accent-lo);
+  color: var(--accent);
+}
+.tabulator-row .tabulator-responsive-collapse {
+  border-top: 1px solid var(--row-border);
+  border-bottom: 1px solid var(--row-border);
+  color: var(--dim);
+}
+
+/* --- Groups + calculation rows -------------------------------------------- */
+.tabulator-row.tabulator-group {
+  background: var(--bg3);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tabulator-row.tabulator-group:hover { background-color: var(--row-hover); }
+}
+.tabulator-row.tabulator-group .tabulator-arrow { border-left-color: var(--accent); }
+.tabulator-row.tabulator-group.tabulator-group-visible .tabulator-arrow { border-top-color: var(--accent); }
+.tabulator-row.tabulator-group span { color: var(--accent); }
+
+.tabulator .tabulator-header .tabulator-calcs-holder,
+.tabulator .tabulator-footer .tabulator-calcs-holder {
+  background: var(--bg3) !important;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.tabulator .tabulator-header .tabulator-calcs-holder .tabulator-row,
+.tabulator .tabulator-footer .tabulator-calcs-holder .tabulator-row {
+  background: var(--bg3) !important;
+  color: var(--text);
+}
+
+/* --- Placeholder (empty state) -------------------------------------------- */
+.tabulator .tabulator-tableholder .tabulator-placeholder { background: transparent; }
+.tabulator .tabulator-tableholder .tabulator-placeholder .tabulator-placeholder-contents {
+  color: var(--dim);
+  font-size: var(--fs-base);
+  font-weight: 500;
+}
+
+/* --- Footer + pagination -------------------------------------------------- */
+.tabulator .tabulator-footer {
+  background-color: var(--bg2);
+  border-top: 1px solid var(--border);
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+.tabulator .tabulator-footer .tabulator-paginator label { color: var(--dim); }
+.tabulator .tabulator-footer .tabulator-page-size {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+.tabulator .tabulator-footer .tabulator-page {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.tabulator .tabulator-footer .tabulator-page.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tabulator .tabulator-footer .tabulator-page:not(disabled):hover {
+    background: var(--accent-lo);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tabulator .tabulator-footer .tabulator-page.active:not(disabled):hover {
+    background: var(--accent-hover);
+    color: var(--accent-text);
+  }
+}
+.tabulator .tabulator-footer .tabulator-spreadsheet-tabs .tabulator-spreadsheet-tab {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--dim);
+}
+.tabulator .tabulator-footer .tabulator-spreadsheet-tabs .tabulator-spreadsheet-tab:hover { color: var(--text); }
+.tabulator .tabulator-footer .tabulator-spreadsheet-tabs .tabulator-spreadsheet-tab.tabulator-spreadsheet-tab-active {
+  background: var(--bg2);
+  color: var(--accent);
+}
+
+/* --- Popups, menus, list editors, alerts ---------------------------------- */
+.tabulator-popup-container {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+}
+.tabulator-menu .tabulator-menu-item { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .tabulator-menu .tabulator-menu-item:not(.tabulator-menu-item-disabled):hover { background: var(--row-hover); }
+}
+.tabulator-menu .tabulator-menu-item.tabulator-menu-item-submenu::after { border-color: var(--dim); }
+.tabulator-menu .tabulator-menu-separator { border-top: 1px solid var(--border); }
+
+.tabulator-edit-list .tabulator-edit-list-item,
+.tabulator-edit-list .tabulator-edit-list-placeholder { color: var(--text); }
+.tabulator-edit-list .tabulator-edit-list-item.active,
+.tabulator-edit-list .tabulator-edit-list-item:hover {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.tabulator-edit-list .tabulator-edit-list-item.focused { outline: 1px solid var(--accent); }
+.tabulator-edit-list .tabulator-edit-list-group {
+  border-bottom: 1px solid var(--border);
+  color: var(--dim);
+}
+
+.tabulator .tabulator-alert { background: var(--bg); }
+.tabulator .tabulator-alert .tabulator-alert-msg {
+  background: var(--bg2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-base);
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-msg {
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.tabulator .tabulator-alert .tabulator-alert-msg.tabulator-alert-state-error {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}

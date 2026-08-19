@@ -1,0 +1,192 @@
+/* ==========================================================================
+   78 UI Kit — FullCalendar theme adapter
+   Target: FullCalendar 6.x **core only** (verified against 6.1.21). MIT, not
+   vendored. ⚠️ Core plugins only — nothing here assumes a premium plugin.
+
+   Opt-in — NOT imported by kit.css. Load FullCalendar first, this after:
+
+     <script src="…/fullcalendar@6/index.global.min.js"></script>
+     <link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css">
+
+   v6 does the hard part for us: it already resolves every colour through its
+   own `--fc-*` custom properties, so this file is mostly a **remap** of those
+   onto kit tokens. Runtime resolution both ways → the calendar re-themes the
+   instant `data-theme` flips, with no JS and no re-render.
+
+   A v7 block follows at the bottom (v7 replaced `--fc-*` with per-theme
+   palettes); it is separate and additive, so this file is safe on either.
+   ========================================================================== */
+
+/* --- v6: remap FullCalendar's own variables onto kit tokens --------------- */
+.fc {
+  /* surfaces + lines */
+  --fc-page-bg-color: var(--bg2);
+  --fc-neutral-bg-color: var(--bg3);
+  --fc-neutral-text-color: var(--dim);
+  --fc-border-color: var(--border);
+
+  /* toolbar buttons — the kit's primary/ghost logic, expressed in fc vars */
+  --fc-button-text-color: var(--text);
+  --fc-button-bg-color: var(--bg3);
+  --fc-button-border-color: var(--border);
+  --fc-button-hover-bg-color: var(--row-hover);
+  --fc-button-hover-border-color: var(--dim);
+  --fc-button-active-bg-color: var(--accent);
+  --fc-button-active-border-color: var(--accent);
+
+  /* events */
+  --fc-event-bg-color: var(--accent);
+  --fc-event-border-color: var(--accent);
+  --fc-event-text-color: var(--accent-text);
+  --fc-event-selected-overlay-color: var(--accent-lo);
+  --fc-bg-event-color: var(--success);
+  --fc-bg-event-opacity: .18;
+
+  /* state */
+  --fc-today-bg-color: var(--accent-lo);
+  --fc-highlight-color: var(--accent-lo);
+  --fc-now-indicator-color: var(--danger);
+  --fc-non-business-color: var(--bg3);
+
+  /* list view + "+2 more" links */
+  --fc-list-event-hover-bg-color: var(--row-hover);
+  --fc-more-link-bg-color: var(--accent-lo);
+  --fc-more-link-text-color: var(--accent);
+
+  /* type */
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  color: var(--text);
+}
+
+/* --- The bits v6 hardcodes or leaves to the host page -------------------- */
+
+/* Toolbar */
+.fc .fc-toolbar-title {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  color: var(--text);
+}
+.fc .fc-toolbar.fc-header-toolbar { margin-bottom: var(--space-4); }
+
+/* Buttons — kit radius, kit focus ring, accent when active */
+.fc .fc-button {
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.fc .fc-button-primary:focus,
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc .fc-button-primary:not(:disabled):active:focus { box-shadow: 0 0 0 var(--ring-w) var(--ring); }
+.fc .fc-button-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fc .fc-button-primary:disabled { opacity: .5; }
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active { color: var(--accent-text); }
+
+/* Grid frame + column headers */
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid-section > * { border-color: var(--border); }
+.fc .fc-scrollgrid { border-radius: var(--radius); overflow: hidden; }
+.fc .fc-col-header-cell {
+  background: var(--bg3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.fc .fc-col-header-cell-cushion { color: var(--dim); padding: var(--space-2); }
+.fc .fc-col-header-cell-cushion:hover { color: var(--text); }
+
+/* Day cells */
+.fc .fc-daygrid-day-number,
+.fc .fc-list-day-text,
+.fc .fc-list-day-side-text {
+  color: var(--text);
+  text-decoration: none;
+}
+.fc .fc-day-other .fc-daygrid-day-top { opacity: 1; }        /* opacity → a real token */
+.fc .fc-day-other .fc-daygrid-day-number { color: var(--dim); }
+.fc .fc-day-today .fc-daygrid-day-number { color: var(--accent); font-weight: 700; }
+.fc .fc-daygrid-day.fc-day-today { background-color: var(--accent-lo); }
+
+/* Time grid */
+.fc .fc-timegrid-slot-label-cushion,
+.fc .fc-timegrid-axis-cushion {
+  color: var(--dim);
+  font-size: var(--fs-xs);
+}
+.fc .fc-timegrid-now-indicator-arrow,
+.fc .fc-timegrid-now-indicator-line { border-color: var(--danger); }
+
+/* Events */
+.fc .fc-event {
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+.fc .fc-event:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.fc .fc-daygrid-dot-event { color: var(--text); }
+.fc .fc-daygrid-dot-event:hover { background: var(--row-hover); }
+.fc .fc-daygrid-event-dot { border-color: var(--accent); }
+.fc .fc-list-event-dot { border-color: var(--accent); }
+.fc .fc-event-title-container .fc-event-title { font-weight: 500; }
+
+/* List view */
+.fc .fc-list { border-color: var(--border); border-radius: var(--radius); }
+.fc .fc-list-day-cushion { background: var(--bg3); }
+.fc .fc-list-event td { color: var(--text); }
+.fc .fc-list-empty { background: var(--bg3); color: var(--dim); }
+
+/* "+n more" popover */
+.fc .fc-popover {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+.fc .fc-popover-title { color: var(--text); font-weight: 600; }
+.fc .fc-popover-close { color: var(--dim); opacity: 1; }
+.fc .fc-popover-close:hover { color: var(--text); }
+
+/* Misc */
+.fc .fc-highlight { background: var(--accent-lo); }
+.fc a { color: inherit; }
+.fc a:hover { text-decoration: none; }
+
+/* ==========================================================================
+   v7 (optional) — FullCalendar 7 dropped the `--fc-*` set in favour of themed
+   palettes (`themes/<theme>/palette.css`). This block remaps the **classic**
+   theme's palette onto the same kit tokens, so a v7 calendar themes the same
+   way. Harmless on v6 (the variables simply go unused). Load FullCalendar's
+   theme + palette CSS first, then this file.
+   ========================================================================== */
+:root {
+  /* buttons */
+  --fc-classic-button: var(--bg3);
+  --fc-classic-button-border: var(--border);
+  --fc-classic-button-strong: var(--accent);
+  --fc-classic-button-strong-border: var(--accent);
+  --fc-classic-button-outline: var(--ring);
+  --fc-classic-button-foreground: var(--text);
+
+  /* primary / events */
+  --fc-classic-primary: var(--accent);
+  --fc-classic-primary-foreground: var(--accent-text);
+  --fc-classic-event: var(--accent);
+  --fc-classic-event-contrast: var(--accent-text);
+  --fc-classic-background-event: var(--success);
+  --fc-classic-highlight: var(--accent-lo);
+  --fc-classic-today: var(--accent-lo);
+  --fc-classic-now: var(--danger);
+
+  /* neutrals */
+  --fc-classic-background: var(--bg2);
+  --fc-classic-faint: var(--bg3);
+  --fc-classic-muted: var(--row-hover);
+  --fc-classic-strong: var(--row-hover);
+  --fc-classic-foreground: var(--text);
+  --fc-classic-faint-foreground: var(--dim);
+  --fc-classic-muted-foreground: var(--dim);
+  --fc-classic-border: var(--border);
+  --fc-classic-strong-border: var(--border);
+}

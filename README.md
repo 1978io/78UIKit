@@ -4,8 +4,9 @@
 HTML / CSS / JS you drop in. **Re-theme the whole thing — components *and* your libraries — by editing
 ~15 lines.** MIT — a 1978.io give-away and the shared component layer for every 1978 product.
 
-> 🌱 **Status: foundation built, 2026-08-18** — tokens, theming (`_78.theme`), buttons, cards, form
-> controls, badges/pills + a light/dark demo. Adapters, notifications and the theme generator are next.
+> 🌱 **Status: foundation + adapters built, 2026-08-18** — tokens, theming (`_78.theme`), buttons, cards,
+> form controls, badges/pills, and the three library theme adapters (Tabulator, FullCalendar, Chart.js),
+> each proved light+dark in `demo/`. Notifications, tabs and the theme generator are next.
 > Decisions live in `JamesHQ\projects\1978-ui-kit\notes.md` (the
 > strategy/decision log); this README is the **buildable spec**. Structure reference = the AlchemyQM
 > mockup; code is built fresh from James's own projects (Brashli / Lake House). Dogfooded on **78trade** first.
@@ -107,11 +108,31 @@ three at v1, not a plugin ecosystem.** Nothing is vendored; consumers bring thei
 
 | Library | Licence | Adapter | Notes |
 |---|---|---|---|
-| **Tabulator** | MIT | **CSS** | maps its classes → kit tokens (header→`--bg2`, hover→`--row-hover`, selected→`--accent-lo`, …). Survives theme switch for free. James's favourite. |
-| **FullCalendar** (core) | MIT | **CSS** | same approach; DOM-rendered. ⚠️ build against core only, not paid plugins. Boot Ranch runs it (on v5 — upgrade is separate). |
-| **Chart.js** | MIT | **JS** | 🔴 canvas can't read CSS vars — must `getComputedStyle()` the tokens into `Chart.defaults`, and **`chart.update()` on every theme switch** (the bit everyone misses). |
+| **Tabulator** | MIT | ✅ **CSS** — `css/adapters/tabulator.css` | maps its classes → kit tokens (header→`--bg2`, hover→`--row-hover`, selected→`--row-selected`, pagination→`--accent`, …). Survives theme switch for free. Built against **6.x** (verified 6.5.2). James's favourite. |
+| **FullCalendar** (core) | MIT | ✅ **CSS** — `css/adapters/fullcalendar.css` | v6 resolves everything through its own `--fc-*` variables, so the adapter is mostly a remap onto kit tokens. Built against **6.x core** (verified 6.1.21); a second block remaps **v7**'s `classic` palette, since v7 dropped `--fc-*`. ⚠️ Core only, no paid plugins. Boot Ranch runs v5 — different, upgrade is separate. |
+| **Chart.js** | MIT | ✅ **JS** — `js/adapters/chartjs.js` | 🔴 canvas can't read CSS vars — `getComputedStyle()`s the tokens into `Chart.defaults`, and **`chart.update()`s every live instance on `_78:themechange`** (the bit everyone misses). Built against **4.x** (verified 4.5.1). |
 | ~~ApexCharts~~ | dual-licensed | **DROPPED** | conditional licence — no place in an MIT kit. |
 | **ECharts** | Apache 2.0 | 🔜 later | likely replaces Chart.js (huge chart coverage, real theme system); deferred for its learning curve. |
+
+**Adapters are opt-in — deliberately NOT in `kit.css`.** Include only the ones you use, always *after* the
+library itself (the adapter overrides it), and bring your own version of the library — nothing is vendored:
+
+```html
+<link rel="stylesheet" href="…/tabulator.min.css">
+<link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css">
+
+<script src="…/fullcalendar/index.global.min.js"></script>
+<link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css">
+
+<script src="…/chart.umd.js"></script>
+<script src="/78UIKit/js/adapters/chartjs.js"></script>   <!-- after _78.js -->
+```
+
+The Chart.js adapter also exposes `_78.adapters.chartjs.palette(n)` (n series colours from the current
+theme — accent first, then the semantic tokens), `.tokens()`, `.alpha(colour, a)` and `.apply()`. A dataset
+that declares **no** colours is adopted and recoloured on every theme switch; a dataset that declares its
+own `backgroundColor`/`borderColor` is never touched. **Proof page: `demo/adapters.html`** — table, calendar
+and charts, all re-theming live off one toggle.
 
 ## Component inventory
 
@@ -154,10 +175,11 @@ css/  kit.css            ✅ the one stylesheet a project links (@imports everyt
       tokens.css        ✅ light + dark colour blocks + shared non-colour tokens
       reset.css         ✅ minimal reset, themed scrollbars, focus ring
       components/       ✅ buttons · cards · forms · badges · theme-toggle · utilities
-      adapters/         🔜 tabulator.css · fullcalendar.css
+      adapters/         ✅ tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js            ✅ _78.theme (notify + helpers land in later briefs)
-      adapters/         🔜 chartjs.js
-demo/ index.html        ✅ kitchen-sink, light+dark (🔜 themed Tabulator + Chart.js to prove the adapters)
+      adapters/         ✅ chartjs.js — _78.adapters.chartjs
+demo/ index.html        ✅ kitchen-sink, light+dark
+      adapters.html     ✅ live Tabulator + FullCalendar + Chart.js, all re-theming off one toggle
 docs/                   🔜 per-component notes as they stabilise
 ```
 
