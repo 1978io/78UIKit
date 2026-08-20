@@ -4,9 +4,9 @@
 [![jsDelivr hits](https://img.shields.io/jsdelivr/gh/hm/1978io/78UIKit)](https://www.jsdelivr.com/package/gh/1978io/78UIKit)
 [![License: MIT](https://img.shields.io/github/license/1978io/78UIKit)](LICENSE)
 
-**A vanilla UI component kit you can re-theme in ~15 lines.** No framework, no build step — just
-HTML / CSS / JS you drop in. Change a handful of CSS variables and the whole thing recolors:
-the components *and* your third-party tables and charts. MIT.
+**Finally, a theme-forward UI kit.** No framework, no build step — just HTML / CSS / JS you drop in.
+Re-theme everything — the components *and* your third-party tables and charts — from one CSS file, or live
+in code, in light and dark. MIT.
 
 📖 **Docs, live component gallery, and the theme generator: [78uikit.com](https://78uikit.com)**
 
@@ -16,7 +16,7 @@ the components *and* your third-party tables and charts. MIT.
 
 Most component libraries make color the hard thing to change — Sass bakes derived values in at build
 time, so "just change the accent" turns into a rebuild. 78 UI Kit resolves color at **runtime** with CSS
-custom properties: edit ~15 variables and everything follows, no build, no tooling. It also themes the
+custom properties: recolor in a stylesheet loaded after the kit — or let the generator write the whole theme — no build, no tooling. It also themes the
 libraries you already use — Tabulator, FullCalendar, Chart.js — so your tables and charts match your theme
 automatically, *including when the theme switches.*
 
@@ -46,7 +46,7 @@ first paint (no flash of the wrong theme):
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/kit.css">
   <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
 
-  <!-- 3. your ~15-line re-theme, AFTER the kit -->
+  <!-- 3. your own theme overrides go here, AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
 </head>
 ```
@@ -242,7 +242,7 @@ in with `textContent`; pass `html: true` when you mean markup.
 
 ## The theme generator
 
-The tool that writes your ~15-line override for you — on [78uikit.com](https://78uikit.com). Pick an accent
+The tool that writes the whole theme for you — on [78uikit.com](https://78uikit.com). Pick an accent
 (plus a neutral tint, a radius and a density) and it derives the **whole token set for light and dark**,
 previews it live on real components, contrast-checks it, and hands back paste-ready CSS.
 

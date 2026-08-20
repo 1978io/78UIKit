@@ -3,8 +3,8 @@
 
    One color in, the whole kit token set out — for light AND dark — plus a
    live WCAG readout, an apply-to-this-page mode and a shareable ?theme= URL.
-   This is the "re-theme by editing ~15 lines" pitch, automated: the generator
-   writes those lines for you.
+   This is the theming pitch, automated: the generator writes the whole theme
+   for you.
 
    Opt-in — NOT part of _78.js. Only demo/generator.html loads it.
 

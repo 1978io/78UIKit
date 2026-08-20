@@ -75,8 +75,8 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
   <!-- ============================ TOKENS ============================ -->
   <section id="tokens">
     <h2>Tokens</h2>
-    <p class="_78-text-dim _78-mb-16">A theme is <em>only</em> color. Override these ~15 vars in your own
-      stylesheet (loaded after <code class="tok">kit.css</code>) and the whole kit follows — no build step.</p>
+    <p class="_78-text-dim _78-mb-16">A theme is <em>only</em> color. Override the color tokens in your own
+      stylesheet (loaded after <code class="tok">kit.css</code>), or let the generator write the whole theme — no build step.</p>
 
     <div class="_78-card _78-mb-16">
       <div class="_78-card-title">Surfaces &amp; text</div>
@@ -319,7 +319,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
   &lt;link rel="stylesheet" href="/78UIKit/css/kit.css"&gt;
   &lt;script defer src="/78UIKit/js/_78.js"&gt;&lt;/script&gt;
 
-  &lt;!-- 3. your ~15-line re-theme, AFTER the kit --&gt;
+  &lt;!-- 3. your own theme overrides, AFTER the kit --&gt;
   &lt;style&gt;:root[data-theme="dark"]{--accent:#7c5cff}&lt;/style&gt;
 &lt;/head&gt;</pre>
       <p class="_78-text-sm _78-text-dim _78-mt-12">Any element with <code class="tok">._78-theme-toggle</code>

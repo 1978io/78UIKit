@@ -6,7 +6,7 @@ All notable changes to 78 UI Kit are documented here. The format follows
 
 ## [0.1.0] — 2026-08-19
 
-First public release. A vanilla, no-build UI kit you re-theme by editing ~15 CSS variables — components *and*
+First public release. A vanilla, no-build UI kit you re-theme from one CSS file (or live in code) — components *and*
 your third-party tables and charts recolor together, including on a live theme switch.
 
 ### Added
