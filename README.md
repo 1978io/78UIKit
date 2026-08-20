@@ -43,8 +43,8 @@ first paint (no flash of the wrong theme):
   </script>
 
   <!-- 2. the kit — via CDN (jsDelivr serves it straight from GitHub) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
 
   <!-- 3. your own theme overrides go here, AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>

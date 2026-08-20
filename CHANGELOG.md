@@ -4,6 +4,20 @@ All notable changes to 78 UI Kit are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] — 2026-08-20
+
+Docs and copy only — no component or API changes.
+
+### Added
+- **`llms.txt` and `llms-full.txt`** — an AI-readable reference at the repo root (and on the CDN) so coding
+  assistants can use the kit without scraping the docs.
+- CDN install instructions and status badges in the README.
+
+### Changed
+- **Honest theming copy** — replaced the "re-theme in ~15 lines" claim (the accent tints are explicit tokens,
+  so a bare `--accent` override doesn't cascade) with accurate wording across the README, tokens, demos, and
+  generator; the kit is now positioned as "theme-forward."
+
 ## [0.1.0] — 2026-08-19
 
 First public release. A vanilla, no-build UI kit you re-theme from one CSS file (or live in code) — components *and*
@@ -28,4 +42,5 @@ your third-party tables and charts recolor together, including on a live theme s
 
 - `0.x` — the public API may change before `1.0`.
 
+[0.1.1]: https://github.com/1978io/78UIKit/releases/tag/v0.1.1
 [0.1.0]: https://github.com/1978io/78UIKit/releases/tag/v0.1.0

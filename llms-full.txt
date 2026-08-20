@@ -54,8 +54,8 @@ One stylesheet, one script, and an inline snippet that sets the theme before fir
   </script>
 
   <!-- 2. THE KIT -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
 
   <!-- 3. YOUR THEME OVERRIDES — after the kit, or they lose -->
   <style>
@@ -1310,7 +1310,7 @@ library, at your own version. Always load an adapter **after** the library it th
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/css/tabulator.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/adapters/tabulator.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/adapters/tabulator.css">
 <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/js/tabulator.min.js"></script>
 ```
 
@@ -1326,7 +1326,7 @@ the adapter on a major upgrade.
 <link rel="stylesheet" href="…/fullcalendar@7/skeleton.css">
 <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/theme.css">
 <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/palette.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/adapters/fullcalendar.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/adapters/fullcalendar.css">
 <script src="…/fullcalendar@7/all/global.min.js"></script>
 <script src="…/fullcalendar@7/themes/classic/global.js"></script>
 ```
@@ -1342,8 +1342,8 @@ re-themes the instant `data-theme` flips.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/adapters/chartjs.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/adapters/chartjs.js"></script>
 ```
 
 This one is JS because a chart is a `<canvas>`, and canvas pixels cannot resolve `var(--accent)` — colors
@@ -1402,8 +1402,8 @@ checks, an apply-to-the-page mode and a shareable URL. It is opt-in and **not** 
 only where you need it (the tool itself lives at https://78uikit.com).
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/generator.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/generator.js"></script>
 ```
 
 Two rules the file exists to enforce: **work in OKLCH** (HSL ramps go muddy — equal steps in HSL are not
