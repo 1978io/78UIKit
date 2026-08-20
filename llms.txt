@@ -1,0 +1,117 @@
+# 78 UI Kit
+
+> A theme-forward, no-build UI kit — plain HTML / CSS / JS you drop in. One stylesheet, one script, and
+> every color resolves at runtime from CSS custom properties, so re-theming is an override block rather
+> than a rebuild. Built for dashboards: KPI cards, tables, no-library data-viz primitives, and theme
+> adapters that recolor Tabulator, FullCalendar and Chart.js along with everything else — including on a
+> live theme switch. MIT.
+
+Two things shape every decision in the kit:
+
+- **Theme-forward.** A theme is *only* color. Color tokens live in `:root[data-theme="dark"]` /
+  `["light"]`; non-color tokens (radius, type, spacing, layout sizes) live in a plain `:root`. Nothing
+  hardcodes a color, so overriding the tokens re-themes the whole kit.
+- **Built for dashboards.** Stat/KPI cards, a table style, sparkline / progress / bar / donut / gauge /
+  trend primitives, an app shell, and adapters so third-party tables and charts follow the theme too.
+
+No framework. No build step. No dependencies. Version 0.x — the public API may still change before 1.0.
+
+## Install
+
+```html
+<head>
+  <!-- 1. pre-paint theme — FIRST, before any stylesheet (no flash of the wrong theme) -->
+  <script>
+  (function(){var p=localStorage.getItem('_78-theme')||'system';
+  var t=p==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):p;
+  var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
+  </script>
+
+  <!-- 2. the kit -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.0/js/_78.js"></script>
+
+  <!-- 3. your theme overrides — AFTER the kit -->
+  <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
+</head>
+```
+
+`@v0.1.0` pins a release; `@main` tracks the latest. `kit.min.css` / `_78.min.js` are also served. Or
+download the repo and serve the files yourself. Library adapters are opt-in and live under
+`/css/adapters/` and `/js/adapters/` — they are never part of `kit.css`.
+
+## Naming
+
+- **CSS classes** are prefixed `_78-` — `._78-btn`, `._78-stat-card`, `._78-nav-item`.
+- **Modifiers** are suffixes on the block class — `._78-btn-primary`, `._78-table-compact` — and shared
+  state classes are their own prefixed class alongside it: `._78-active`, `._78-selected`, `._78-up`,
+  `._78-down`, `._78-invert`, `._78-high` / `._78-mid` / `._78-low`, `._78-danger`.
+- **JS** is one global, `_78`, with no dependencies: `_78.theme`, `_78.shell`, `_78.modal`, `_78.notify`,
+  `_78.tabs`, `_78.viz`, `_78.adapters.chartjs`, `_78.gen`.
+- **Events** are namespaced `_78:` and fire on `document` (except `_78:tabchange`, which bubbles from the
+  tab list): `_78:themechange`, `_78:railchange`, `_78:drawerchange`, `_78:tabchange`, `_78:genchange`.
+
+## Tokens
+
+Token *names* are the contract; the shipped values are a neutral default palette meant to be overridden.
+
+- **Core color:** `--bg` `--bg2` `--bg3` `--border` `--text` `--dim` `--accent`
+- **Accent derived:** `--accent-hover` `--accent-text` `--accent-lo` `--accent-lo-hover` `--accent-glow`
+- **Semantic:** `--success` `--warn` `--danger` `--info`, each with a `-lo` tint
+- **Surface details:** `--row-hover` `--row-border` `--row-selected` `--ring` `--overlay` `--shadow`
+  `--shadow-lg`
+- **Non-color (shared `:root`):** `--radius-sm` `--radius` `--radius-lg` `--radius-pill` · `--font`
+  `--font-mono` · `--fs-xs`…`--fs-xl` `--lh` · `--space-1`…`--space-6` · `--control-h` `--control-h-sm`
+  `--icon-btn-size` `--ring-w` · `--sidebar-w` `--rail-w` `--header-h` `--content-max` · `--transition`
+  `--transition-slow`
+
+## Components
+
+- **App shell** — `._78-topbar` + `._78-sidebar` that collapses to an icon rail and becomes a mobile
+  drawer, plus `._78-app-main`; driven by `_78.shell`. Flat nav items only, no nested menus.
+- **Buttons** — `._78-btn` (`-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`,
+  `._78-btn-group`.
+- **Cards** — `._78-card` and the KPI `._78-stat-card` (label / number / delta / sparkline), laid out by
+  `._78-kpi-grid`.
+- **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one
+  consistent focus ring.
+- **Badges & pills** — `._78-badge`, `._78-tag`, `._78-score-pill`, `._78-eyebrow`.
+- **Table** — `._78-table` (`-compact` / `-striped` / `-sticky`) in a `._78-table-wrap` scroller. For a
+  real data grid, use Tabulator plus its adapter.
+- **Tabs** — `._78-tabs` (+ `._78-tabs-segmented`), auto-mounted by `_78.tabs` with full ARIA and arrow
+  keys.
+- **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu`, auto-wired with roving focus and the
+  `menu` / `menuitem` roles.
+- **Modal** — native `<dialog>` via `_78.modal.open()` / `.confirm()` / `.alert()`, promise-returning.
+- **Toast** — `_78.notify()` and `.success` / `.error` / `.warn` / `.info`; auto-dismissing, never
+  blocking.
+- **Inline alert** — `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`) and
+  `._78-empty`, for anything tied to a region of the page.
+- **Data-viz, no library** — `._78-sparkline`, `._78-progress`, `._78-bar-row`, `._78-donut` /
+  `._78-gauge`, `._78-trend`, driven by `_78.viz` and toned with one class.
+- **Theme toggle** — any `._78-theme-toggle` element is wired on load and cycles Dark → Light → System.
+- **Utilities** — a small set: `._78-text-dim`, `._78-flex`, `._78-gap-12`, `._78-mt-16`, `._78-truncate`,
+  `._78-nums`, `._78-sr-only`, and friends.
+
+## Library adapters (opt-in)
+
+- **Tabulator 6.x** — `css/adapters/tabulator.css`, loaded after Tabulator's own stylesheet.
+- **FullCalendar 7.x core** — `css/adapters/fullcalendar.css`, loaded after FullCalendar's CSS.
+- **Chart.js 4.x** — `js/adapters/chartjs.js`, loaded after Chart.js and after `_78.js`. Canvas cannot read
+  CSS variables, so it pushes tokens into `Chart.defaults` and calls `update()` on every live chart when
+  the theme switches.
+
+Nothing is vendored — bring your own copy of each library at your own version.
+
+## Theme generator
+
+`js/generator.js` (`_78.gen`) derives the whole token set for light *and* dark from one accent color, in
+OKLCH, with live WCAG AA checks, an apply-to-the-page mode and a shareable `?theme=` URL. Opt-in, not part
+of `_78.js`.
+
+## More
+
+- [llms-full.txt](https://cdn.jsdelivr.net/gh/1978io/78UIKit@main/llms-full.txt): the complete reference —
+  every component's classes, variants, `data-*` attributes and JS options, each with a copy-paste example.
+- [78uikit.com](https://78uikit.com): docs, the live component gallery, and the theme generator.
+- [github.com/1978io/78UIKit](https://github.com/1978io/78UIKit): source, releases, MIT license.
