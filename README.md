@@ -43,8 +43,8 @@ first paint (no flash of the wrong theme):
   </script>
 
   <!-- 2. the kit — via CDN (jsDelivr serves it straight from GitHub) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
 
   <!-- 3. your own theme overrides go here, AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
@@ -54,7 +54,7 @@ first paint (no flash of the wrong theme):
 That's it. Use the classes, and let the theme generator on [78uikit.com](https://78uikit.com) write your
 override block for you.
 
-**CDN or self-host.** `@v0.1.0` pins a release; use `@main` for the latest (moves on every push), or download
+**CDN or self-host.** `@v0.2.0` pins a release; use `@main` for the latest (moves on every push), or download
 the repo and serve the files yourself. jsDelivr also serves minified builds — swap in `kit.min.css` /
 `_78.min.js`. The library adapters live on the same CDN under `/css/adapters/` and `/js/adapters/`.
 
@@ -75,6 +75,10 @@ override.
 **Non-color (shared `:root`):** `--radius-sm/-/-lg/-pill` · `--font` / `--font-mono` · `--fs-xs`…`--fs-xl` ·
 `--lh` · `--control-h` / `--control-h-sm` / `--icon-btn-size` / `--ring-w` · `--sidebar-w` / `--rail-w` /
 `--header-h` / `--content-max` · `--transition` / `--transition-slow` · a `--space-1`…`--space-6` scale (4·8·12·16·24·32px).
+
+The space tokens are also the intended **escape hatch above the utility scale** — there is deliberately no
+margin utility over 16px and there are no padding utilities. Past that, reach for the token directly
+(`style="padding: var(--space-5)"`), not for a bigger utility set.
 
 ### The mechanism
 
@@ -136,8 +140,17 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **Cards** — `._78-card`, `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
   `._78-stat-delta` colored by sign, `._78-invert` where up is bad), laid out by `._78-kpi-grid`
   (auto-fit, 2–6 across).
-- **Forms** — `._78-field` with a consistent focus ring.
+- **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a
+  real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size.
 - **Badges / pills** — `._78-badge` variants, `._78-tag`, `._78-eyebrow`, `._78-score-pill`.
+- **Segmented control** — `._78-seg`, a joined run of buttons where exactly one is active (a range or
+  type toggle). It owns a *value*, not a panel: mounted by `_78.seg` as a `radiogroup` with roving
+  tabindex, arrow / Home / End keys that step over disabled options, and a `_78:segchange` event.
+- **Disclosure** — `._78-details`, a styled `<details>` / `<summary>` with the native marker replaced by a
+  rotating chevron. No JS: the keyboard, screen-reader and find-in-page behavior is the browser's.
+- **Figure row** — `._78-figure-row` / `._78-figure`: N related numbers read side by side, each a label, a
+  value and a tone shown as a colored left edge (entry / target / stop, plan / actual / variance). One
+  fact in parts — where a KPI grid is unrelated metrics.
 - **Table** — `._78-table` (+ `-compact` / `-striped` / `-sticky`, `._78-table-wrap` to scroll on narrow
   screens). For a full data grid, use Tabulator + its adapter.
 - **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu` (`._78-menu-item`, `._78-menu-sep`).
@@ -145,17 +158,21 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   the full `menu` / `menuitem` ARIA. Built for the account menu; reusable anywhere.
 - **Tabs** — `._78-tabs` (+ `._78-tabs-segmented`). `_78.tabs` auto-mounts with roles, `aria-selected`,
   roving tabindex, arrow / Home / End keys, and a `_78:tabchange` event.
-- **Data-viz, no library** — `._78-sparkline` · `._78-progress` · `._78-bar-row` · `._78-donut` /
-  `._78-gauge` · `._78-trend`, driven by `_78.viz`. Color flows through two inherited variables
-  (`--viz` / `--viz-lo`, defaulting to the accent), so a tone is one class (`._78-tone-success` …) and every
-  shape re-themes with no redraw.
+- **Data-viz, no library** — `._78-sparkline` · `._78-progress` · `._78-bar-row` · `._78-split-bar` (one
+  whole in proportional, named segments) · `._78-donut` / `._78-gauge` · `._78-trend`, driven by `_78.viz`.
+  Color flows through two inherited variables (`--viz` / `--viz-lo`, defaulting to the accent), so a tone is
+  one class (`._78-tone-success` …) and every shape re-themes with no redraw.
 
 Everything in `_78.viz` auto-mounts from attributes on load, or call it directly:
 
 ```html
-<div class="_78-stat-card__spark" data-values="18,22,19,27,31" data-tone="auto"></div>
+<div class="_78-stat-card__spark" data-values="18,22,19,27,31" data-tone="auto" data-dot="true"></div>
 <div class="_78-progress _78-tone-warn" data-pct="68"></div>
 <div class="_78-donut" data-pct="68" data-label="Margin used"></div>
+<div class="_78-split-bar">
+  <span class="_78-split-seg _78-tone-danger" data-pct="35" data-label="Risk"></span>
+  <span class="_78-split-seg _78-tone-success" data-pct="65" data-label="Reward"></span>
+</div>
 <span class="_78-trend" data-delta="12.4"></span>
 ```
 
@@ -237,8 +254,8 @@ in with `textContent`; pass `html: true` when you mean markup.
 ## Naming
 
 - **CSS classes** use the `_78-` prefix (`._78-btn`, `._78-card`) — digit-safe and matches the JS namespace.
-- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.viz`,
-  `_78.sortAlpha`).
+- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.seg`,
+  `_78.viz`).
 
 ## The theme generator
 
@@ -260,9 +277,10 @@ previews it live on real components, contrast-checks it, and hands back paste-re
 css/  kit.css            the one stylesheet a project links (@imports everything below)
       tokens.css         light + dark color blocks + shared non-color tokens
       reset.css          minimal reset, themed scrollbars, focus ring
-      components/        shell · buttons · cards · forms · badges · viz · table · tabs · modal · toast · …
+      components/        shell · buttons · cards · forms · switch · seg · details · badges · viz ·
+                         figure · split-bar · table · tabs · modal · toast · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js             _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.viz · helpers
+js/   _78.js             _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
       adapters/          chartjs.js — _78.adapters.chartjs
 demo/                    living examples, every page in light + dark
 ```
@@ -270,7 +288,8 @@ demo/                    living examples, every page in light + dark
 ## Status
 
 Active development (v0.x). Foundation, the three library adapters, notifications / tabs / table, KPI +
-data-viz primitives, the theme generator and the app shell are built. A few helpers are next.
+data-viz primitives, the theme generator, the app shell, and the v0.2.0 control and figure set (switch,
+segmented control, disclosure, figure row, split bar) are built. A few helpers are next.
 
 ## License
 

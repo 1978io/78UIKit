@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.viz
+   Surface: _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -503,10 +503,149 @@ window._78 = window._78 || {};
 
 
 /* ==========================================================================
+   _78.seg — the segmented control: one of N, click + arrow keys, full ARIA
+   A radio group in behavior (exactly one value), so that is the role it
+   announces. Tabs own panels; this owns a value — it fires _78:segchange and
+   leaves the rest to you.
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var seq = 0;
+
+  function mount(group) {
+    if (!group) return null;
+    if (group.dataset._78SegMounted) return group._78seg;
+
+    var btns = Array.prototype.slice.call(group.querySelectorAll("._78-seg-btn"));
+    if (!btns.length) return null;
+    group.dataset._78SegMounted = "1";
+
+    var id = ++seq;
+    if (!group.hasAttribute("role")) group.setAttribute("role", "radiogroup");
+
+    btns.forEach(function (btn, i) {
+      if (btn.tagName === "BUTTON" && !btn.hasAttribute("type")) btn.type = "button";
+      if (!btn.id) btn.id = "_78-seg-" + id + "-" + i;
+      btn.setAttribute("role", "radio");
+      btn.addEventListener("click", function () {
+        if (disabled(btn)) return;
+        select(i);
+      });
+    });
+
+    function disabled(btn) {
+      return btn.disabled || btn.getAttribute("aria-disabled") === "true";
+    }
+
+    function select(index, moveFocus) {
+      index = Math.max(0, Math.min(index, btns.length - 1));
+      btns.forEach(function (btn, i) {
+        var on = i === index;
+        btn.setAttribute("aria-checked", on ? "true" : "false");
+        btn.classList.toggle("_78-active", on);
+        /* roving tabindex: the group is one tab stop, arrows move inside it */
+        btn.tabIndex = on ? 0 : -1;
+      });
+      if (moveFocus) btns[index].focus();
+      group.dispatchEvent(new CustomEvent("_78:segchange", {
+        bubbles: true,
+        detail: {
+          index: index,
+          button: btns[index],
+          value: btns[index].dataset.value != null
+            ? btns[index].dataset.value
+            : btns[index].textContent.trim()
+        }
+      }));
+      return index;
+    }
+
+    function current() {
+      for (var i = 0; i < btns.length; i++) {
+        if (btns[i].getAttribute("aria-checked") === "true") return i;
+      }
+      return 0;
+    }
+
+    /* step past disabled buttons rather than landing on one */
+    function move(from, step) {
+      var i = from;
+      for (var n = 0; n < btns.length; n++) {
+        i = (i + step + btns.length) % btns.length;
+        if (!disabled(btns[i])) return i;
+      }
+      return from;
+    }
+
+    function edge(step) {
+      var i = step > 0 ? -1 : btns.length;
+      return move(i, step);
+    }
+
+    group.addEventListener("keydown", function (e) {
+      var step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 1, ArrowUp: -1 };
+      if (e.key in step) {
+        select(move(current(), step[e.key]), true);
+      } else if (e.key === "Home") {
+        select(edge(1), true);
+      } else if (e.key === "End") {
+        select(edge(-1), true);
+      } else {
+        return;
+      }
+      e.preventDefault();
+    });
+
+    /* Initial value: whatever is marked checked/active, else the first button */
+    var initial = 0;
+    btns.forEach(function (b, i) {
+      if (b.getAttribute("aria-checked") === "true" ||
+          b.getAttribute("aria-pressed") === "true" ||
+          b.classList.contains("_78-active")) initial = i;
+    });
+    /* set the state without announcing a change nobody made */
+    btns.forEach(function (btn, i) {
+      var on = i === initial;
+      btn.setAttribute("aria-checked", on ? "true" : "false");
+      btn.classList.toggle("_78-active", on);
+      btn.tabIndex = on ? 0 : -1;
+    });
+
+    group._78seg = {
+      el: group,
+      buttons: btns,
+      select: select,
+      get index() { return current(); },
+      get value() {
+        var btn = btns[current()];
+        return btn.dataset.value != null ? btn.dataset.value : btn.textContent.trim();
+      }
+    };
+    return group._78seg;
+  }
+
+  function mountAll(scope) {
+    return Array.prototype.slice
+      .call((scope || document).querySelectorAll("._78-seg"))
+      .map(mount);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { mountAll(); });
+  } else {
+    mountAll();
+  }
+
+  _78.seg = { mount: mount, mountAll: mountAll };
+})(window._78);
+
+
+/* ==========================================================================
    _78.viz — the no-library data-viz primitives
-   Sparkline, progress bar, bar row, donut/gauge. Everything is inline SVG or
-   plain elements painted with kit tokens, so a theme switch needs no redraw
-   (unlike canvas — that's what js/adapters/chartjs.js is for).
+   Sparkline, progress bar, bar row, donut/gauge and split bar. Everything is
+   inline SVG or plain elements painted with kit tokens, so a theme switch needs
+   no redraw (unlike canvas — that's what js/adapters/chartjs.js is for).
 
    Call it, or let it auto-mount from attributes on load:
      <div data-values="4,7,6,9,12">…</div>        → sparkline
@@ -514,6 +653,7 @@ window._78 = window._78 || {};
      <div class="_78-bar-row" data-pct="82">       → bar fill + aria
      <div class="_78-donut" data-pct="68">         → ring + center value
      <div class="_78-donut _78-gauge" data-pct="41">
+     <div class="_78-split-bar">…</div>              → proportional segments
 
    🔴 Every primitive gets a text value or role="img" + aria-label. A shape or
    a color is never the only carrier of the meaning.
@@ -554,7 +694,8 @@ window._78 = window._78 || {};
     var H = opts.height || 32;
     var pad = 2;                                  /* room for the stroke/dot */
     var showFill = opts.fill !== false && el.dataset.fill !== "false";
-    var showDot = opts.dot !== false && el.dataset.dot !== "false";
+    /* the end-of-series dot is opt-in — it crowds a small card by default */
+    var showDot = opts.dot != null ? opts.dot !== false : el.dataset.dot === "true";
 
     var min = Math.min.apply(null, values);
     var max = Math.max.apply(null, values);
@@ -786,6 +927,53 @@ window._78 = window._78 || {};
     return el;
   }
 
+  /* --- Split bar -----------------------------------------------------------
+     splitBar(el, segments, { label })
+     Sizes ._78-split-seg children from their data-pct. `segments` may instead
+     be an array — [{ pct, tone, label }] — and the children are built for you.
+     Values do not have to be percentages: anything over a total of 100 is
+     normalized, so raw amounts (1200 / 800) split correctly too.
+     ---------------------------------------------------------------------- */
+  function splitBar(el, segments, opts) {
+    if (!el) return null;
+    opts = opts || {};
+
+    if (Array.isArray(segments)) {
+      el.textContent = "";
+      segments.forEach(function (s) {
+        var seg = document.createElement("span");
+        seg.className = "_78-split-seg" + (s.tone ? " _78-tone-" + s.tone : "");
+        seg.dataset.pct = s.pct;
+        if (s.label != null) seg.dataset.label = s.label;
+        el.appendChild(seg);
+      });
+    }
+
+    var segs = Array.prototype.slice.call(el.querySelectorAll("._78-split-seg"));
+    if (!segs.length) return null;
+
+    var values = segs.map(function (s) { return Math.max(0, parseFloat(s.dataset.pct) || 0); });
+    var sum = values.reduce(function (a, b) { return a + b; }, 0);
+    /* under 100 leaves the shortfall as visible track (spent vs remaining);
+       over 100 means raw amounts, so share out the total instead */
+    var total = sum > 100 ? sum : 100;
+
+    var parts = [];
+    segs.forEach(function (seg, i) {
+      var share = total ? (values[i] / total) * 100 : 0;
+      seg.style.width = round(share) + "%";
+      var name = seg.dataset.label || "";
+      var text = (name ? name + " " : "") + round(share) + "%";
+      seg.setAttribute("title", text);
+      if (name || share) parts.push(text);
+    });
+
+    el.setAttribute("role", "img");
+    var label = opts.label || el.dataset.label;
+    el.setAttribute("aria-label", (label ? label + ": " : "") + parts.join(", "));
+    return el;
+  }
+
   /* --- Auto-mount ---------------------------------------------------------- */
   function mountAll(scope) {
     scope = scope || document;
@@ -795,6 +983,7 @@ window._78 = window._78 || {};
     all("._78-progress[data-pct]").forEach(function (el) { progress(el); });
     all("._78-bar-row[data-pct]").forEach(function (el) { bar(el); });
     all("._78-donut[data-pct]").forEach(function (el) { donut(el); });
+    all("._78-split-bar").forEach(function (el) { splitBar(el); });
     all("._78-trend[data-delta], ._78-stat-delta[data-delta]").forEach(function (el) { trend(el); });
   }
 
@@ -809,6 +998,7 @@ window._78 = window._78 || {};
     progress: progress,
     bar: bar,
     donut: donut,
+    splitBar: splitBar,
     trend: trend,
     mountAll: mountAll
   };

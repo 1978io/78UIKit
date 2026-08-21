@@ -28,15 +28,15 @@ No framework. No build step. No dependencies. Version 0.x — the public API may
   </script>
 
   <!-- 2. the kit -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
 
   <!-- 3. your theme overrides — AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
 </head>
 ```
 
-`@v0.1.0` pins a release; `@main` tracks the latest. `kit.min.css` / `_78.min.js` are also served. Or
+`@v0.2.0` pins a release; `@main` tracks the latest. `kit.min.css` / `_78.min.js` are also served. Or
 download the repo and serve the files yourself. Library adapters are opt-in and live under
 `/css/adapters/` and `/js/adapters/` — they are never part of `kit.css`.
 
@@ -47,9 +47,10 @@ download the repo and serve the files yourself. Library adapters are opt-in and 
   state classes are their own prefixed class alongside it: `._78-active`, `._78-selected`, `._78-up`,
   `._78-down`, `._78-invert`, `._78-high` / `._78-mid` / `._78-low`, `._78-danger`.
 - **JS** is one global, `_78`, with no dependencies: `_78.theme`, `_78.shell`, `_78.modal`, `_78.notify`,
-  `_78.tabs`, `_78.viz`, `_78.adapters.chartjs`, `_78.gen`.
+  `_78.tabs`, `_78.seg`, `_78.viz`, `_78.adapters.chartjs`, `_78.gen`.
 - **Events** are namespaced `_78:` and fire on `document` (except `_78:tabchange`, which bubbles from the
-  tab list): `_78:themechange`, `_78:railchange`, `_78:drawerchange`, `_78:tabchange`, `_78:genchange`.
+  tab list, and `_78:segchange`, which bubbles from the segmented control): `_78:themechange`,
+  `_78:railchange`, `_78:drawerchange`, `_78:tabchange`, `_78:segchange`, `_78:genchange`.
 
 ## Tokens
 
@@ -65,6 +66,9 @@ Token *names* are the contract; the shipped values are a neutral default palette
   `--icon-btn-size` `--ring-w` · `--sidebar-w` `--rail-w` `--header-h` `--content-max` · `--transition`
   `--transition-slow`
 
+The `--space-*` tokens are also the escape hatch above the utility scale: there is no margin utility over
+16px and there are no padding utilities, by design — use the token directly instead.
+
 ## Components
 
 - **App shell** — `._78-topbar` + `._78-sidebar` that collapses to an icon rail and becomes a mobile
@@ -75,6 +79,14 @@ Token *names* are the contract; the shipped values are a neutral default palette
   `._78-kpi-grid`.
 - **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one
   consistent focus ring.
+- **Toggle switch** — `._78-switch` (+ `-sm`, `._78-switch-row`), a real `<input type="checkbox">`
+  restyled as a track and thumb, so keyboard, `:disabled` and label association are native.
+- **Segmented control** — `._78-seg` / `._78-seg-btn` (+ `-sm` / `-full` / `-accent`), one-of-N, mounted
+  by `_78.seg` as a `radiogroup` with roving tabindex; fires `_78:segchange`.
+- **Disclosure** — `._78-details` (+ `-plain` / `-fill` / `-sm`), a styled `<details>` / `<summary>` with
+  a rotating chevron marker. CSS only.
+- **Figure row** — `._78-figure-row` / `._78-figure`, N related numbers side by side, each with a label
+  and a `._78-tone-*` colored left edge.
 - **Badges & pills** — `._78-badge`, `._78-tag`, `._78-score-pill`, `._78-eyebrow`.
 - **Table** — `._78-table` (`-compact` / `-striped` / `-sticky`) in a `._78-table-wrap` scroller. For a
   real data grid, use Tabulator plus its adapter.
@@ -87,11 +99,13 @@ Token *names* are the contract; the shipped values are a neutral default palette
   blocking.
 - **Inline alert** — `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`) and
   `._78-empty`, for anything tied to a region of the page.
-- **Data-viz, no library** — `._78-sparkline`, `._78-progress`, `._78-bar-row`, `._78-donut` /
-  `._78-gauge`, `._78-trend`, driven by `_78.viz` and toned with one class.
+- **Data-viz, no library** — `._78-sparkline`, `._78-progress`, `._78-bar-row`, `._78-split-bar` (a whole
+  divided into named, proportional segments), `._78-donut` / `._78-gauge`, `._78-trend`, driven by
+  `_78.viz` and toned with one class.
 - **Theme toggle** — any `._78-theme-toggle` element is wired on load and cycles Dark → Light → System.
 - **Utilities** — a small set: `._78-text-dim`, `._78-flex`, `._78-gap-12`, `._78-mt-16`, `._78-truncate`,
-  `._78-nums`, `._78-sr-only`, and friends.
+  `._78-nums`, `._78-sr-only`, and friends. The color modifiers come in two interchangeable spellings:
+  `._78-green` / `._78-text-green` (also `-red` / `-warn` / `-accent`).
 
 ## Library adapters (opt-in)
 

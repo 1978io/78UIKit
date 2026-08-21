@@ -28,11 +28,17 @@
 }
 ._78-card-head ._78-card-title { margin-bottom: 0; }
 
+/* Full-bleed to the card's padding edges, like the modal foot, so an action row's
+   top border reaches both sides instead of floating inset. */
 ._78-card-foot {
-  margin-top: var(--space-4);
-  padding-top: var(--space-3);
+  margin: var(--space-4) calc(var(--space-4) * -1) calc(var(--space-4) * -1);
+  padding: var(--space-3) var(--space-4);
   border-top: 1px solid var(--border);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
 }
+/* ._78-card-foot-fill gives it the modal foot's tinted surface as well */
+._78-card-foot-fill { background: var(--bg3); }
 
 /* Interactive card (link/button wrapper) */
 ._78-card-link {

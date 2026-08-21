@@ -1,0 +1,120 @@
+/* ==========================================================================
+   78 UI Kit — toggle switch
+   A real <input type="checkbox"> restyled as a track and a sliding thumb —
+   not a div pretending. Keyboard (Tab + Space), the focus ring, :disabled,
+   label association and the checked state all come from the native control.
+
+     <label class="_78-switch">
+       <input type="checkbox" role="switch" checked>
+       <span class="_78-switch-label">Email me when an order fills</span>
+     </label>
+
+     <!-- standalone (in a table row): the input carries the class + a name -->
+     <input class="_78-switch-input" type="checkbox" role="switch" aria-label="Live updates">
+
+   role="switch" is optional but recommended when the toggle takes effect
+   immediately — a screen reader then says "on" / "off" rather than
+   "checked" / "not checked". It changes nothing about the styling.
+
+   Sizes come from three local custom properties, so ._78-switch-sm is one
+   override rather than a second set of rules.
+   ========================================================================== */
+
+._78-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--fs-base);
+}
+
+._78-switch-input,
+._78-switch > input[type="checkbox"] {
+  --switch-w: 36px;
+  --switch-h: 20px;
+  --switch-pad: 2px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--switch-w);
+  height: var(--switch-h);
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg3);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* The thumb */
+._78-switch-input::before,
+._78-switch > input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--switch-pad);
+  width: calc(var(--switch-h) - var(--switch-pad) * 2 - 2px);
+  height: calc(var(--switch-h) - var(--switch-pad) * 2 - 2px);
+  border-radius: var(--radius-pill);
+  background: var(--dim);
+  transform: translateY(-50%);
+  transition: transform var(--transition), background var(--transition);
+}
+
+._78-switch-input:hover,
+._78-switch > input[type="checkbox"]:hover { border-color: var(--dim); }
+
+._78-switch-input:checked,
+._78-switch > input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+._78-switch-input:checked::before,
+._78-switch > input[type="checkbox"]:checked::before {
+  background: var(--accent-text);
+  transform: translateY(-50%) translateX(calc(var(--switch-w) - var(--switch-h)));
+}
+
+._78-switch-input:focus-visible,
+._78-switch > input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+._78-switch-input:disabled,
+._78-switch > input[type="checkbox"]:disabled { opacity: .5; cursor: not-allowed; }
+._78-switch:has(input:disabled) { cursor: not-allowed; }
+._78-switch:has(input:disabled) ._78-switch-label { opacity: .5; }
+
+._78-switch-label { color: var(--text); }
+._78-switch-hint {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  color: var(--dim);
+}
+
+/* --- Small -------------------------------------------------------------- */
+._78-switch-sm,
+._78-switch-sm ._78-switch-input,
+._78-switch-sm > input[type="checkbox"] {
+  --switch-w: 28px;
+  --switch-h: 16px;
+  --switch-pad: 2px;
+}
+._78-switch-sm ._78-switch-label { font-size: var(--fs-sm); }
+
+/* --- Settings row: label left, switch right ------------------------------ */
+._78-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+}
+._78-switch-row ._78-switch-label { flex: 1 1 auto; min-width: 0; }
+._78-switch-row ._78-switch-input,
+._78-switch-row > input[type="checkbox"] { order: 2; }

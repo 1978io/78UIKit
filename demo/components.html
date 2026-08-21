@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>78 UI Kit — KPIs, data-viz, notifications, tabs, table</title>
+<title>78 UI Kit — KPIs, data-viz, figures, controls, notifications, tabs, table</title>
 
 <!-- Pre-paint theme snippet — FIRST thing in <head>, before any CSS. No FOUC. -->
 <script>
@@ -89,7 +89,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
           <span class="_78-stat-delta" data-delta="-2.8"></span>
           <span class="_78-stat-card__sub">last 30 days</span>
         </div>
-        <div class="_78-stat-card__spark" data-values="66,64,65,62,63,60,61" data-tone="auto"></div>
+        <div class="_78-stat-card__spark" data-values="66,64,65,62,63,60,61" data-tone="auto" data-dot="true"></div>
       </div>
 
       <div class="_78-stat-card">
@@ -101,7 +101,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
           <span class="_78-stat-delta" data-delta="0" data-unit=""></span>
           <span class="_78-stat-card__sub">unchanged today</span>
         </div>
-        <div class="_78-stat-card__spark" data-values="12,11,13,12,12,13,12" data-tone="dim" data-dot="false"></div>
+        <div class="_78-stat-card__spark" data-values="12,11,13,12,12,13,12" data-tone="dim"></div>
       </div>
 
       <div class="_78-stat-card">
@@ -186,6 +186,119 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <code class="tok">aria-label</code> — the color and the shape are reinforcement, never the only
         signal. <code class="tok">_78-invert</code> flips the color for metrics where up is bad
         (the last pill: drawdown rising).</p>
+    </div>
+  </section>
+
+  <!-- ============================ FIGURES & SPLIT BARS ============================ -->
+  <section id="figures">
+    <h2>Figure rows &amp; split bars <span class="_78-badge _78-badge-dim">._78-figure-row · ._78-split-bar</span></h2>
+    <p class="_78-text-dim _78-mb-16">Two shapes for numbers that belong together. A <strong>figure row</strong> is one
+      fact in parts — entry / target / stop, plan / actual / variance — each part carrying a tone as a colored left
+      edge. A <strong>split bar</strong> is one whole divided into named segments. Both use the same
+      <code class="tok">._78-tone-*</code> classes as the charts above, so a figure and the bar beside it agree on
+      color.</p>
+
+    <div class="_78-card-grid">
+      <div class="_78-card">
+        <div class="_78-card-title">Figure row <span class="_78-text-dim _78-text-sm _78-fw-600">— one fact, in parts</span></div>
+
+        <div class="_78-figure-row">
+          <div class="_78-figure _78-tone-accent">
+            <span class="_78-figure-label">Entry</span>
+            <span class="_78-figure-value">1.0842</span>
+          </div>
+          <div class="_78-figure _78-tone-success">
+            <span class="_78-figure-label">Take profit</span>
+            <span class="_78-figure-value">1.0985</span>
+            <span class="_78-figure-sub">+143 pips</span>
+          </div>
+          <div class="_78-figure _78-tone-danger">
+            <span class="_78-figure-label">Stop</span>
+            <span class="_78-figure-value">1.0790</span>
+            <span class="_78-figure-sub">−52 pips</span>
+          </div>
+        </div>
+
+        <div class="_78-eyebrow _78-mt-16 _78-mb-8">Small, with the value carrying the tone</div>
+        <div class="_78-figure-row _78-figure-row-sm _78-figure-strong">
+          <div class="_78-figure _78-tone-dim">
+            <span class="_78-figure-label">Plan</span>
+            <span class="_78-figure-value">£12,000</span>
+          </div>
+          <div class="_78-figure _78-tone-accent">
+            <span class="_78-figure-label">Actual</span>
+            <span class="_78-figure-value">£13,420</span>
+          </div>
+          <div class="_78-figure _78-tone-success">
+            <span class="_78-figure-label">Variance</span>
+            <span class="_78-figure-value">+£1,420</span>
+          </div>
+        </div>
+
+        <div class="_78-eyebrow _78-mt-16 _78-mb-8">Plain — no fill, the tone moves to the label</div>
+        <div class="_78-figure-row _78-figure-row-plain">
+          <div class="_78-figure _78-tone-dim">
+            <span class="_78-figure-label">Min</span>
+            <span class="_78-figure-value">18</span>
+          </div>
+          <div class="_78-figure _78-tone-accent">
+            <span class="_78-figure-label">Median</span>
+            <span class="_78-figure-value">27</span>
+          </div>
+          <div class="_78-figure _78-tone-dim">
+            <span class="_78-figure-label">Max</span>
+            <span class="_78-figure-value">52</span>
+          </div>
+        </div>
+
+        <p class="_78-text-sm _78-text-dim _78-mt-16">The label always says what the number is — the edge color is
+          reinforcement, never the only signal.</p>
+      </div>
+
+      <div class="_78-card">
+        <div class="_78-card-title">Split bar <span class="_78-text-dim _78-text-sm _78-fw-600">— one whole, in segments</span></div>
+
+        <div class="_78-split-head">
+          <span class="_78-split-title">Risk / reward</span>
+          <span class="_78-split-total">1 : 1.9</span>
+        </div>
+        <div class="_78-split-bar" data-label="Risk versus reward">
+          <span class="_78-split-seg _78-tone-danger" data-pct="35" data-label="Risk"></span>
+          <span class="_78-split-seg _78-tone-success" data-pct="65" data-label="Reward"></span>
+        </div>
+        <div class="_78-split-legend">
+          <span class="_78-split-key _78-tone-danger">Risk <b>35%</b></span>
+          <span class="_78-split-key _78-tone-success">Reward <b>65%</b></span>
+        </div>
+
+        <div class="_78-eyebrow _78-mt-16 _78-mb-8">One segment — the shortfall stays as track</div>
+        <div class="_78-split-bar _78-split-bar-lg" data-label="Margin">
+          <span class="_78-split-seg _78-tone-warn" data-pct="68" data-label="Used"></span>
+        </div>
+        <div class="_78-split-legend">
+          <span class="_78-split-key _78-tone-warn">Used <b>68%</b></span>
+          <span class="_78-split-key _78-tone-dim">Free <b>32%</b></span>
+        </div>
+
+        <div class="_78-eyebrow _78-mt-16 _78-mb-8">Three segments, raw amounts (they total 640, not 100)</div>
+        <div class="_78-split-bar" data-label="Test suite">
+          <span class="_78-split-seg _78-tone-success" data-pct="512" data-label="Passed"></span>
+          <span class="_78-split-seg _78-tone-warn" data-pct="96" data-label="Skipped"></span>
+          <span class="_78-split-seg _78-tone-danger" data-pct="32" data-label="Failed"></span>
+        </div>
+        <div class="_78-split-legend">
+          <span class="_78-split-key _78-tone-success">Passed <b>512</b></span>
+          <span class="_78-split-key _78-tone-warn">Skipped <b>96</b></span>
+          <span class="_78-split-key _78-tone-danger">Failed <b>32</b></span>
+        </div>
+
+        <div class="_78-eyebrow _78-mt-16 _78-mb-8">Built from JS — <code class="tok">_78.viz.splitBar()</code></div>
+        <div class="_78-split-bar _78-split-bar-sm" id="split-js"></div>
+
+        <p class="_78-text-sm _78-text-dim _78-mt-16">The bar is one <code class="tok">role="img"</code> whose
+          <code class="tok">aria-label</code> names every segment and its share, and each segment repeats that text as
+          a <code class="tok">title</code>.</p>
+      </div>
     </div>
   </section>
 
@@ -364,6 +477,110 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     </div>
   </section>
 
+  <!-- ============================ SEGMENTED CONTROL ============================ -->
+  <section id="seg">
+    <h2>Segmented control <span class="_78-badge _78-badge-dim">._78-seg · _78.seg</span></h2>
+    <div class="_78-card">
+      <p class="_78-text-dim _78-mb-12">A joined run of buttons where exactly one is active — a range toggle, a chart
+        type, a units switch. It owns a <em>value</em>, not a panel: that is what separates it from the segmented tabs
+        above (bound to panels) and from <code class="tok">._78-btn-group</code> (spaced, every button its own action).
+        Mounted as a <code class="tok">radiogroup</code> with roving tabindex, so ←/→ (and Home/End) move between the
+        options and step over disabled ones. Every change fires <code class="tok">_78:segchange</code>.</p>
+
+      <div class="row">
+        <div class="_78-seg" aria-label="Range">
+          <button class="_78-seg-btn" data-value="1d">1D</button>
+          <button class="_78-seg-btn" data-value="1w" aria-checked="true">1W</button>
+          <button class="_78-seg-btn" data-value="1m">1M</button>
+          <button class="_78-seg-btn" data-value="1y">1Y</button>
+          <button class="_78-seg-btn" data-value="all" disabled>All</button>
+        </div>
+
+        <div class="_78-seg _78-seg-sm" aria-label="Units">
+          <button class="_78-seg-btn" data-value="pips">Pips</button>
+          <button class="_78-seg-btn" data-value="cash">Cash</button>
+          <button class="_78-seg-btn" data-value="pct">%</button>
+        </div>
+
+        <div class="_78-seg _78-seg-accent" aria-label="Side">
+          <button class="_78-seg-btn" data-value="buy">Buy</button>
+          <button class="_78-seg-btn" data-value="sell">Sell</button>
+        </div>
+      </div>
+
+      <div class="_78-mt-16">
+        <div class="_78-eyebrow _78-mb-8">Full width, with icons</div>
+        <div class="_78-seg _78-seg-full" aria-label="Chart type">
+          <button class="_78-seg-btn" data-value="line">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/></svg>
+            Line
+          </button>
+          <button class="_78-seg-btn" data-value="bars">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            Bars
+          </button>
+          <button class="_78-seg-btn" data-value="candles">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v4M7 17v4M17 3v3M17 18v3"/><rect x="4" y="7" width="6" height="10" rx="1"/><rect x="14" y="6" width="6" height="12" rx="1"/></svg>
+            Candles
+          </button>
+        </div>
+      </div>
+
+      <p class="_78-text-sm _78-text-dim _78-mt-12" id="seg-result">Last <code class="tok">_78:segchange</code>:
+        <span class="_78-mono">—</span></p>
+    </div>
+  </section>
+
+  <!-- ============================ DISCLOSURE ============================ -->
+  <section id="details">
+    <h2>Disclosure <span class="_78-badge _78-badge-dim">._78-details</span></h2>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">A styled <code class="tok">&lt;details&gt;</code>: the native marker
+      is replaced with a chevron that rotates on open, and everything else — keyboard, screen readers, find-in-page —
+      stays the browser&rsquo;s. No JS. This is the progressive &ldquo;show the numbers behind this&rdquo; pattern.</p>
+
+    <details class="_78-details">
+      <summary>Show the numbers behind this
+        <span class="_78-details-meta">3 legs</span>
+      </summary>
+      <div class="_78-details-body">
+        <div class="_78-figure-row">
+          <div class="_78-figure _78-tone-accent">
+            <span class="_78-figure-label">Gross</span>
+            <span class="_78-figure-value">£5,410</span>
+          </div>
+          <div class="_78-figure _78-tone-danger">
+            <span class="_78-figure-label">Costs</span>
+            <span class="_78-figure-value">−£590</span>
+          </div>
+          <div class="_78-figure _78-tone-success">
+            <span class="_78-figure-label">Net</span>
+            <span class="_78-figure-value">£4,820</span>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="_78-details _78-details-fill" open>
+      <summary>Assumptions <span class="_78-details-meta">open by default</span></summary>
+      <div class="_78-details-body">
+        <p>Commission at 0.08%, financing at base + 2.5%, and no slippage on the exit.</p>
+      </div>
+    </details>
+
+    <div class="_78-card _78-mt-16">
+      <div class="_78-card-title">Inside a card — the plain and small variants</div>
+      <details class="_78-details _78-details-plain">
+        <summary>What counts as an open position?</summary>
+        <div class="_78-details-body _78-text-sm">Anything with a non-zero quantity at the close of the session,
+          including positions opened and reduced on the same day.</div>
+      </details>
+      <details class="_78-details _78-details-sm _78-mt-12">
+        <summary>Raw response <span class="_78-details-meta">JSON</span></summary>
+        <div class="_78-details-body _78-mono">{ "ticket": 48213, "filled": 25000, "avg": 1.0842 }</div>
+      </details>
+    </div>
+  </section>
+
   <!-- ============================ TABLE ============================ -->
   <section id="table">
     <h2>Table <span class="_78-badge _78-badge-dim">._78-table</span></h2>
@@ -492,6 +709,19 @@ document.getElementById("t-burst").addEventListener("click", function () {
   _78.notify.info("First");
   setTimeout(function () { _78.notify.success("Second"); }, 250);
   setTimeout(function () { _78.notify.warn("Third"); }, 500);
+});
+
+/* ---------- split bar, built from JS ---------- */
+_78.viz.splitBar(document.getElementById("split-js"), [
+  { pct: 45, tone: "accent", label: "Equities" },
+  { pct: 30, tone: "info", label: "FX" },
+  { pct: 25, tone: "dim", label: "Cash" }
+], { label: "Allocation" });
+
+/* ---------- segmented control ---------- */
+var segOut = document.querySelector("#seg-result span");
+document.addEventListener("_78:segchange", function (e) {
+  segOut.textContent = e.detail.value + " (index " + e.detail.index + ")";
 });
 
 /* ---------- tabs ---------- */

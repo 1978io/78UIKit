@@ -12,7 +12,12 @@
 @import url("components/cards.css");
 @import url("components/forms.css");
 @import url("components/badges.css");
+@import url("components/switch.css");
+@import url("components/seg.css");
+@import url("components/details.css");
 @import url("components/viz.css");
+@import url("components/figure.css");
+@import url("components/split-bar.css");
 @import url("components/table.css");
 @import url("components/tabs.css");
 @import url("components/modal.css");

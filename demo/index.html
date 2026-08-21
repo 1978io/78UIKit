@@ -240,6 +240,46 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <label class="_78-check"><input type="radio" name="tf" checked> Day</label>
         <label class="_78-check"><input type="radio" name="tf"> Swing</label>
       </div>
+
+      <div class="_78-eyebrow _78-mt-16 _78-mb-8">Toggle switches</div>
+      <p class="_78-text-sm _78-text-dim _78-mb-12">A real <code class="tok">&lt;input type="checkbox"&gt;</code> under
+        the paint — Tab to it and press Space. Add <code class="tok">role="switch"</code> when the toggle takes effect
+        immediately, so a screen reader says &ldquo;on&rdquo; / &ldquo;off&rdquo; instead of &ldquo;checked&rdquo;.</p>
+
+      <div class="row">
+        <label class="_78-switch">
+          <input type="checkbox" role="switch" checked>
+          <span class="_78-switch-label">Live prices</span>
+        </label>
+        <label class="_78-switch">
+          <input type="checkbox" role="switch">
+          <span class="_78-switch-label">Email me when an order fills</span>
+        </label>
+        <label class="_78-switch _78-switch-sm">
+          <input type="checkbox" role="switch" checked>
+          <span class="_78-switch-label">Compact rows</span>
+        </label>
+        <label class="_78-switch">
+          <input type="checkbox" role="switch" checked disabled>
+          <span class="_78-switch-label">Two-factor (enforced)</span>
+        </label>
+        <input class="_78-switch-input" type="checkbox" role="switch" aria-label="Standalone toggle, no visible label">
+      </div>
+
+      <div class="_78-mt-16" style="max-width:420px">
+        <div class="_78-eyebrow _78-mb-8">Settings rows — label left, switch right</div>
+        <label class="_78-switch _78-switch-row">
+          <span class="_78-switch-label">Confirm before closing a position
+            <span class="_78-switch-hint">Shows a modal every time.</span>
+          </span>
+          <input type="checkbox" role="switch" checked>
+        </label>
+        <label class="_78-switch _78-switch-row _78-mt-12">
+          <span class="_78-switch-label">Play a sound on fill</span>
+          <input type="checkbox" role="switch">
+        </label>
+      </div>
+
     </div>
   </section>
 

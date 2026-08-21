@@ -1,0 +1,91 @@
+/* ==========================================================================
+   78 UI Kit — split bar
+   One bar, two or more proportional segments, each with its own semantic
+   color: risk vs reward, spent vs remaining, pass / warn / fail. Segments are
+   sized by _78.viz.splitBar() from data-pct.
+
+   ._78-progress is a single fill of one track; ._78-bar-row is one row of a
+   ranked list. This is the split of a whole into named parts.
+
+     <div class="_78-split-bar" data-label="Risk / reward">
+       <span class="_78-split-seg _78-tone-danger"  data-pct="35" data-label="Risk"></span>
+       <span class="_78-split-seg _78-tone-success" data-pct="65" data-label="Reward"></span>
+     </div>
+     <div class="_78-split-legend">
+       <span class="_78-split-key _78-tone-danger">Risk <b>35%</b></span>
+       <span class="_78-split-key _78-tone-success">Reward <b>65%</b></span>
+     </div>
+
+   Any shortfall below 100% stays as visible track, so "spent vs remaining"
+   works with one segment. The whole bar gets role="img" + an aria-label
+   naming every segment — the colors are never the only signal.
+   ========================================================================== */
+
+._78-split-bar {
+  display: flex;
+  gap: 2px;                       /* the track showing through = the divider */
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+._78-split-seg {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  width: 0;                       /* _78.viz.splitBar sets the real width */
+  background: var(--viz, var(--accent));
+  transition: width var(--transition-slow);
+}
+
+._78-split-bar-sm { height: 4px; }
+._78-split-bar-lg { height: 12px; }
+
+/* Stacked labels above the bar — the head reads like ._78-progress-head */
+._78-split-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+  font-size: var(--fs-sm);
+}
+._78-split-title { color: var(--dim); }
+._78-split-total {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* --- Legend ---------------------------------------------------------------
+   Markup, not generated — the wording is yours. Each key takes the same
+   ._78-tone-* class as its segment and gets a matching dot.
+   -------------------------------------------------------------------------- */
+._78-split-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--dim);
+}
+._78-split-key {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+._78-split-key::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-pill);
+  background: var(--viz, var(--accent));
+}
+._78-split-key b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}

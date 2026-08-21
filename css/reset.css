@@ -18,6 +18,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* [hidden] is a browser-level semantic — nothing in the kit may out-rank it. Without
+   !important any component that sets `display` (._78-alert, ._78-figure-row, the shell)
+   wins on source order and an element marked hidden renders anyway. */
+[hidden] { display: none !important; }
+
 img, svg, video, canvas { display: block; max-width: 100%; }
 
 button, input, select, textarea { font: inherit; color: inherit; }

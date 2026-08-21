@@ -10,6 +10,13 @@
 ._78-text-green  { color: var(--success); }
 ._78-text-warn   { color: var(--warn); }
 ._78-text-red    { color: var(--danger); }
+/* Aliases — the stat-card number spellings (._78-green / ._78-red) work anywhere,
+   so the two names for one color are interchangeable and neither is a typo. */
+._78-accent { color: var(--accent); }
+._78-green  { color: var(--success); }
+._78-warn   { color: var(--warn); }
+._78-red    { color: var(--danger); }
+
 ._78-fw-600 { font-weight: 600; }
 ._78-mono   { font-family: var(--font-mono); }
 ._78-nums   { font-variant-numeric: tabular-nums; }
@@ -25,7 +32,9 @@
 ._78-gap-12 { gap: var(--space-3); }
 ._78-gap-16 { gap: var(--space-4); }
 
-/* Spacing */
+/* Spacing — deliberately stops at 16px, and there are no padding utilities.
+   Above the scale, use the space tokens directly: style="padding: var(--space-5)".
+   That is the intended escape hatch, not a gap in the set. */
 ._78-mt-8  { margin-top: var(--space-2); }
 ._78-mt-12 { margin-top: var(--space-3); }
 ._78-mt-16 { margin-top: var(--space-4); }

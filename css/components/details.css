@@ -1,0 +1,100 @@
+/* ==========================================================================
+   78 UI Kit — disclosure
+   A styled <details> / <summary>: the native marker is removed (including
+   Safari's ::-webkit-details-marker) and replaced with a chevron that rotates
+   when the element opens. Pure CSS and pure HTML semantics — no JS, keyboard
+   and screen-reader behavior come from the browser.
+
+     <details class="_78-details">
+       <summary>Show the numbers behind this</summary>
+       <div class="_78-details-body"> … </div>
+     </details>
+
+   The progressive "show the working" pattern: the headline stays readable and
+   the detail is one click away.
+   ========================================================================== */
+
+._78-details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg2);
+  overflow: hidden;
+}
+._78-details + ._78-details { margin-top: var(--space-2); }
+
+._78-details > summary,
+._78-details-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  color: var(--text);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;                       /* Firefox / standards marker */
+  transition: background var(--transition), color var(--transition);
+}
+._78-details > summary::-webkit-details-marker,
+._78-details-summary::-webkit-details-marker { display: none; }   /* Safari */
+
+._78-details > summary:hover,
+._78-details-summary:hover { background: var(--row-hover); color: var(--accent); }
+._78-details > summary:focus-visible,
+._78-details-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* The marker: a CSS chevron, so it needs no icon set and follows the text color */
+._78-details > summary::before,
+._78-details-summary::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  margin-left: 2px;
+  margin-right: 2px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  border-radius: 1px;
+  transform: rotate(-45deg) translate(-1px, -1px);
+  transition: transform var(--transition);
+}
+._78-details[open] > summary::before,
+._78-details[open] ._78-details-summary::before {
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* Anything pushed to the right of the summary — a count, a badge, a total */
+._78-details-meta {
+  margin-left: auto;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--dim);
+}
+
+._78-details-body {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-base);
+  color: var(--text);
+}
+._78-details-body > :first-child { margin-top: 0; }
+
+/* --- Variants ------------------------------------------------------------- */
+
+/* Quiet — no box, for a disclosure sitting inside a card that already has one */
+._78-details-plain {
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+._78-details-plain > summary { padding-left: 0; padding-right: 0; font-weight: 500; }
+._78-details-plain > summary:hover { background: none; }
+._78-details-plain ._78-details-body { padding: var(--space-2) 0 0; border-top: 0; }
+
+/* Tinted head — pairs a disclosure with the surface behind a table or a foot */
+._78-details-fill > summary { background: var(--bg3); }
+._78-details-fill[open] > summary { border-bottom: 1px solid var(--border); }
+._78-details-fill[open] ._78-details-body { border-top: 0; }
+
+._78-details-sm > summary { padding: var(--space-1) var(--space-2); font-size: var(--fs-sm); }
+._78-details-sm ._78-details-body { padding: var(--space-2); font-size: var(--fs-sm); }

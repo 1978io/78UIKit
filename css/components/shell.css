@@ -112,10 +112,12 @@
 }
 :root[data-sidebar="rail"] ._78-sidebar { width: var(--rail-w); }
 
-/* A <nav> wrapper is optional — items work as direct children too */
+/* A <nav> wrapper is optional — items work as direct children too. It grows to fill
+   the sidebar so a ._78-nav-spacer inside it can still push Collapse to the bottom. */
 ._78-nav {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   gap: 2px;
 }
 

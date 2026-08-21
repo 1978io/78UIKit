@@ -1,0 +1,85 @@
+/* ==========================================================================
+   78 UI Kit — figure row
+   A labeled figure trio: N *related* numbers read side by side, each with a
+   label and a semantic tone shown as a colored left edge. Buy / take-profit /
+   stop, plan / actual / variance, min / median / max, three-tier pricing.
+
+   Not a KPI grid: those are unrelated metrics in their own cards. Not a stat
+   card either — that is one headline number. This is one fact, in parts.
+
+     <div class="_78-figure-row">
+       <div class="_78-figure _78-tone-accent">
+         <span class="_78-figure-label">Entry</span>
+         <span class="_78-figure-value">1.0842</span>
+       </div>
+       <div class="_78-figure _78-tone-success">
+         <span class="_78-figure-label">Take profit</span>
+         <span class="_78-figure-value">1.0985</span>
+         <span class="_78-figure-sub">+143 pips</span>
+       </div>
+       <div class="_78-figure _78-tone-danger">
+         <span class="_78-figure-label">Stop</span>
+         <span class="_78-figure-value">1.0790</span>
+         <span class="_78-figure-sub">−52 pips</span>
+       </div>
+     </div>
+
+   Tone comes from the same ._78-tone-* classes as the data-viz primitives
+   (components/viz.css), so a figure and the chart beside it agree on color.
+   The label always says what the number is — the edge color is reinforcement.
+   ========================================================================== */
+
+._78-figure-row {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+}
+
+._78-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg3);
+  border-left: 3px solid var(--viz, var(--border));
+  border-radius: var(--radius-sm);
+}
+
+._78-figure-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+._78-figure-value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+._78-figure-sub {
+  font-size: var(--fs-xs);
+  color: var(--dim);
+}
+
+/* The number itself carries the tone — for figures where the value *is* the
+   semantic thing (a stop loss, a variance), not just a member of a set. */
+._78-figure-strong ._78-figure-value { color: var(--viz, var(--text)); }
+
+/* Denser variant, for a figure row inside a table cell or a narrow card */
+._78-figure-row-sm { gap: var(--space-2); }
+._78-figure-row-sm ._78-figure { padding: var(--space-1) var(--space-2); }
+._78-figure-row-sm ._78-figure-value { font-size: var(--fs-base); }
+
+/* Borderless variant — the tone moves to the label, for a surface that is
+   already tinted and where a second fill would muddy it. */
+._78-figure-row-plain ._78-figure {
+  background: none;
+  border-left: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+._78-figure-row-plain ._78-figure-label { color: var(--viz, var(--dim)); }

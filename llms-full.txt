@@ -18,19 +18,20 @@ Version 0.x — the public API may still change before 1.0.
 1. Install
 2. Theming — tokens, the mechanism, the theme toggle
 3. Layout — the app shell
-4. Buttons
+4. Buttons and the segmented control
 5. Cards, stat / KPI cards and grids
-6. Forms
+6. Forms and the toggle switch
 7. Badges, tags and pills
 8. Table
 9. Tabs
 10. Dropdown menu
 11. Notifications — modal, toast, inline alert
-12. Data-viz primitives — `_78.viz`
-13. Utilities
-14. Library adapters — Tabulator, FullCalendar, Chart.js
-15. Theme generator — `_78.gen`
-16. Events, storage keys and file map
+12. Data-viz primitives — `_78.viz`, figure rows and split bars
+13. Disclosure — `._78-details`
+14. Utilities
+15. Library adapters — Tabulator, FullCalendar, Chart.js
+16. Theme generator — `_78.gen`
+17. Events, storage keys and file map
 
 ---
 
@@ -54,8 +55,8 @@ One stylesheet, one script, and an inline snippet that sets the theme before fir
   </script>
 
   <!-- 2. THE KIT -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
 
   <!-- 3. YOUR THEME OVERRIDES — after the kit, or they lose -->
   <style>
@@ -69,7 +70,7 @@ One stylesheet, one script, and an inline snippet that sets the theme before fir
 </html>
 ```
 
-**Distribution.** `@v0.1.0` pins a release; `@main` tracks the latest and moves on every push. Minified
+**Distribution.** `@v0.2.0` pins a release; `@main` tracks the latest and moves on every push. Minified
 builds are served as `css/kit.min.css` and `js/_78.min.js`. Self-hosting is the same files at your own
 path — the kit contains no absolute URLs.
 
@@ -473,7 +474,7 @@ they belong in the page — as tabs or in-page navigation — rather than in the
 
 ---
 
-## 4. Buttons
+## 4. Buttons and the segmented control
 
 ```html
 <button class="_78-btn">Default</button>
@@ -515,6 +516,67 @@ they belong in the page — as tabs or in-page navigation — rather than in the
 `:disabled` and `[aria-disabled="true"]` both dim the button and block the press animation. An `<svg>`
 inside `._78-icon-btn` is sized to 16px automatically. Focus is a 2px accent outline, offset 2px.
 
+### 4.1 Segmented control — `._78-seg`
+
+A joined run of buttons where **exactly one** is active: a range toggle, a chart type, a units switch. It
+owns a *value*, not a panel — that is what separates it from `._78-tabs-segmented` (§9, bound to tab
+panels) and from `._78-btn-group` (spaced, every button its own action).
+
+```html
+<div class="_78-seg" aria-label="Range">
+  <button class="_78-seg-btn" data-value="1d">1D</button>
+  <button class="_78-seg-btn" data-value="1w" aria-checked="true">1W</button>
+  <button class="_78-seg-btn" data-value="1m">1M</button>
+  <button class="_78-seg-btn" data-value="all" disabled>All</button>
+</div>
+
+<div class="_78-seg _78-seg-sm _78-seg-accent" aria-label="Side">
+  <button class="_78-seg-btn">Buy</button>
+  <button class="_78-seg-btn">Sell</button>
+</div>
+
+<div class="_78-seg _78-seg-full" aria-label="Chart type">
+  <button class="_78-seg-btn">Line</button>
+  <button class="_78-seg-btn">Bars</button>
+  <button class="_78-seg-btn">Candles</button>
+</div>
+```
+
+| Class | Role |
+|---|---|
+| `._78-seg` | The group: `--bg3` inset, `--border` edge, 3px padding, scrolls sideways if it overflows |
+| `._78-seg-btn` | One option. The active one gets a `--bg2` raised surface and accent label |
+| `._78-seg-sm` | Smaller: `--control-h-sm` height and `--fs-sm` type |
+| `._78-seg-full` | Fills its container; every option gets an equal share |
+| `._78-seg-accent` | The active option is an accent *fill* instead of a raised surface |
+
+`_78.seg.mountAll()` runs on load over every `._78-seg`:
+
+```js
+var seg = _78.seg.mount(document.querySelector('._78-seg'));
+seg.value       // '1w' — data-value, falling back to the button's text
+seg.index       // 1
+seg.select(2)   // select by index; select(2, true) also moves focus
+seg.buttons     // the button elements
+_78.seg.mountAll(container)   // after injecting markup
+```
+
+```js
+document.addEventListener('_78:segchange', function (e) {
+  e.detail;     // { index, button, value }  — bubbles from the ._78-seg group
+});
+```
+
+**What the mount does.** `role="radiogroup"` on the group (it keeps a role you set yourself) and
+`role="radio"` + `aria-checked` on each option — the ARIA for *exactly one of N*. Roving tabindex makes
+the group a single tab stop; ←/→/↑/↓ move between options and **step over disabled ones**, Home / End go
+to the first / last enabled option, and every change fires `_78:segchange`. The initial value is whichever
+option carries `aria-checked="true"`, `aria-pressed="true"` or `._78-active`, else the first — and that
+initial state does **not** fire an event. Mounting is idempotent; the mounted API is also on `el._78seg`.
+
+Give the group an `aria-label` (or `aria-labelledby`) saying what the value *is* — "Range", not "1D 1W
+1M". A `._78-seg-btn` with no `type` is set to `type="button"`, so it is safe inside a `<form>`.
+
 ---
 
 ## 5. Cards, stat / KPI cards and grids
@@ -549,7 +611,8 @@ inside `._78-icon-btn` is sized to 16px automatically. Focus is a 2px accent out
 | `._78-card` | `--bg2` surface, `--border` edge, `--radius-lg`, `--space-4` padding, `--shadow` |
 | `._78-card-title` | `--fs-lg`, semibold; an `._78-eyebrow` inside it becomes its own line above |
 | `._78-card-head` | Title on the left, actions on the right, on one row |
-| `._78-card-foot` | Bottom section, separated by a top border |
+| `._78-card-foot` | Bottom action row. Full-bleed to the card's padding edges, like the modal foot, so its top border reaches both sides |
+| `._78-card-foot-fill` | Adds the modal foot's `--bg3` surface to that row |
 | `._78-card-link` | Makes the card an interactive link: accent border, lift and larger shadow on hover |
 | `._78-card-grid` | Responsive grid of cards — `auto-fit`, min 200px per column |
 
@@ -626,7 +689,7 @@ Both use a `--space-4` gap and need no media queries.
 
 ---
 
-## 6. Forms
+## 6. Forms and the toggle switch
 
 ```html
 <div class="_78-field">
@@ -688,6 +751,66 @@ Both use a `--space-4` gap and need no media queries.
 `--ring`. `:disabled` dims and blocks the cursor. `[aria-invalid="true"]` (or `._78-invalid` on an input)
 turns the border `--danger` and the focus ring `--danger-lo`. Placeholders render in `--dim`.
 
+### 6.1 Toggle switch — `._78-switch`
+
+A real `<input type="checkbox">` restyled as a track and a sliding thumb — not a `<div>` pretending. The
+keyboard (Tab, then Space), the focus ring, `:disabled`, label association and the checked state are all
+the native control's, so there is nothing to re-implement and nothing to get wrong.
+
+```html
+<label class="_78-switch">
+  <input type="checkbox" role="switch" checked>
+  <span class="_78-switch-label">Email me when an order fills</span>
+</label>
+
+<!-- small -->
+<label class="_78-switch _78-switch-sm">
+  <input type="checkbox" role="switch">
+  <span class="_78-switch-label">Compact rows</span>
+</label>
+
+<!-- a settings row: label left, switch right -->
+<label class="_78-switch _78-switch-row">
+  <span class="_78-switch-label">Confirm before closing a position
+    <span class="_78-switch-hint">Shows a modal every time.</span>
+  </span>
+  <input type="checkbox" role="switch" checked>
+</label>
+
+<!-- standalone (a table row, a toolbar): the input carries the class and its own name -->
+<input class="_78-switch-input" type="checkbox" role="switch" aria-label="Live updates">
+
+<!-- an external label works too -->
+<label for="sw-live">Live updates</label>
+<input class="_78-switch-input" id="sw-live" type="checkbox" role="switch">
+
+<label class="_78-switch">
+  <input type="checkbox" role="switch" checked disabled>
+  <span class="_78-switch-label">Two-factor (enforced)</span>
+</label>
+```
+
+| Class | Role |
+|---|---|
+| `._78-switch` | The wrapping `<label>`: inline flex, `--space-2` gap, pointer cursor |
+| `._78-switch-input` | The checkbox itself, styled as the track + thumb. Optional inside `._78-switch` (a bare `input[type="checkbox"]` child is styled too), **required** when the switch stands alone |
+| `._78-switch-label` | The text beside it |
+| `._78-switch-hint` | A second, dim line under the label |
+| `._78-switch-sm` | Small: a 28×16 track instead of 36×20. Goes on the wrapper or on a standalone input |
+| `._78-switch-row` | Settings row: label left, switch pushed to the right edge, full width |
+
+**Colors.** Off is a `--bg3` track with a `--border` edge and a `--dim` thumb; on is an `--accent` track
+with an `--accent-text` thumb. Hover raises the edge to `--dim`, focus is the kit's 2px accent outline,
+and `:disabled` dims the control (and its label) and blocks the cursor. Nothing is hardcoded — the switch
+re-themes with everything else.
+
+**Sizing** is three local custom properties on the input — `--switch-w`, `--switch-h`, `--switch-pad` — so
+a one-off size is an inline override rather than new CSS: `style="--switch-w: 44px; --switch-h: 24px"`.
+
+**`role="switch"`** is optional but recommended when the toggle takes effect immediately: a screen reader
+then says "on" / "off" rather than "checked" / "not checked". It changes nothing about the styling. Use a
+plain `._78-check` checkbox instead when the change only applies once a form is submitted.
+
 ---
 
 ## 7. Badges, tags and pills
@@ -734,7 +857,7 @@ Every variant is a `-lo` tint plus solid text, never `opacity` — the label sta
 ## 8. Table
 
 `._78-table` styles a `<table>` you wrote by hand. For a real data grid — sorting, filtering, paging,
-editing, virtual scroll — use Tabulator with the kit's adapter (§14.1); this does not try to replace one.
+editing, virtual scroll — use Tabulator with the kit's adapter (§15.1); this does not try to replace one.
 
 ```html
 <div class="_78-table-wrap">
@@ -1068,12 +1191,12 @@ need one.
 
 ---
 
-## 12. Data-viz primitives — `_78.viz`
+## 12. Data-viz primitives — `_78.viz`, figure rows and split bars
 
-Sparkline, progress bar, labeled bar row, donut / gauge and trend arrow — inline SVG and plain elements
-painted with kit tokens, so a theme switch needs **no redraw**. They exist so you do not load a chart
-library to draw one 40px trend line. Anything deeper — axes, tooltips, interaction — is Chart.js and its
-adapter (§14.3).
+Sparkline, progress bar, labeled bar row, donut / gauge, trend arrow, figure row and split bar — inline
+SVG and plain elements painted with kit tokens, so a theme switch needs **no redraw**. They exist so you do
+not load a chart library to draw one 40px trend line. Anything deeper — axes, tooltips, interaction — is
+Chart.js and its adapter (§15.3).
 
 **Color** flows through two inherited variables: `--viz` (the solid color, falling back to `--accent`)
 and `--viz-lo` (its tint, falling back to `--accent-lo`). Set them with a tone class on the primitive
@@ -1106,6 +1229,7 @@ and `--viz-lo` (its tint, falling back to `--accent-lo`). Set them with a tone c
 | `._78-progress[data-pct]` | Progress track + fill + `role="progressbar"` |
 | `._78-bar-row[data-pct]` | Bar fill + `role="progressbar"` |
 | `._78-donut[data-pct]` | The ring and its center value |
+| `._78-split-bar` | Sizes its `._78-split-seg` children and writes the group `aria-label` |
 | `._78-trend[data-delta]`, `._78-stat-delta[data-delta]` | The arrow, the text and the direction word |
 
 Call `_78.viz.mountAll(container)` after injecting markup. Every function is also callable directly, and
@@ -1116,7 +1240,7 @@ re-rendering an element replaces its previous SVG rather than stacking a second 
 ```html
 <!-- auto-mounted -->
 <div class="_78-stat-card__spark" data-values="18,22,19,27,31,29,34" data-tone="auto"></div>
-<div data-values="4 7 6 9 12" data-fill="false" data-dot="false" data-label="Signups, last 5 days"></div>
+<div data-values="4 7 6 9 12" data-fill="false" data-dot="true" data-label="Signups, last 5 days"></div>
 ```
 
 ```js
@@ -1124,7 +1248,7 @@ _78.viz.sparkline(el, [18, 22, 19, 27, 31], {
   width: 120,      // viewBox width  (default 120) — the SVG still stretches to the container
   height: 32,      // viewBox height (default 32)
   fill: true,      // the area under the line (default true)
-  dot: true,       // the dot on the last point (default true)
+  dot: false,      // the dot on the last point (default FALSE — opt in with dot:true)
   tone: 'auto',    // a tone name, or 'auto': success if the series ends up, danger if down
   label: 'Revenue, 7 days'   // aria-label + <title>
 });
@@ -1136,7 +1260,10 @@ the middle instead of dividing by zero. The stroke is non-scaling, so a stretche
 fat line.
 
 Attributes: `data-values`, `data-tone` (including `"auto"`), `data-label`, `data-fill="false"`,
-`data-dot="false"`.
+`data-dot="true"`.
+
+The end-of-series dot is **off by default** (it crowds a small card); `dot: true` / `data-dot="true"` turns
+it on. *(Changed in 0.2.0 — it used to be on by default.)*
 
 Without a label, the kit writes a plain-English one: *"Trend, 7 points: 18 to 34 (up)"*.
 
@@ -1281,9 +1408,150 @@ the text, and a `._78-sr-only` direction word — so the meaning survives withou
 
 Attributes: `data-delta`, `data-unit`, `data-invert="true"`.
 
+### 12.7 Figure row — `._78-figure-row`
+
+N *related* numbers read side by side, each with a label and a semantic tone shown as a colored left edge:
+entry / take-profit / stop, plan / actual / variance, min / median / max, three-tier pricing. One fact in
+parts — where a `._78-kpi-grid` (§5.3) is unrelated metrics and a `._78-stat-card` is one headline number.
+CSS only, and toned with the same `._78-tone-*` classes as everything else in this section, so a figure
+and the chart beside it agree on color.
+
+```html
+<div class="_78-figure-row">
+  <div class="_78-figure _78-tone-accent">
+    <span class="_78-figure-label">Entry</span>
+    <span class="_78-figure-value">1.0842</span>
+  </div>
+  <div class="_78-figure _78-tone-success">
+    <span class="_78-figure-label">Take profit</span>
+    <span class="_78-figure-value">1.0985</span>
+    <span class="_78-figure-sub">+143 pips</span>
+  </div>
+  <div class="_78-figure _78-tone-danger">
+    <span class="_78-figure-label">Stop</span>
+    <span class="_78-figure-value">1.0790</span>
+    <span class="_78-figure-sub">−52 pips</span>
+  </div>
+</div>
+
+<!-- the value itself carries the tone, in a denser row -->
+<div class="_78-figure-row _78-figure-row-sm _78-figure-strong"> … </div>
+
+<!-- no fill: the tone moves to the label -->
+<div class="_78-figure-row _78-figure-row-plain"> … </div>
+```
+
+| Class | Role |
+|---|---|
+| `._78-figure-row` | The row: an auto-fit grid, min 140px per figure, `--space-3` gap, wraps |
+| `._78-figure` | One figure: `--bg3` fill, `--radius-sm`, and a 3px `--viz` left edge |
+| `._78-figure-label` | The uppercase `--fs-xs` label — always say what the number is |
+| `._78-figure-value` | The number: `--fs-lg`, bold, tabular figures |
+| `._78-figure-sub` | A small dim line under the value |
+| `._78-figure-strong` | On a figure (or the row): the value takes the tone color too |
+| `._78-figure-row-sm` | Denser padding and an `--fs-base` value, for a table cell or a narrow card |
+| `._78-figure-row-plain` | No fill and no edge; the tone moves to the label |
+
+The label is the meaning and the color is reinforcement — never ship a figure row whose only difference
+between parts is the tone.
+
+### 12.8 Split bar — `._78-split-bar`
+
+One bar, two or more proportional segments, each with its own semantic color: risk vs reward, spent vs
+remaining, pass / skip / fail. `._78-progress` (§12.3) is a single fill of one track and `._78-bar-row`
+(§12.4) is one row of a ranked list; this is the split of a whole into named parts.
+
+```html
+<div class="_78-split-head">
+  <span class="_78-split-title">Risk / reward</span>
+  <span class="_78-split-total">1 : 1.9</span>
+</div>
+<div class="_78-split-bar" data-label="Risk versus reward">
+  <span class="_78-split-seg _78-tone-danger"  data-pct="35" data-label="Risk"></span>
+  <span class="_78-split-seg _78-tone-success" data-pct="65" data-label="Reward"></span>
+</div>
+<div class="_78-split-legend">
+  <span class="_78-split-key _78-tone-danger">Risk <b>35%</b></span>
+  <span class="_78-split-key _78-tone-success">Reward <b>65%</b></span>
+</div>
+```
+
+```js
+_78.viz.splitBar(el, [
+  { pct: 45, tone: 'accent', label: 'Equities' },
+  { pct: 30, tone: 'info',   label: 'FX' },
+  { pct: 25, tone: 'dim',    label: 'Cash' }
+], { label: 'Allocation' });        // omit the array to size the markup that is already there
+```
+
+| Class | Role |
+|---|---|
+| `._78-split-bar` | The track: 8px tall, pill radius, `--border` fill, a 2px gap between segments |
+| `._78-split-seg` | One segment, painted from `--viz`; its width is set by `_78.viz.splitBar()` |
+| `._78-split-bar-sm` / `-lg` | 4px / 12px tall |
+| `._78-split-head` | Optional title + total line above the bar |
+| `._78-split-title` / `._78-split-total` | Its two halves — dim label, solid tabular value |
+| `._78-split-legend` | A wrapping row of keys under the bar |
+| `._78-split-key` | One key: takes the segment's tone class and gets a matching dot |
+
+Attributes: `data-pct` and `data-label` per segment, `data-label` on the bar itself.
+
+**Totals.** Values under 100 leave the shortfall as visible track, so "68% used" works with one segment.
+Values totaling more than 100 are treated as raw amounts and shared out — `512 / 96 / 32` renders as 80% /
+15% / 5% with no math on your side.
+
+**Accessibility.** The bar becomes one `role="img"` whose `aria-label` names every segment and its share
+("Risk versus reward: Risk 35%, Reward 65%"), and each segment repeats its own text as a `title`. Write
+the legend yourself — the wording is yours, and it is what makes the colors legible.
+
 ---
 
-## 13. Utilities
+## 13. Disclosure — `._78-details`
+
+A styled `<details>` / `<summary>`: the native marker is removed (including Safari's
+`::-webkit-details-marker`) and replaced with a chevron that rotates when the element opens. **No JS** —
+the keyboard, screen-reader, and find-in-page behavior is the browser's own. This is the progressive
+"show the numbers behind this" pattern: the headline stays readable, the detail is one click away.
+
+```html
+<details class="_78-details">
+  <summary>Show the numbers behind this <span class="_78-details-meta">3 legs</span></summary>
+  <div class="_78-details-body">
+    …
+  </div>
+</details>
+
+<details class="_78-details _78-details-fill" open>
+  <summary>Assumptions</summary>
+  <div class="_78-details-body">Commission at 0.08%, financing at base + 2.5%.</div>
+</details>
+
+<details class="_78-details _78-details-plain">
+  <summary>What counts as an open position?</summary>
+  <div class="_78-details-body _78-text-sm">Anything with a non-zero quantity at the close.</div>
+</details>
+```
+
+| Class | Role |
+|---|---|
+| `._78-details` | The `<details>`: `--bg2` surface, `--border` edge, `--radius`, clipped corners |
+| `._78-details-summary` | Optional class on the `<summary>` — a direct `> summary` is styled anyway |
+| `._78-details-meta` | Pushed to the right of the summary: a count, a total, a badge |
+| `._78-details-body` | The revealed content: `--space-3` padding, separated by a top border |
+| `._78-details-plain` | No box — for a disclosure inside a card that already has one |
+| `._78-details-fill` | `--bg3` summary bar, the way a table or a card foot is tinted |
+| `._78-details-sm` | Smaller type and padding throughout |
+
+The chevron is pure CSS (two borders rotated), so there is no icon set to load and it follows the text
+color; `[open]` rotates it. Hover tints the summary with `--row-hover` and turns it accent; focus is the
+kit's 2px accent outline, inset. Consecutive `._78-details` siblings get a `--space-2` gap.
+
+Keep the summary a real summary — a sentence someone can act on. Screen readers announce it as a
+disclosure with its expanded state for free.
+
+---
+
+## 14. Utilities
 
 A deliberately small set — the kit is a component library, not a utility framework.
 
@@ -1298,19 +1566,27 @@ A deliberately small set — the kit is a component library, not a utility frame
 
 `._78-flex` and `._78-flex-between` both center their items vertically.
 
+**Two spellings, one color.** `._78-accent` / `._78-green` / `._78-warn` / `._78-red` are aliases of
+`._78-text-accent` / `._78-text-green` / `._78-text-warn` / `._78-text-red` — the short forms started life
+on `._78-stat-card__num` and now work anywhere, so neither spelling is a typo.
+
+**The escape hatch.** There is deliberately no margin utility above 16px and there are no padding
+utilities. Above the scale, use the space tokens directly — `style="padding: var(--space-5)"` — that is
+the intended way out, not a gap in the set.
+
 ---
 
-## 14. Library adapters
+## 15. Library adapters
 
 *Your tables and charts match your theme automatically, including when it switches.* Adapters are
 **opt-in** — never part of `kit.css` — and **nothing is vendored**: you bring your own copy of each
 library, at your own version. Always load an adapter **after** the library it themes.
 
-### 14.1 Tabulator (6.x, verified against 6.5.2)
+### 15.1 Tabulator (6.x, verified against 6.5.2)
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/css/tabulator.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/adapters/tabulator.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/tabulator.css">
 <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/js/tabulator.min.js"></script>
 ```
 
@@ -1320,13 +1596,13 @@ filters, the pagination controls and the column resize handles to `--accent`. Th
 moment `data-theme` flips, with no JS and no redraw. Tabulator renames classes across majors, so re-check
 the adapter on a major upgrade.
 
-### 14.2 FullCalendar (7.x core, verified against 7.0.2)
+### 15.2 FullCalendar (7.x core, verified against 7.0.2)
 
 ```html
 <link rel="stylesheet" href="…/fullcalendar@7/skeleton.css">
 <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/theme.css">
 <link rel="stylesheet" href="…/fullcalendar@7/themes/classic/palette.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/css/adapters/fullcalendar.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/fullcalendar.css">
 <script src="…/fullcalendar@7/all/global.min.js"></script>
 <script src="…/fullcalendar@7/themes/classic/global.js"></script>
 ```
@@ -1338,12 +1614,12 @@ surface, and remapping them onto kit tokens is all this adapter does. A legacy b
 file covers v6.x, which still had stable class names. Everything resolves at runtime, so the calendar
 re-themes the instant `data-theme` flips.
 
-### 14.3 Chart.js (4.x, verified against 4.5.1)
+### 15.3 Chart.js (4.x, verified against 4.5.1)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/adapters/chartjs.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/adapters/chartjs.js"></script>
 ```
 
 This one is JS because a chart is a `<canvas>`, and canvas pixels cannot resolve `var(--accent)` — colors
@@ -1395,15 +1671,15 @@ it.
 
 ---
 
-## 15. Theme generator — `_78.gen`
+## 16. Theme generator — `_78.gen`
 
 `js/generator.js` derives the **whole token set for light and dark** from one accent color, with live WCAG
 checks, an apply-to-the-page mode and a shareable URL. It is opt-in and **not** part of `_78.js` — load it
 only where you need it (the tool itself lives at https://78uikit.com).
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/_78.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.1.1/js/generator.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/generator.js"></script>
 ```
 
 Two rules the file exists to enforce: **work in OKLCH** (HSL ramps go muddy — equal steps in HSL are not
@@ -1411,7 +1687,7 @@ equal steps to the eye), and **dark is not inverted light** (each theme gets its
 targets). No color library, no build — both sRGB ⇄ OKLCH directions are implemented in the file, plus a
 chroma-reduction gamut map for OKLCH values that land outside sRGB.
 
-### 15.1 The config
+### 16.1 The config
 
 ```js
 {
@@ -1425,7 +1701,7 @@ chroma-reduction gamut map for OKLCH values that land outside sRGB.
 `_78.gen.DEFAULTS` holds exactly that object. Density drives the `--space-*` scale (×0.75 / ×1 / ×1.25)
 and `--control-h` / `--control-h-sm` / `--icon-btn-size` (32/26/28, 36/28/32, 40/32/36).
 
-### 15.2 Deriving and emitting
+### 16.2 Deriving and emitting
 
 ```js
 var result = _78.gen.derive({ accent: '#7c5cff', neutral: 'cool', radius: 10, density: 'cozy' });
@@ -1446,7 +1722,7 @@ var block = _78.gen.block(':root[data-theme="dark"]', result.dark, true);  // on
 `css()` output drops straight into a `<style>` after `kit.css` and re-themes everything — components,
 adapters and all.
 
-### 15.3 Contrast report
+### 16.3 Contrast report
 
 ```js
 var rows = _78.gen.report(result.dark, 'dark');
@@ -1459,7 +1735,7 @@ color on its own `-lo` tint, and `--border` on `--bg2` as an advisory check (`so
 cannot see is a border that is not doing its job). Lightness is nudged automatically where a pair would
 otherwise fail; the nudges land in `result.notes`.
 
-### 15.4 Apply, persist, share
+### 16.4 Apply, persist, share
 
 ```js
 _78.gen.apply(result);     // inject the CSS as <style id="_78-gen-style">, persist it, set data-_78-gen
@@ -1477,7 +1753,7 @@ the kit's own toggle keeps working. It stores `{ config, css }` under `localStor
 `_78.gen.PREPAINT` is a second pre-paint snippet that puts a saved generated theme back before the first
 paint with no re-derivation. It runs **after** `_78.theme`'s snippet and before any stylesheet.
 
-### 15.5 The `?theme=` URL format
+### 16.5 The `?theme=` URL format
 
 `accent.neutral.radius.density`, hex without the `#` — e.g. `?theme=0073ea.cool.8.cozy`. Short, readable,
 no backend.
@@ -1490,7 +1766,7 @@ _78.gen.shareUrl(config)      // → the current URL with ?theme= set
 _78.gen.STORAGE               // '_78-gen'
 ```
 
-### 15.6 Color math, exposed
+### 16.6 Color math, exposed
 
 `_78.gen` also exposes the primitives it is built on, in case you need them:
 `resolve(color)` → `{r,g,b}` · `toOklch(rgb)` · `fromOklch(l, c, h)` · `oklch(l, c, h)` (formats the CSS
@@ -1499,7 +1775,7 @@ string) · `hex(rgb)` · `rgba(rgb, a)` · `luminance(rgb)` · `contrast(a, b)` 
 
 ---
 
-## 16. Events, storage keys and file map
+## 17. Events, storage keys and file map
 
 ### Events
 
@@ -1509,6 +1785,7 @@ string) · `hex(rgb)` · `rgba(rgb, a)` · `luminance(rgb)` · `contrast(a, b)` 
 | `_78:railchange` | `document` | `{ rail: boolean }` |
 | `_78:drawerchange` | `document` | `{ open: boolean }` |
 | `_78:tabchange` | the `._78-tabs` list (bubbles) | `{ index, tab, panel, id }` |
+| `_78:segchange` | the `._78-seg` group (bubbles) | `{ index, button, value }` |
 | `_78:genchange` | `document` | `{ config }` — `null` after `_78.gen.clear()` |
 
 ### localStorage keys
@@ -1532,10 +1809,12 @@ throws.
 css/  kit.css              the one stylesheet a project links (@imports everything below)
       tokens.css           light + dark color blocks + the shared non-color tokens
       reset.css            minimal reset, themed scrollbars, focus ring
-      components/          shell · buttons · cards · forms · badges · viz · table · tabs ·
-                           modal · toast · alert · theme-toggle · utilities
+      components/          shell · buttons · cards · forms · switch · seg · details · badges ·
+                           viz · figure · split-bar · table · tabs · modal · toast · alert ·
+                           theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js               _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.viz
+js/   _78.js               _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
+                           _78.viz
       generator.js         _78.gen — opt-in, not part of _78.js
       adapters/            chartjs.js — _78.adapters.chartjs
 demo/                      living examples, every page in light + dark
