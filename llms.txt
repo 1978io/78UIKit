@@ -46,7 +46,7 @@ download the repo and serve the files yourself. Library adapters are opt-in and 
 - **Modifiers** are suffixes on the block class — `._78-btn-primary`, `._78-table-compact` — and shared
   state classes are their own prefixed class alongside it: `._78-active`, `._78-selected`, `._78-up`,
   `._78-down`, `._78-invert`, `._78-high` / `._78-mid` / `._78-low`, `._78-danger`.
-- **JS** is one global, `_78`, with no dependencies: `_78.theme`, `_78.tone`, `_78.shell`, `_78.modal`, `_78.notify`,
+- **JS** is one global, `_78`, with no dependencies: `_78.theme`, `_78.tone`, `_78.util`, `_78.shell`, `_78.modal`, `_78.notify`,
   `_78.tabs`, `_78.seg`, `_78.viz`, `_78.adapters.chartjs`, `_78.gen`.
 - **Events** are namespaced `_78:` and fire on `document` (except `_78:tabchange`, which bubbles from the
   tab list, and `_78:segchange`, which bubbles from the segmented control): `_78:themechange`,
@@ -125,6 +125,13 @@ One vocabulary for every component that takes a tone, and it is the token names:
   `._78-nums`, `._78-sr-only`, `._78-list-plain`, and friends. Plain lists inside an alert body, card,
   modal body or disclosure keep their indent and markers. Text color takes any tone, in two
   interchangeable spellings: `._78-text-danger` / `._78-danger`.
+
+## Helpers — `_78.util`
+
+- `_78.util.sortAlpha(a, b)` — a human-sort comparator (case-insensitive, locale-aware, "Item 2" before
+  "Item 10", blanks last) for `array.sort()` or a Tabulator `sorter`.
+- `_78.util.duration(ms, { long, parts })` — "45 sec", "2 hrs 5 min", "3 days"; `long: true` spells
+  units out, `parts` caps how many (default 2). Never "0 min".
 
 ## Library adapters (opt-in)
 

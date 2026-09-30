@@ -28,7 +28,7 @@ Version 0.x — the public API may still change before 1.0.
 11. Notifications — modal, toast, inline alert
 12. Data-viz primitives — `_78.viz`, figure rows and split bars
 13. Disclosure — `._78-details`
-14. Utilities
+14. Utilities — and the JS helpers, `_78.util`
 15. Library adapters — Tabulator, FullCalendar, Chart.js
 16. Theme generator — `_78.gen`
 17. Events, storage keys and file map
@@ -1709,6 +1709,47 @@ on `._78-stat-card__num` and now work anywhere, so no spelling is a typo.
 utilities. Above the scale, use the space tokens directly — `style="padding: var(--space-5)"` — that is
 the intended way out, not a gap in the set.
 
+### 14.1 JS helpers — `_78.util`
+
+Two small helpers, dependency-free and DOM-free. *(Added in 0.3.0.)*
+
+**`_78.util.sortAlpha(a, b)`** — a comparator for human sorting. Case-insensitive, locale-aware
+(`Intl.Collator` with `numeric: true`), so "Item 2" sorts before "Item 10". Blanks (`null`,
+`undefined`, `""`) sort after everything else; non-strings are compared as their text.
+
+```js
+['Item 10', 'item 2', 'Item 1', 'apple', 'Banana'].sort(_78.util.sortAlpha)
+// → ['apple', 'Banana', 'Item 1', 'item 2', 'Item 10']
+
+new Tabulator('#grid', {
+  columns: [{ title: 'Name', field: 'name', sorter: _78.util.sortAlpha }]   // works as-is
+});
+```
+
+**`_78.util.duration(ms, opts)`** — milliseconds as plain English.
+
+| Option | Default | What it does |
+|---|---|---|
+| `long` | `false` | `true` spells units out: "2 hours 5 minutes" instead of "2 hrs 5 min" |
+| `parts` | `2` | The most units to show: `1` → "3 days", `3` → "3 days 4 hrs 50 min" |
+
+| Input (ms) | Output |
+|---|---|
+| `0` | `"0 sec"` |
+| `400` (or `-400`) | `"< 1 sec"` |
+| `45000` | `"45 sec"` |
+| `59600` | `"1 min"` (rounded, with carry) |
+| `90000` | `"1 min 30 sec"` |
+| `7500000` | `"2 hrs 5 min"` |
+| `7220000` | `"2 hrs"` (a part that rounds to 0 is left out — never "0 min") |
+| `259200000` | `"3 days"` |
+| `-180000` | `"-3 min"` |
+| `1e12` | `"11,574 days 2 hrs"` (days are the largest unit) |
+| `NaN`, `"abc"` | `""` |
+
+Numeric strings are accepted (`"7500000"` → `"2 hrs 5 min"`). Singular units are singular: "1 hr",
+"1 day", "1 minute".
+
 ---
 
 ## 15. Library adapters
@@ -1992,7 +2033,7 @@ css/  kit.css              the one stylesheet a project links (@imports everythi
                            viz · figure · split-bar · table · tabs · modal · toast · alert ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js               _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
+js/   _78.js               _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
                            _78.viz
       generator.js         _78.gen — opt-in, not part of _78.js
       adapters/            chartjs.js — _78.adapters.chartjs

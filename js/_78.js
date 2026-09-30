@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
+   Surface: _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -174,6 +174,87 @@ window._78 = window._78 || {};
   tone.categories = CATEGORIES.slice();
 
   _78.tone = tone;
+})(window._78);
+
+/* ==========================================================================
+   _78.util — two small, dependency-free helpers (no DOM)
+
+     list.sort(_78.util.sortAlpha)          "Item 2" before "Item 10"
+     _78.util.duration(7500000)             "2 hrs 5 min"
+
+   sortAlpha(a, b) is a comparator for human sorting: case-insensitive,
+   locale-aware, numbers compared as numbers. Blanks (null / undefined / "")
+   sort after everything else. Its signature fits Array.prototype.sort and a
+   Tabulator column's `sorter` as-is.
+
+   duration(ms, { long, parts }) turns milliseconds into plain English:
+     long   false (default) "45 sec" "3 min" "2 hrs" "3 days"
+            true            "45 seconds" "3 minutes" "2 hours" "3 days"
+     parts  how many units at most (default 2): "2 hrs 5 min", "3 days 4 hrs"
+   The last part shown is rounded (with carry: 59.6 min is "1 hr"), and a part
+   that rounds to zero is left out, so it never prints "0 min". Under a second
+   is "< 1 sec" (either sign); 0 is "0 sec"; negatives get a leading "-"; days are the
+   largest unit ("1,200 days"); anything that isn't a finite number is "".
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var collator = typeof Intl !== "undefined" && Intl.Collator
+    ? new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
+    : null;
+
+  function sortAlpha(a, b) {
+    var blankA = a == null || a === "", blankB = b == null || b === "";
+    if (blankA || blankB) return blankA === blankB ? 0 : (blankA ? 1 : -1);
+    a = String(a); b = String(b);
+    if (collator) return collator.compare(a, b);
+    a = a.toLowerCase(); b = b.toLowerCase();
+    return a < b ? -1 : a > b ? 1 : 0;
+  }
+
+  var UNITS = [
+    { ms: 86400000, short: ["day", "days"], long: ["day", "days"] },
+    { ms: 3600000,  short: ["hr", "hrs"],   long: ["hour", "hours"] },
+    { ms: 60000,    short: ["min", "min"],  long: ["minute", "minutes"] },
+    { ms: 1000,     short: ["sec", "sec"],  long: ["second", "seconds"] }
+  ];
+
+  function duration(ms, opts) {
+    opts = opts || {};
+    ms = Number(ms);
+    if (!isFinite(ms)) return "";
+    var names = opts.long ? "long" : "short";
+    var parts = Math.max(1, Math.floor(opts.parts) || 2);
+    var sign = ms < 0 ? "-" : "";
+    var abs = Math.abs(ms);
+    var num = function (n) { return n.toLocaleString ? n.toLocaleString("en-US") : String(n); };
+    var say = function (n, u) { return num(n) + " " + u[names][n === 1 ? 0 : 1]; };
+
+    if (abs === 0) return say(0, UNITS[3]);
+    if (abs < 1000) return "< " + say(1, UNITS[3]);          /* no "-< 1 sec" */
+
+    var first = function (v) {
+      for (var i = 0; i < UNITS.length; i++) if (v >= UNITS[i].ms) return i;
+      return UNITS.length - 1;
+    };
+    /* Round to the smallest unit that will be shown, then re-pick the largest
+       unit — rounding can carry (59.6 min → 60 min → 1 hr). */
+    var i = first(abs);
+    var step = UNITS[Math.min(i + parts - 1, UNITS.length - 1)].ms;
+    abs = Math.round(abs / step) * step;
+    i = first(abs);
+    var last = Math.min(i + parts - 1, UNITS.length - 1);
+
+    var out = [];
+    for (var k = i; k <= last; k++) {
+      var n = Math.floor(abs / UNITS[k].ms);
+      abs -= n * UNITS[k].ms;
+      if (n > 0) out.push(say(n, UNITS[k]));
+    }
+    return sign + out.join(" ");
+  }
+
+  _78.util = { sortAlpha: sortAlpha, duration: duration };
 })(window._78);
 
 /* ==========================================================================

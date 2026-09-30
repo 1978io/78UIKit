@@ -294,10 +294,27 @@ Escape and the backdrop do nothing.
 Test the value instead, `if (await _78.modal.alert(msg)) reload()`, or tie the side effect to the action
 that succeeded and use the alert only to report it.
 
+### Helpers — `_78.util`
+
+Two small, dependency-free helpers (no DOM):
+
+```js
+['Item 10', 'item 2', 'Item 1'].sort(_78.util.sortAlpha)   // → ['Item 1', 'item 2', 'Item 10']
+{ field: 'name', sorter: _78.util.sortAlpha }             // a Tabulator column, as-is
+
+_78.util.duration(7500000)                  // → '2 hrs 5 min'
+_78.util.duration(7500000, { long: true })  // → '2 hours 5 minutes'
+_78.util.duration(276600000, { parts: 3 })  // → '3 days 4 hrs 50 min'
+```
+
+`sortAlpha` is case-insensitive and locale-aware, compares numbers as numbers, and sorts blanks last.
+`duration` rounds its last part (with carry), never prints "0 min", and returns `''` for anything that
+isn't a number.
+
 ## Naming
 
 - **CSS classes** use the `_78-` prefix (`._78-btn`, `._78-card`) — digit-safe and matches the JS namespace.
-- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.tone()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.seg`,
+- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.tone()`, `_78.util`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.seg`,
   `_78.viz`).
 
 ## The theme generator
@@ -325,7 +342,7 @@ css/  kit.css            the one stylesheet a project links (@imports everything
       components/        shell · buttons · cards · forms · switch · seg · details · badges · viz ·
                          figure · split-bar · table · tabs · modal · toast · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js             _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
+js/   _78.js             _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
       adapters/          chartjs.js — _78.adapters.chartjs
 demo/                    living examples, every page in light + dark
 ```

@@ -389,6 +389,20 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <span class="_78-text-sm">._78-flex-between</span>
         <span class="_78-badge _78-badge-accent">right</span>
       </div>
+
+      <div class="_78-eyebrow _78-mt-16 _78-mb-8">JS helpers — _78.util</div>
+      <div class="_78-flex _78-flex-wrap _78-gap-16" style="align-items:flex-start">
+        <div class="_78-table-wrap" style="flex:1 1 280px">
+          <table class="_78-table _78-table-compact" id="util-duration">
+            <thead><tr><th class="_78-right">ms</th><th>duration(ms)</th><th>{ long: true }</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div style="flex:1 1 240px">
+          <div class="_78-text-sm _78-text-dim _78-mb-8">list.sort(_78.util.sortAlpha)</div>
+          <ol id="util-sort" class="_78-mono _78-text-sm" style="padding-left:var(--space-5)"></ol>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -450,6 +464,17 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       body.appendChild(tr);
     });
     body.querySelectorAll('._78-progress').forEach(function (el) { _78.viz.progress(el); });
+
+    /* _78.util, live */
+    var dt = document.querySelector('#util-duration tbody');
+    [0, 400, 45000, 59600, 90000, 7500000, 7220000, 259200000, -180000].forEach(function (ms) {
+      dt.insertAdjacentHTML('beforeend', '<tr><td class="_78-right _78-mono">' + ms + '</td><td>' +
+        _78.util.duration(ms) + '</td><td>' + _78.util.duration(ms, { long: true }) + '</td></tr>');
+    });
+    ['Item 10', 'item 2', 'Item 1', null, 'apple', 'Banana', 'item 20'].sort(_78.util.sortAlpha)
+      .forEach(function (v) {
+        document.getElementById('util-sort').insertAdjacentHTML('beforeend', '<li>' + (v == null ? '(null)' : v) + '</li>');
+      });
 
     var cats = document.getElementById('cat-row');
     ['AI', 'You', 'Watch Book', 'Scout', 'Re-entry', 'Manual'].forEach(function (label, i) {
