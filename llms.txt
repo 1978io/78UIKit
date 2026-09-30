@@ -109,12 +109,16 @@ The `--space-*` tokens are also the escape hatch above the utility scale: there 
 
 ## Library adapters (opt-in)
 
-- **Tabulator 6.x** — `css/adapters/tabulator.css`, loaded after Tabulator's own stylesheet. Covers
-  responsive-collapse mode too (the fold-out panel wraps long values; the +/- toggle is accent-colored).
-- **FullCalendar 7.x core** — `css/adapters/fullcalendar.css`, loaded after FullCalendar's CSS.
-- **Chart.js 4.x** — `js/adapters/chartjs.js`, loaded after Chart.js and after `_78.js`. Canvas cannot read
-  CSS variables, so it pushes tokens into `Chart.defaults` and calls `update()` on every live chart when
-  the theme switches.
+- **Tabulator 6.x** (verified against 6.5.2) — `css/adapters/tabulator.css`, loaded after Tabulator's own
+  stylesheet. Covers responsive-collapse mode too (the fold-out panel wraps long values; the +/- toggle is
+  accent-colored).
+- **FullCalendar 7.x core** (verified against 7.0.2) — `css/adapters/fullcalendar.css`, loaded after
+  FullCalendar's CSS.
+- **Chart.js 4.x** (verified against 4.5.1) — `js/adapters/chartjs.js`, loaded after Chart.js and after
+  `_78.js`. Canvas cannot read CSS variables, so it pushes tokens into `Chart.defaults` and calls
+  `update()` on every live chart when the theme switches.
+
+The version beside each library is the one its adapter was checked against; re-check after a major upgrade.
 
 Nothing is vendored — bring your own copy of each library at your own version.
 

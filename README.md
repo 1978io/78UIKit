@@ -110,22 +110,33 @@ libraries. **Nothing is vendored — you bring your own copy of the library at y
 | Library | Adapter | Notes |
 |---|---|---|
 | **Tabulator** | `css/adapters/tabulator.css` | Maps its classes onto kit tokens (header → `--bg2`, hover → `--row-hover`, selection → `--row-selected`, pagination → `--accent`). Responsive-collapse mode is covered: the fold-out panel wraps long values and the +/- toggle takes the accent. Re-themes for free. Built against 6.x (verified 6.5.2). |
-| **FullCalendar** (core) | `css/adapters/fullcalendar.css` | Remaps FullCalendar's own variables onto kit tokens. Core only, no paid plugins. Primary target **v7**; a legacy block covers v6.x. |
+| **FullCalendar** (core) | `css/adapters/fullcalendar.css` | Remaps FullCalendar's own variables onto kit tokens. Core only, no paid plugins. Primary target **v7** (verified 7.0.2); a legacy block covers v6.x. |
 | **Chart.js** | `js/adapters/chartjs.js` | Canvas can't read CSS variables, so it reads the tokens into `Chart.defaults` and calls `chart.update()` on every live chart when the theme switches — the part everyone misses. Built against 4.x (verified 4.5.1). |
 
 Adapters are **opt-in** — deliberately not part of `kit.css`. Include only the ones you use, and always
 *after* the library itself:
 
 ```html
-<link rel="stylesheet" href="…/tabulator.min.css">
-<link rel="stylesheet" href="/78UIKit/css/adapters/tabulator.css">
+<!-- Tabulator: verified against 6.5.2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/css/tabulator.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/tabulator.css">
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
 
-<script src="…/fullcalendar/index.global.min.js"></script>
-<link rel="stylesheet" href="/78UIKit/css/adapters/fullcalendar.css">
+<!-- FullCalendar core: verified against 7.0.2 (a legacy block covers 6.x) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/skeleton.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/palette.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/fullcalendar.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/all/global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/global.js"></script>
 
-<script src="…/chart.umd.js"></script>
-<script src="/78UIKit/js/adapters/chartjs.js"></script>   <!-- after _78.js -->
+<!-- Chart.js: verified against 4.5.1. The adapter goes after _78.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/adapters/chartjs.js"></script>
 ```
+
+Each library's version above is the one the adapter was checked against. A newer minor usually works;
+re-check an adapter after a major upgrade, because the libraries rename classes between majors.
 
 The Chart.js adapter also exposes `_78.adapters.chartjs.palette(n)` (n series colors from the current
 theme — accent first, then the semantic tokens), `.tokens()`, `.alpha(color, a)` and `.apply()`. A dataset

@@ -1585,9 +1585,10 @@ library, at your own version. Always load an adapter **after** the library it th
 ### 15.1 Tabulator (6.x, verified against 6.5.2)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/css/tabulator.css">
+<!-- verified against Tabulator 6.5.2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/css/tabulator.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/tabulator.css">
-<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
 ```
 
 Pure CSS: it maps Tabulator's classes onto kit tokens — frame and header to `--bg2`, cells to `--text`,
@@ -1619,12 +1620,13 @@ new Tabulator('#accounts', {
 ### 15.2 FullCalendar (7.x core, verified against 7.0.2)
 
 ```html
-<link rel="stylesheet" href="…/fullcalendar@7/skeleton.css">
-<link rel="stylesheet" href="…/fullcalendar@7/themes/classic/theme.css">
-<link rel="stylesheet" href="…/fullcalendar@7/themes/classic/palette.css">
+<!-- verified against FullCalendar 7.0.2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/skeleton.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/theme.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/palette.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/fullcalendar.css">
-<script src="…/fullcalendar@7/all/global.min.js"></script>
-<script src="…/fullcalendar@7/themes/classic/global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/all/global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/global.js"></script>
 ```
 
 Core only — nothing here assumes a premium plugin. v7 ships **hashed atomic class names** (the calendar
@@ -1637,7 +1639,8 @@ re-themes the instant `data-theme` flips.
 ### 15.3 Chart.js (4.x, verified against 4.5.1)
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
+<!-- verified against Chart.js 4.5.1 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/adapters/chartjs.js"></script>
 ```
