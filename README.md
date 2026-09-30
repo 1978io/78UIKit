@@ -70,7 +70,7 @@ override.
 **Derived + shipped:** `--accent-lo` (a low-alpha tint of the accent) · `--accent-lo-hover` ·
 `--accent-hover` · `--accent-text` (text on an accent fill) · `--accent-glow` · semantic `--success` /
 `--warn` / `--danger` / `--info` — each with a `-lo` tint · categorical `--cat-1`…`--cat-6`, each with a
-`-lo` tint (labels that are not states; see [Tones](#tones)) · `--row-hover` · `--row-border` ·
+`-lo` tint (labels that are not states; see [Tones](#tones)) · `--series-2` (the second chart series) · `--row-hover` · `--row-border` ·
 `--row-selected` · `--ring` (focus) · `--overlay` (modal backdrop) · `--shadow` / `--shadow-lg`.
 
 **Non-color (shared `:root`):** `--radius-sm/-/-lg/-pill` · `--font` / `--font-mono` · `--fs-xs`…`--fs-xl` ·
@@ -163,7 +163,8 @@ Each library's version above is the one the adapter was checked against. A newer
 re-check an adapter after a major upgrade, because the libraries rename classes between majors.
 
 The Chart.js adapter also exposes `_78.adapters.chartjs.palette(n)` (n series colors from the current
-theme — accent first, then the semantic tokens), `.tokens()`, `.alpha(color, a)` and `.apply()`. A dataset
+theme — `--accent`, then `--series-2`, a gray that recedes behind it, then the six `--cat-*` tones),
+`.tokens()`, `.alpha(color, a)` and `.apply()`. A dataset
 that declares **no** colors is adopted and recolored on every theme switch; a dataset that declares its own
 `backgroundColor` / `borderColor` is never touched.
 

@@ -121,7 +121,9 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     <p class="_78-text-sm _78-text-dim _78-mb-12">Canvas can't read CSS variables, so
       <code class="tok">Chart.defaults</code> gets the tokens pushed into it — and because defaults are read
       at construction, every live chart is updated on each theme switch. The series colors come from
-      <code class="tok">_78.adapters.chartjs.palette(n)</code>: accent first, then the semantic tokens.</p>
+      <code class="tok">_78.adapters.chartjs.palette(n)</code>: the accent first, then
+      <code class="tok">--series-2</code> (a gray that recedes behind it, as the Benchmark line shows), then the
+      six categorical tones.</p>
 
     <div class="chart-grid">
       <div class="_78-card">

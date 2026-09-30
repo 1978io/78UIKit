@@ -100,6 +100,11 @@
   --cat-5: #d894e2;  --cat-5-lo: rgba(216, 148, 226, .16);   /* orchid */
   --cat-6: #d2a883;  --cat-6-lo: rgba(210, 168, 131, .16);   /* bronze */
 
+  /* Charts — the second series. A true gray (no hue), so it recedes behind
+     --accent and can never sit near it in hue, whatever the accent is.
+     Past two series, the chart adapter carries on with --cat-1 … --cat-6. */
+  --series-2: #8e8e93;
+
   /* Rows / tables */
   --row-hover: rgba(255, 255, 255, .04);
   --row-border: #232739;
@@ -150,6 +155,8 @@
   --cat-4: #5d7303;  --cat-4-lo: rgba(93, 115, 3, .10);
   --cat-5: #8f469b;  --cat-5-lo: rgba(143, 70, 155, .10);
   --cat-6: #86603d;  --cat-6-lo: rgba(134, 96, 61, .10);
+
+  --series-2: #8a8a8f;
 
   --row-hover: rgba(26, 29, 35, .035);
   --row-border: #eef0f4;

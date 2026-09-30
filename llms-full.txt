@@ -208,6 +208,12 @@ kept clear of the semantic hues so a category never reads as success / warn / da
 semantics they don't follow the accent. Each clears 4.5:1 as badge text on its own tint in both themes.
 Use them in order: `cat-6` (bronze) is the one nearest a state (warn), so a short list never reaches it.
 
+#### Charts — per theme
+
+`--series-2` — the second series in a chart: a true gray that recedes behind `--accent` and, having no
+hue, can never sit near it in hue whatever the accent is. It clears 3:1 on `--bg2` in both themes. The
+Chart.js adapter uses it for the second dataset (§15.3); past two series it continues with `--cat-*`.
+
 #### Surfaces, rows, focus — per theme
 
 | Token | What it is |
@@ -1802,16 +1808,24 @@ new Chart(ctx2, {
 });
 ```
 
+**The series ramp.** The first dataset gets `--accent`; the second gets `--series-2`, a true gray (no
+hue, so it recedes behind any accent and can never sit near it in hue); the third onward get the six
+categorical tones (`--cat-1` … `--cat-6`, §2.9). The semantic colors are not used for series: a series
+is a kind of thing, not a state, and a green line reads as "good". *(Changed in 0.3.0 — the ramp used to be
+accent, success, warn, danger, info, dim, so an existing chart's second and later series change color.
+Pin a dataset's color explicitly to keep the old look.)* The theme generator outputs `--series-2` too.
+
 Series coloring by chart type: line and radar get a solid border, a 16%-alpha fill and matching points;
 pie, doughnut and polar area get a per-slice palette with `--bg2` separators (polar area at 70% alpha);
 bar, bubble, scatter and everything else get a solid fill with an 80%-alpha hover.
 
 ```js
 _78.adapters.chartjs.palette(5)     // → 5 series colors from the current theme:
-                                    //   accent, success, warn, danger, info, dim,
+                                    //   --accent, --series-2, --cat-1 … --cat-6,
                                     //   then the same ramp again at 65% and 40% alpha
 _78.adapters.chartjs.tokens()       // → { text, dim, border, bg2, bg3, accent, success, warn,
-                                    //     danger, info, font, fontSize, radius } as resolved now
+                                    //     danger, info, series2, cats: [6], font, fontSize,
+                                    //     radius } as resolved now
 _78.adapters.chartjs.alpha('#4b9eff', .16)   // → 'rgba(75,158,255,0.16)' — the `-lo` idea, in JS
 _78.adapters.chartjs.apply()        // re-read tokens, restyle defaults, update every live chart
 _78.adapters.chartjs.plugin         // the registered plugin object, id '_78palette'

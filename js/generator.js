@@ -259,7 +259,7 @@ window._78 = window._78 || {};
       bg: 0.962, bg2: 1, bg3: 0.978, border: 0.905, rowBorder: 0.945,
       text: 0.245, dim: 0.575,
       accentL: [0.45, 0.62], accentChroma: 1,
-      semanticL: 0.52, semanticC: 0.14,
+      semanticL: 0.52, semanticC: 0.14, series2: 0.64,
       tint: 0.10, rowHover: 0.035, shadow: 0.08, shadowLg: 0.12, overlay: 0.45,
       ring: 0.25, glow: "0 2px 8px", glowAlpha: 0.25
     },
@@ -267,7 +267,7 @@ window._78 = window._78 || {};
       bg: 0.175, bg2: 0.245, bg3: 0.295, border: 0.34, rowBorder: 0.285,
       text: 0.915, dim: 0.63,
       accentL: [0.66, 0.80], accentChroma: 0.85,   /* less saturated on dark */
-      semanticL: 0.82, semanticC: 0.16,
+      semanticL: 0.82, semanticC: 0.16, series2: 0.66,
       tint: 0.16, rowHover: 0.04, shadow: 0.40, shadowLg: 0.50, overlay: 0.60,
       ring: 0.35, glow: "0 2px 10px", glowAlpha: 0.30
     }
@@ -371,6 +371,11 @@ window._78 = window._78 || {};
       fitted(name, CATEGORY[name][0], t.semanticC * CATEGORY[name][1]);
     });
 
+    /* The second chart series: a true gray (no hue, so never near the accent's),
+       nudged until it stands off the card surface at 3:1, like a UI graphic. */
+    var series2 = nudge({ l: t.series2, c: 0, h: 0 }, bg2, 3, dir);
+    tokens["--series-2"] = hex(series2.rgb);
+
     tokens["--row-hover"] = mode === "light"
       ? rgba(text.rgb, t.rowHover)
       : "rgba(255, 255, 255, " + t.rowHover + ")";
@@ -434,6 +439,7 @@ window._78 = window._78 || {};
       /* advisory, not WCAG: an edge you cannot see is a border that is not doing its job */
       { label: "--border on --bg2", a: col("--border"), b: col("--bg2"), need: 1.25, large: true, soft: true }
     ];
+    rows.push({ label: "--series-2 on --bg2", a: col("--series-2"), b: col("--bg2"), need: 3, large: true });
     Object.keys(SEMANTIC).concat(Object.keys(CATEGORY)).forEach(function (name) {
       rows.push({
         label: "--" + name + " on --" + name + "-lo",
@@ -464,6 +470,7 @@ window._78 = window._78 || {};
     ["Semantic", ["--success", "--success-lo", "--warn", "--warn-lo", "--danger", "--danger-lo", "--info", "--info-lo"]],
     ["Categories", ["--cat-1", "--cat-1-lo", "--cat-2", "--cat-2-lo", "--cat-3", "--cat-3-lo",
                     "--cat-4", "--cat-4-lo", "--cat-5", "--cat-5-lo", "--cat-6", "--cat-6-lo"]],
+    ["Charts", ["--series-2"]],
     ["Rows, overlay, focus", ["--row-hover", "--row-border", "--row-selected", "--overlay", "--ring"]]
   ];
 

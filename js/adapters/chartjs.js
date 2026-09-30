@@ -17,7 +17,8 @@
 
    API:
      _78.adapters.chartjs.apply()      re-read tokens, restyle, update charts
-     _78.adapters.chartjs.palette(n)   n theme-derived series colors
+     _78.adapters.chartjs.palette(n)   n theme-derived series colors: --accent,
+                                       --series-2, then --cat-1 … --cat-6
      _78.adapters.chartjs.tokens()     the token values currently in force
      _78.adapters.chartjs.alpha(c, a)  any CSS color → rgba() at alpha a
 
@@ -60,6 +61,8 @@ window._78 = window._78 || {};
       warn: token("--warn", "#b45309"),
       danger: token("--danger", "#dc2626"),
       info: token("--info", "#0369a1"),
+      series2: token("--series-2", "#8a8a8f"),
+      cats: [1, 2, 3, 4, 5, 6].map(function (i) { return token("--cat-" + i, ""); }),
       font: token("--font", "sans-serif"),
       fontSize: px("--fs-sm", 12),
       radius: px("--radius-sm", 6)
@@ -93,12 +96,14 @@ window._78 = window._78 || {};
 
   /* --- palette ------------------------------------------------------------
      Series colors derived from the theme: accent first (it's the project's
-     own color), then the semantic tokens. Past the base set the ramp repeats
-     at lower opacity rather than inventing hues that no token defines.
+     own color), then --series-2 (a gray that recedes behind it), then the six
+     categorical tones. Not the semantic tokens: a series is a kind of thing,
+     not a state, and a green line reads as "good". Past the base set the ramp
+     repeats at lower opacity rather than inventing hues no token defines.
      ---------------------------------------------------------------------- */
   function palette(n) {
     var t = tokens();
-    var base = [t.accent, t.success, t.warn, t.danger, t.info, t.dim];
+    var base = [t.accent, t.series2].concat(t.cats.filter(Boolean));
     var fades = [1, .65, .4];
     var out = [];
     var count = typeof n === "number" && n > 0 ? n : base.length;
