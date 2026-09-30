@@ -72,7 +72,8 @@ The `--space-*` tokens are also the escape hatch above the utility scale: there 
 ## Components
 
 - **App shell** — `._78-topbar` + `._78-sidebar` that collapses to an icon rail and becomes a mobile
-  drawer, plus `._78-app-main`; driven by `_78.shell`. Flat nav items only, no nested menus.
+  drawer, plus `._78-app-main`; driven by `_78.shell`. Flat nav items only, no nested menus. The open
+  drawer keeps keyboard focus inside it and makes the page behind `inert`.
 - **Buttons** — `._78-btn` (`-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`,
   `._78-btn-group`.
 - **Cards** — `._78-card` and the KPI `._78-stat-card` (label / number / delta / sparkline), laid out by

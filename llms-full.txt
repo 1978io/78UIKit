@@ -465,6 +465,10 @@ table, a Chart.js canvas, a virtualized list.
 - Escape closes the drawer and any open menu; clicking the scrim closes the drawer; following a nav link
   closes it (without yanking focus back, because focus goes with the link); focus returns to the trigger
   on a normal close; growing past 768px closes a drawer that would otherwise be a stuck overlay.
+- While the drawer is open, **focus stays in it**: Tab and Shift+Tab wrap around the drawer's visible
+  controls, and the page behind is made `inert` so a screen reader's browse mode can't wander into it
+  either. The topbar (which holds the toggle that closes the drawer) and the scrim stay live. Desktop full
+  and rail modes are unaffected. *(Added in 0.3.0.)*
 - `prefers-reduced-motion` disables the shell's transitions.
 
 ### 3.7 The nav is deliberately flat

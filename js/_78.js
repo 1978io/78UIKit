@@ -1097,6 +1097,48 @@ window._78 = window._78 || {};
 
   /* --- Drawer (mobile) ----------------------------------------------------- */
   var lastFocus = null;
+  var inerted = [];
+
+  /* What Tab can land on inside the drawer, in order — visible ones only, so
+     a control the drawer hides (the rail collapse button) is skipped. */
+  var FOCUSABLE = "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), "
+    + "textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+  function focusables(scope) {
+    return all(FOCUSABLE, scope).filter(function (n) { return n.getClientRects().length > 0; });
+  }
+
+  /* While the drawer is open the page behind it is inert, so neither Tab nor a
+     screen reader's browse mode can wander into it. Two things stay live: the
+     topbar, which sits above the scrim and holds the toggle that closes the
+     drawer, and the scrim itself, which closes it on a click. */
+  function setBackgroundInert(on) {
+    if (!on) {
+      inerted.forEach(function (n) { n.inert = false; });
+      inerted = [];
+      return;
+    }
+    var side = sidebar();
+    for (var node = side; node && node !== document.body; node = node.parentElement) {
+      Array.prototype.forEach.call(node.parentElement ? node.parentElement.children : [], function (sib) {
+        if (sib === node || sib.inert || /^(SCRIPT|STYLE|LINK|TEMPLATE)$/.test(sib.tagName)) return;
+        if (sib.matches("._78-topbar, ._78-scrim") || sib.querySelector("._78-nav-toggle")) return;
+        sib.inert = true;
+        inerted.push(sib);
+      });
+    }
+  }
+
+  /* Tab and Shift+Tab wrap inside the drawer. The page behind is inert, but
+     the topbar is not, so without this Tab would walk out of the drawer. */
+  function trapTab(e) {
+    if (e.key !== "Tab" || !isDrawerOpen()) return;
+    var items = focusables(sidebar());
+    if (!items.length) return;
+    var first = items[0], last = items[items.length - 1];
+    var inside = sidebar().contains(document.activeElement);
+    if (e.shiftKey && (document.activeElement === first || !inside)) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !inside)) { e.preventDefault(); first.focus(); }
+  }
 
   function openDrawer() {
     var side = sidebar();
@@ -1104,7 +1146,8 @@ window._78 = window._78 || {};
     lastFocus = document.activeElement;
     root.dataset.drawer = "open";
     syncToggles();
-    var first = side.querySelector("._78-nav-item, a[href], button");
+    setBackgroundInert(true);
+    var first = focusables(side)[0];
     if (first) first.focus();
     emit("_78:drawerchange", { open: true });
   }
@@ -1113,6 +1156,7 @@ window._78 = window._78 || {};
   function closeDrawer(returnFocus) {
     if (!isDrawerOpen()) return;
     delete root.dataset.drawer;
+    setBackgroundInert(false);
     syncToggles();
     if (returnFocus !== false && lastFocus && document.contains(lastFocus)) lastFocus.focus();
     lastFocus = null;
@@ -1354,6 +1398,7 @@ window._78 = window._78 || {};
     document.addEventListener("click", function (e) {
       if (!e.target.closest("._78-menu-wrap")) closeMenus();
     });
+    document.addEventListener("keydown", trapTab);
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Escape") return;
       closeMenus();

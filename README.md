@@ -249,7 +249,8 @@ Width changes fire **`_78:railchange`** (`e.detail = { rail }`) and the drawer f
 `_78:drawerchange` — the hook for anything that has to re-measure, like a table or a canvas chart.
 In the rail, labels are visually hidden rather than removed (they are still each item's accessible name)
 and reappear as a hover/focus tooltip; `aria-expanded`, `aria-current="page"` and focus return on close
-are handled for you.
+are handled for you. While the mobile drawer is open, Tab and Shift+Tab stay inside it and the page behind
+is `inert` (the topbar and scrim stay live, so either still closes it).
 
 ### Notifications — the rule, not just the widgets
 
