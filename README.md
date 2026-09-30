@@ -69,7 +69,8 @@ override.
 
 **Derived + shipped:** `--accent-lo` (a low-alpha tint of the accent) · `--accent-lo-hover` ·
 `--accent-hover` · `--accent-text` (text on an accent fill) · `--accent-glow` · semantic `--success` /
-`--warn` / `--danger` / `--info` — each with a `-lo` tint · `--row-hover` · `--row-border` ·
+`--warn` / `--danger` / `--info` — each with a `-lo` tint · categorical `--cat-1`…`--cat-6`, each with a
+`-lo` tint (labels that are not states; see [Tones](#tones)) · `--row-hover` · `--row-border` ·
 `--row-selected` · `--ring` (focus) · `--overlay` (modal backdrop) · `--shadow` / `--shadow-lg`.
 
 **Non-color (shared `:root`):** `--radius-sm/-/-lg/-pill` · `--font` / `--font-mono` · `--fs-xs`…`--fs-xl` ·
@@ -118,6 +119,11 @@ Badge `._78-badge-{tone}`, tag `._78-tag-{tone}`, text `._78-text-{tone}` (or th
 also on a stat-card number), alert `._78-alert-{tone}`, data-viz `._78-tone-{tone}` / `data-tone`, modal
 `tone:` and toast `type:` all take all six. The aliases are permanent and style identically; write the
 canonical name. In JS, `_78.tone('red')` → `'danger'`.
+
+**Categories** are for labels that are *not* states — a source, a team, a type — where a status tone would
+lie ("Scout" in amber reads as a warning). Six hues kept clear of success / warn / danger:
+`._78-badge-cat-1` … `-cat-6`, also as `._78-tag-cat-*`, `._78-text-cat-*` and `._78-tone-cat-*`, from the
+`--cat-1` … `--cat-6` tokens. Use them in order; the sixth is the one nearest a state.
 
 ## Library adapters
 
@@ -305,6 +311,8 @@ previews it live on real components, contrast-checks it, and hands back paste-re
   would fail.
 - **Semantics stay conventional** — green / amber / red / blue never follow the accent (a "themed red that
   isn't red" is a usability trap).
+- **Categories too** — the six `--cat-*` label colors keep fixed hues (clear of the semantic ones), and
+  are fitted per theme so each still reads as badge text on its own tint.
 - **Apply · persist · share** — apply a theme to the page, save it, and share it as a `?theme=…` URL.
 
 ## Structure

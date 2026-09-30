@@ -235,6 +235,16 @@ window._78 = window._78 || {};
      trap, so these never follow the accent — only their L/C adapt per theme. */
   var SEMANTIC = { success: 150, warn: 75, danger: 27, info: 240 };
 
+  /* Categories: labels that are not states. Fixed hues, like the semantics
+     (a category must not change meaning when the accent does), chosen to sit
+     clear of the semantic hues. Bronze is low-chroma and last on purpose — it
+     is the one nearest a state (warn), so a short list never reaches it.
+     Value: [hue, chroma multiplier]. */
+  var CATEGORY = {
+    "cat-1": [292, 1], "cat-2": [190, 1], "cat-3": [352, 1],
+    "cat-4": [122, 1], "cat-5": [322, 1], "cat-6": [62, 0.5]
+  };
+
   var DENSITY = {
     compact:     { scale: 0.75, control: 32, controlSm: 26, icon: 28 },
     cozy:        { scale: 1,    control: 36, controlSm: 28, icon: 32 },
@@ -342,9 +352,8 @@ window._78 = window._78 || {};
 
     /* Semantics: fixed hues, per-theme lightness, each nudged until its own
        text reads on its own tint (that pairing is what the kit uses). */
-    Object.keys(SEMANTIC).forEach(function (name) {
-      var h = SEMANTIC[name];
-      var lch = { l: t.semanticL, c: t.semanticC, h: h };
+    var fitted = function (name, h, c) {
+      var lch = { l: t.semanticL, c: c, h: h };
       var rgb = fromOklch(lch.l, lch.c, lch.h);
       for (var i = 0; i < 60; i++) {
         var tint = over(rgb, t.tint, bg2);
@@ -355,6 +364,11 @@ window._78 = window._78 || {};
       }
       tokens["--" + name] = hex(rgb);
       tokens["--" + name + "-lo"] = rgba(rgb, t.tint);
+    };
+    Object.keys(SEMANTIC).forEach(function (name) { fitted(name, SEMANTIC[name], t.semanticC); });
+    /* Categories: the same fit, so each reads as badge text on its own tint */
+    Object.keys(CATEGORY).forEach(function (name) {
+      fitted(name, CATEGORY[name][0], t.semanticC * CATEGORY[name][1]);
     });
 
     tokens["--row-hover"] = mode === "light"
@@ -420,7 +434,7 @@ window._78 = window._78 || {};
       /* advisory, not WCAG: an edge you cannot see is a border that is not doing its job */
       { label: "--border on --bg2", a: col("--border"), b: col("--bg2"), need: 1.25, large: true, soft: true }
     ];
-    Object.keys(SEMANTIC).forEach(function (name) {
+    Object.keys(SEMANTIC).concat(Object.keys(CATEGORY)).forEach(function (name) {
       rows.push({
         label: "--" + name + " on --" + name + "-lo",
         a: col("--" + name),
@@ -448,6 +462,8 @@ window._78 = window._78 || {};
     ["Text", ["--text", "--dim"]],
     ["Accent", ["--accent", "--accent-text", "--accent-hover", "--accent-lo", "--accent-lo-hover", "--accent-glow"]],
     ["Semantic", ["--success", "--success-lo", "--warn", "--warn-lo", "--danger", "--danger-lo", "--info", "--info-lo"]],
+    ["Categories", ["--cat-1", "--cat-1-lo", "--cat-2", "--cat-2-lo", "--cat-3", "--cat-3-lo",
+                    "--cat-4", "--cat-4-lo", "--cat-5", "--cat-5-lo", "--cat-6", "--cat-6-lo"]],
     ["Rows, overlay, focus", ["--row-hover", "--row-border", "--row-selected", "--overlay", "--ring"]]
   ];
 

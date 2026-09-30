@@ -243,3 +243,10 @@
 ._78-tone-red     { --viz: var(--danger);  --viz-lo: var(--danger-lo); }
 ._78-tone-info    { --viz: var(--info);    --viz-lo: var(--info-lo); }
 ._78-tone-dim     { --viz: var(--dim);     --viz-lo: var(--row-hover); }
+/* Categories — a series or segment that is a kind of thing, not a state */
+._78-tone-cat-1 { --viz: var(--cat-1); --viz-lo: var(--cat-1-lo); }
+._78-tone-cat-2 { --viz: var(--cat-2); --viz-lo: var(--cat-2-lo); }
+._78-tone-cat-3 { --viz: var(--cat-3); --viz-lo: var(--cat-3-lo); }
+._78-tone-cat-4 { --viz: var(--cat-4); --viz-lo: var(--cat-4-lo); }
+._78-tone-cat-5 { --viz: var(--cat-5); --viz-lo: var(--cat-5-lo); }
+._78-tone-cat-6 { --viz: var(--cat-6); --viz-lo: var(--cat-6-lo); }

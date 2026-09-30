@@ -59,6 +59,7 @@ Token *names* are the contract; the shipped values are a neutral default palette
 - **Core color:** `--bg` `--bg2` `--bg3` `--border` `--text` `--dim` `--accent`
 - **Accent derived:** `--accent-hover` `--accent-text` `--accent-lo` `--accent-lo-hover` `--accent-glow`
 - **Semantic:** `--success` `--warn` `--danger` `--info`, each with a `-lo` tint
+- **Categories:** `--cat-1` … `--cat-6`, each with a `-lo` tint — label colors that are not states
 - **Surface details:** `--row-hover` `--row-border` `--row-selected` `--ring` `--overlay` `--shadow`
   `--shadow-lg`
 - **Non-color (shared `:root`):** `--radius-sm` `--radius` `--radius-lg` `--radius-pill` · `--font`
@@ -79,6 +80,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
   `._78-stat-card__num`) · alert `._78-alert-{tone}` · data-viz `._78-tone-{tone}` / `data-tone` · modal
   `tone:` · toast `type:` (`danger` = the toast's `error`). All six on each.
 - `_78.tone('red')` → `'danger'`; `_78.tone.names` lists the six.
+- **Categories** (labels that are not states, like a source or a team): `cat-1` … `cat-6` on badge, tag,
+  text and viz tone — `._78-badge-cat-3`. Hues sit clear of success / warn / danger; use them in order.
 
 ## Components
 

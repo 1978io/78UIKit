@@ -200,6 +200,14 @@ Every accent and semantic color ships a `-lo` companion: the same hue at low alp
 Semantic hues stay conventional — green / amber / red / blue — and deliberately never follow the accent.
 A "themed red that isn't red" is a usability trap.
 
+#### Categories — per theme
+
+`--cat-1` … `--cat-6`, each with a `-lo` tint (`--cat-1-lo` …). Six label colors for things that are
+**not states** — a source, a team, a type. Their hues (violet, teal, rose, olive, orchid, bronze) are
+kept clear of the semantic hues so a category never reads as success / warn / danger, and like the
+semantics they don't follow the accent. Each clears 4.5:1 as badge text on its own tint in both themes.
+Use them in order: `cat-6` (bronze) is the one nearest a state (warn), so a short list never reaches it.
+
 #### Surfaces, rows, focus — per theme
 
 | Token | What it is |
@@ -314,6 +322,18 @@ _78.tone('Amber')    // → 'warn'
 _78.tone('brand')    // → null
 _78.tone.names       // → ['accent', 'success', 'warn', 'danger', 'info', 'dim']
 _78.tone.aliases     // → { green: 'success', red: 'danger', amber: 'warn', yellow: 'warn' }
+```
+
+**Categories** are a second, separate set for labels that are not states: `cat-1` … `cat-6`, on badge
+(`._78-badge-cat-2`), tag, text (`._78-text-cat-2` / `._78-cat-2`) and viz tone (`._78-tone-cat-2`,
+`data-tone="cat-2"`). Reach for a category when a status tone would lie — a trade source called "Scout"
+shown in `warn` reads as a caution. `_78.tone('cat-2')` → `'cat-2'`; `_78.tone.categories` lists them.
+Alerts, modals and toasts are about states, so they don't take categories.
+
+```html
+<span class="_78-badge _78-badge-cat-1">AI</span>
+<span class="_78-badge _78-badge-cat-2">You</span>
+<span class="_78-badge _78-badge-cat-3">Watch list</span>
 ```
 
 Not tones, on purpose: button variants (`._78-btn-primary` / `-ghost` / `-danger` are actions, not
@@ -896,6 +916,7 @@ plain `._78-check` checkbox instead when the change only applies once a form is 
 |---|---|
 | `._78-badge` | Small status chip: `--bg3` fill, `--border` edge, `--fs-xs`, semibold |
 | `._78-badge-{tone}` | Any tone from §2.9 (`accent` `success` `warn` `danger` `info`, plus aliases): `-lo` tint fill with solid text, no border |
+| `._78-badge-cat-1` … `-cat-6` | Categorical colors for labels that are not states (§2.9); same shape, `--cat-*` / `--cat-*-lo` |
 | `._78-badge-dim` | Explicitly neutral (the base look, stated) |
 | `._78-badge-dot` | Adds a 6px `currentColor` dot before the label — status that is not color-only |
 | `._78-tag` | Softer pill for keywords / filters; `--fs-sm`, full text color |
@@ -1850,6 +1871,9 @@ var css = _78.gen.css(result, { base: false }); // color only, leaving shape/den
 var block = _78.gen.block(':root[data-theme="dark"]', result.dark, true);  // one block; true = grouped
 ```
 
+The categories are derived too, on fixed hues like the semantics (a category must not change meaning
+when the accent does); only their lightness is fitted per theme. Every generated theme includes all six.
+
 `css()` output drops straight into a `<style>` after `kit.css` and re-themes everything — components,
 adapters and all.
 
@@ -1862,7 +1886,7 @@ var rows = _78.gen.report(result.dark, 'dark');
 
 The pairs that decide whether a theme is usable: `--text` on each of the three surfaces, `--dim` on
 `--bg2`, `--accent-text` on `--accent`, `--accent` on `--bg2` (large-text threshold, 3:1), each semantic
-color on its own `-lo` tint, and `--border` on `--bg2` as an advisory check (`soft: true` — an edge you
+color and each category (`--cat-1` … `--cat-6`) on its own `-lo` tint, and `--border` on `--bg2` as an advisory check (`soft: true` — an edge you
 cannot see is a border that is not doing its job). Lightness is nudged automatically where a pair would
 otherwise fail; the nudges land in `result.notes`.
 

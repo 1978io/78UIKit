@@ -20,6 +20,13 @@
 ._78-text-red,     ._78-red     { color: var(--danger); }
 ._78-text-info,    ._78-info    { color: var(--info); }
 ._78-text-dim,     ._78-dim     { color: var(--dim); }
+/* Categories (not states) — see the badge categories */
+._78-text-cat-1, ._78-cat-1 { color: var(--cat-1); }
+._78-text-cat-2, ._78-cat-2 { color: var(--cat-2); }
+._78-text-cat-3, ._78-cat-3 { color: var(--cat-3); }
+._78-text-cat-4, ._78-cat-4 { color: var(--cat-4); }
+._78-text-cat-5, ._78-cat-5 { color: var(--cat-5); }
+._78-text-cat-6, ._78-cat-6 { color: var(--cat-6); }
 
 ._78-fw-600 { font-weight: 600; }
 ._78-mono   { font-family: var(--font-mono); }

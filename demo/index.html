@@ -360,6 +360,13 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
           <tbody></tbody>
         </table>
       </div>
+
+      <div class="_78-eyebrow _78-mt-16 _78-mb-8">Categories — labels that are not states</div>
+      <p class="_78-text-sm _78-text-dim _78-mb-12">When a label names a <em>kind</em> of thing (a source, a team,
+        a type), a status tone would lie: "Scout" in amber reads as a warning. Six categorical hues, kept clear
+        of success / warn / danger: <code class="tok">_78-badge-cat-1</code> … <code class="tok">-cat-6</code>,
+        also on tags, text and the viz primitives. Use them in order; the sixth sits nearest a state.</p>
+      <div class="_78-flex _78-flex-wrap _78-gap-8" id="cat-row"></div>
     </div>
   </section>
 
@@ -443,6 +450,14 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       body.appendChild(tr);
     });
     body.querySelectorAll('._78-progress').forEach(function (el) { _78.viz.progress(el); });
+
+    var cats = document.getElementById('cat-row');
+    ['AI', 'You', 'Watch Book', 'Scout', 'Re-entry', 'Manual'].forEach(function (label, i) {
+      var t = _78.tone.categories[i];
+      cats.insertAdjacentHTML('beforeend',
+        '<span class="_78-badge _78-badge-' + t + '">' + label + '</span>' +
+        '<span class="_78-tag _78-tag-' + t + '">' + t + '</span>');
+    });
   })();
 </script>
 </body>

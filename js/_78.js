@@ -152,21 +152,26 @@ window._78 = window._78 || {};
      _78.tone("info")   → "info"
      _78.tone("nope")   → null
      _78.tone.names     → ["accent", "success", "warn", "danger", "info", "dim"]
+     _78.tone.categories → ["cat-1" … "cat-6"]   (labels that are not states)
    ========================================================================== */
 (function (_78) {
   "use strict";
 
   var NAMES = ["accent", "success", "warn", "danger", "info", "dim"];
   var ALIASES = { green: "success", red: "danger", amber: "warn", yellow: "warn" };
+  /* Categories: labels that are not states. Accepted wherever a tone is, but
+     only badges, tags, text and the viz primitives style them. */
+  var CATEGORIES = ["cat-1", "cat-2", "cat-3", "cat-4", "cat-5", "cat-6"];
 
   function tone(name) {
     if (name == null) return null;
     name = String(name).trim().toLowerCase();
     if (ALIASES[name]) return ALIASES[name];
-    return NAMES.indexOf(name) === -1 ? null : name;
+    return NAMES.indexOf(name) !== -1 || CATEGORIES.indexOf(name) !== -1 ? name : null;
   }
   tone.names = NAMES.slice();
   tone.aliases = Object.assign({}, ALIASES);
+  tone.categories = CATEGORIES.slice();
 
   _78.tone = tone;
 })(window._78);

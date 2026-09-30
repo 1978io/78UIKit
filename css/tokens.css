@@ -90,6 +90,16 @@
   --info: #38bdf8;
   --info-lo: rgba(56, 189, 248, .16);
 
+  /* Categories — six labels that are not states (a source, a team, a type).
+     Hues are kept clear of the semantic ones so a category never reads as
+     success / warn / danger. Fixed across re-themes, like the semantics. */
+  --cat-1: #b3a1fd;  --cat-1-lo: rgba(179, 161, 253, .16);   /* violet */
+  --cat-2: #0dcbc3;  --cat-2-lo: rgba(13, 203, 195, .16);    /* teal   */
+  --cat-3: #f08dba;  --cat-3-lo: rgba(240, 141, 186, .16);   /* rose   */
+  --cat-4: #a3be5b;  --cat-4-lo: rgba(163, 190, 91, .16);    /* olive  */
+  --cat-5: #d894e2;  --cat-5-lo: rgba(216, 148, 226, .16);   /* orchid */
+  --cat-6: #d2a883;  --cat-6-lo: rgba(210, 168, 131, .16);   /* bronze */
+
   /* Rows / tables */
   --row-hover: rgba(255, 255, 255, .04);
   --row-border: #232739;
@@ -133,6 +143,13 @@
   --danger-lo: rgba(220, 38, 38, .10);
   --info: #0369a1;
   --info-lo: rgba(3, 105, 161, .10);
+
+  --cat-1: #6d54b7;  --cat-1-lo: rgba(109, 84, 183, .10);
+  --cat-2: #147874;  --cat-2-lo: rgba(20, 120, 116, .10);
+  --cat-3: #a63c72;  --cat-3-lo: rgba(166, 60, 114, .10);
+  --cat-4: #5d7303;  --cat-4-lo: rgba(93, 115, 3, .10);
+  --cat-5: #8f469b;  --cat-5-lo: rgba(143, 70, 155, .10);
+  --cat-6: #86603d;  --cat-6-lo: rgba(134, 96, 61, .10);
 
   --row-hover: rgba(26, 29, 35, .035);
   --row-border: #eef0f4;

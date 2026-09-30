@@ -34,6 +34,15 @@
 ._78-badge-info   { background: var(--info-lo);    border-color: transparent; color: var(--info); }
 ._78-badge-dim    { background: var(--bg3);        border-color: var(--border); color: var(--dim); }
 
+/* Categories — for labels that are not states (a source, a team, a type).
+   Use these where a status tone would lie: "Scout" is not a warning. */
+._78-badge-cat-1 { background: var(--cat-1-lo); border-color: transparent; color: var(--cat-1); }
+._78-badge-cat-2 { background: var(--cat-2-lo); border-color: transparent; color: var(--cat-2); }
+._78-badge-cat-3 { background: var(--cat-3-lo); border-color: transparent; color: var(--cat-3); }
+._78-badge-cat-4 { background: var(--cat-4-lo); border-color: transparent; color: var(--cat-4); }
+._78-badge-cat-5 { background: var(--cat-5-lo); border-color: transparent; color: var(--cat-5); }
+._78-badge-cat-6 { background: var(--cat-6-lo); border-color: transparent; color: var(--cat-6); }
+
 /* A dot before the label — status without a color-only signal */
 ._78-badge-dot::before {
   content: "";
@@ -68,6 +77,12 @@
 ._78-tag-red     { background: var(--danger-lo);  border-color: transparent; color: var(--danger); }
 ._78-tag-info    { background: var(--info-lo);    border-color: transparent; color: var(--info); }
 ._78-tag-dim     { color: var(--dim); }
+._78-tag-cat-1   { background: var(--cat-1-lo);   border-color: transparent; color: var(--cat-1); }
+._78-tag-cat-2   { background: var(--cat-2-lo);   border-color: transparent; color: var(--cat-2); }
+._78-tag-cat-3   { background: var(--cat-3-lo);   border-color: transparent; color: var(--cat-3); }
+._78-tag-cat-4   { background: var(--cat-4-lo);   border-color: transparent; color: var(--cat-4); }
+._78-tag-cat-5   { background: var(--cat-5-lo);   border-color: transparent; color: var(--cat-5); }
+._78-tag-cat-6   { background: var(--cat-6-lo);   border-color: transparent; color: var(--cat-6); }
 ._78-tag button,
 ._78-tag ._78-tag-x {
   color: var(--dim);
