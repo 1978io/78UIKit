@@ -203,8 +203,11 @@
 }
 /* The fold-out inherits the cells' `white-space: nowrap`, so a long value
    pushes the panel wider than the table. `normal` is the load-bearing line;
-   overflow-wrap alone does nothing while nowrap stands. */
+   overflow-wrap alone does nothing while nowrap stands. The label column
+   stays on one line: `anywhere` shrinks min-content, and the table would
+   otherwise squeeze "Opened" into "Ope / ned" to make room for the value. */
 .tabulator-row .tabulator-responsive-collapse td { white-space: normal; overflow-wrap: anywhere; }
+.tabulator-row .tabulator-responsive-collapse td:first-child { white-space: nowrap; overflow-wrap: normal; }
 
 /* --- Groups + calculation rows -------------------------------------------- */
 .tabulator-row.tabulator-group {
