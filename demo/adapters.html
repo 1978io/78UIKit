@@ -199,12 +199,12 @@ var ROWS = [
 /* ---------- Tabulator ---------- */
 function money(cell) {
   var v = cell.getValue();
-  var cls = v >= 0 ? "_78-text-green" : "_78-text-red";
+  var cls = v >= 0 ? "_78-text-success" : "_78-text-danger";
   return '<span class="' + cls + ' _78-nums _78-fw-600">' + (v >= 0 ? "+" : "") + v.toFixed(2) + "</span>";
 }
 function sideBadge(cell) {
   var v = cell.getValue();
-  return '<span class="_78-badge ' + (v === "Buy" ? "_78-badge-green" : "_78-badge-warn") + '">' + v + "</span>";
+  return '<span class="_78-badge ' + (v === "Buy" ? "_78-badge-success" : "_78-badge-warn") + '">' + v + "</span>";
 }
 
 var table = new Tabulator("#tab-table", {

@@ -3,19 +3,23 @@
    ========================================================================== */
 
 /* Text */
-._78-text-dim { color: var(--dim); }
 ._78-text-sm  { font-size: var(--fs-sm); }
 ._78-text-xs  { font-size: var(--fs-xs); }
-._78-text-accent { color: var(--accent); }
-._78-text-green  { color: var(--success); }
-._78-text-warn   { color: var(--warn); }
-._78-text-red    { color: var(--danger); }
-/* Aliases — the stat-card number spellings (._78-green / ._78-red) work anywhere,
-   so the two names for one color are interchangeable and neither is a typo. */
-._78-accent { color: var(--accent); }
-._78-green  { color: var(--success); }
-._78-warn   { color: var(--warn); }
-._78-red    { color: var(--danger); }
+
+/* Text tones. Canonical names are the token names; green / red / amber /
+   yellow are permanent aliases. The short spellings (._78-danger, ._78-green …)
+   started on the stat-card number and work anywhere, so every spelling of a
+   tone is interchangeable and none of them is a typo. */
+._78-text-accent,  ._78-accent  { color: var(--accent); }
+._78-text-success, ._78-success,
+._78-text-green,   ._78-green   { color: var(--success); }
+._78-text-warn,    ._78-warn,
+._78-text-amber,   ._78-amber,
+._78-text-yellow,  ._78-yellow  { color: var(--warn); }
+._78-text-danger,  ._78-danger,
+._78-text-red,     ._78-red     { color: var(--danger); }
+._78-text-info,    ._78-info    { color: var(--info); }
+._78-text-dim,     ._78-dim     { color: var(--dim); }
 
 ._78-fw-600 { font-weight: 600; }
 ._78-mono   { font-family: var(--font-mono); }

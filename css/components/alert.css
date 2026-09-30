@@ -56,7 +56,8 @@
 ._78-alert-close:hover { background: var(--row-hover); color: var(--text); }
 ._78-alert-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-/* Variants — `-lo` tint + solid text/icon, never opacity */
+/* Variants — `-lo` tint + solid text/icon, never opacity. Canonical tone names
+   plus the permanent aliases (green / red / amber / yellow), as selector lists. */
 ._78-alert-accent {
   background: var(--accent-lo);
   border-color: transparent;
@@ -65,29 +66,34 @@
 ._78-alert-accent ._78-alert-title,
 ._78-alert-accent ._78-alert-icon { color: var(--accent); }
 
-._78-alert-success {
+._78-alert-success,
+._78-alert-green {
   background: var(--success-lo);
   border-color: transparent;
   border-left-color: var(--success);
 }
-._78-alert-success ._78-alert-title,
-._78-alert-success ._78-alert-icon { color: var(--success); }
+._78-alert-success ._78-alert-title, ._78-alert-success ._78-alert-icon,
+._78-alert-green ._78-alert-title,   ._78-alert-green ._78-alert-icon { color: var(--success); }
 
-._78-alert-warn {
+._78-alert-warn,
+._78-alert-amber,
+._78-alert-yellow {
   background: var(--warn-lo);
   border-color: transparent;
   border-left-color: var(--warn);
 }
-._78-alert-warn ._78-alert-title,
-._78-alert-warn ._78-alert-icon { color: var(--warn); }
+._78-alert-warn ._78-alert-title,   ._78-alert-warn ._78-alert-icon,
+._78-alert-amber ._78-alert-title,  ._78-alert-amber ._78-alert-icon,
+._78-alert-yellow ._78-alert-title, ._78-alert-yellow ._78-alert-icon { color: var(--warn); }
 
-._78-alert-danger {
+._78-alert-danger,
+._78-alert-red {
   background: var(--danger-lo);
   border-color: transparent;
   border-left-color: var(--danger);
 }
-._78-alert-danger ._78-alert-title,
-._78-alert-danger ._78-alert-icon { color: var(--danger); }
+._78-alert-danger ._78-alert-title, ._78-alert-danger ._78-alert-icon,
+._78-alert-red ._78-alert-title,    ._78-alert-red ._78-alert-icon { color: var(--danger); }
 
 ._78-alert-info {
   background: var(--info-lo);
@@ -96,6 +102,9 @@
 }
 ._78-alert-info ._78-alert-title,
 ._78-alert-info ._78-alert-icon { color: var(--info); }
+
+/* dim is the plain alert — the name exists so every tone name works here too */
+._78-alert-dim { border-left-color: var(--dim); }
 
 /* Empty state — the other half of "tied to a region" */
 ._78-empty {

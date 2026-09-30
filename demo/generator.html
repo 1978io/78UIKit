@@ -247,7 +247,7 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
     <div class="_78-stat-card">
       <div class="_78-stat-card__head">
         <span class="_78-stat-card__label">Realized P/L</span>
-        <span class="_78-badge _78-badge-green">Live</span>
+        <span class="_78-badge _78-badge-success">Live</span>
       </div>
       <div class="_78-stat-card__num _78-accent">+£4,820</div>
       <div class="_78-stat-card__row">
@@ -264,9 +264,9 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
       </div>
       <div class="row _78-mt-12">
         <span class="_78-badge _78-badge-accent">Accent</span>
-        <span class="_78-badge _78-badge-green">Filled</span>
+        <span class="_78-badge _78-badge-success">Filled</span>
         <span class="_78-badge _78-badge-warn">Pending</span>
-        <span class="_78-badge _78-badge-red">Rejected</span>
+        <span class="_78-badge _78-badge-danger">Rejected</span>
         <span class="_78-badge _78-badge-info">Info</span>
       </div>
       <div class="_78-progress _78-mt-12" data-pct="72">
@@ -281,9 +281,9 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
     <table class="_78-table _78-table-compact">
       <thead><tr><th>Instrument</th><th class="_78-right">P/L</th></tr></thead>
       <tbody>
-        <tr><td>EUR/USD</td><td class="_78-right _78-text-green">+1,240</td></tr>
-        <tr class="_78-selected"><td>GBP/JPY</td><td class="_78-right _78-text-red">−380</td></tr>
-        <tr><td>AAPL</td><td class="_78-right _78-text-green">+2,210</td></tr>
+        <tr><td>EUR/USD</td><td class="_78-right _78-text-success">+1,240</td></tr>
+        <tr class="_78-selected"><td>GBP/JPY</td><td class="_78-right _78-text-danger">−380</td></tr>
+        <tr><td>AAPL</td><td class="_78-right _78-text-success">+2,210</td></tr>
       </tbody>
     </table>
 
@@ -359,10 +359,10 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
       /* the border row is an advisory of ours, not a WCAG rule — it never
          shouts, it just tells you the edge is getting hard to see */
       var badge = check.pass
-        ? '<span class="_78-badge _78-badge-green">' + (check.large ? "AA large" : "AA") + "</span>"
+        ? '<span class="_78-badge _78-badge-success">' + (check.large ? "AA large" : "AA") + "</span>"
         : check.soft
           ? '<span class="_78-badge _78-badge-dim">faint</span>'
-          : '<span class="_78-badge _78-badge-red">fails ' + check.need + ":1</span>";
+          : '<span class="_78-badge _78-badge-danger">fails ' + check.need + ":1</span>";
       tr.innerHTML = '<td class="_78-mono _78-text-xs">' + check.label + "</td>" +
                      '<td class="_78-right ratio">' + check.ratio.toFixed(2) + ":1</td>" +
                      '<td class="_78-right">' + badge + "</td>";
@@ -392,7 +392,7 @@ document.documentElement.appendChild(e);document.documentElement.dataset._78Gen=
 
     var fails = light.concat(dark).filter(function (c) { return !c.pass && !c.soft; }).length;
     els.summary.textContent = fails ? fails + " failing" : "all pass";
-    els.summary.className = "_78-badge " + (fails ? "_78-badge-red" : "_78-badge-green");
+    els.summary.className = "_78-badge " + (fails ? "_78-badge-danger" : "_78-badge-success");
 
     els.notes.textContent = "";
     result.notes.forEach(function (note) {

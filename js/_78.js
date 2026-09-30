@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
+   Surface: _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -10,7 +10,7 @@
              _78.modal.confirm(msg) → Promise<boolean> · .alert(msg) → Promise<boolean>
              (true = the button was clicked, false = dismissed)
       TOAST  informational ("Saved", "Copied")        — auto-dismisses, never blocks
-             _78.notify(msg, {type, duration}) · .success/.error/.warn/.info
+             _78.notify(msg, {type, duration}) · .success/.error (= .danger)/.warn/.info
       INLINE tied to a region (form errors, empty)    — sits in the layout, persists
              the ._78-alert component (CSS); any ._78-alert-close is wired here
    --------------------------------------------------------------------------
@@ -142,6 +142,36 @@ window._78 = window._78 || {};
 })(window._78);
 
 /* ==========================================================================
+   _78.tone — the one tone vocabulary
+   Canonical names are the token names: accent · success · warn · danger ·
+   info · dim. green / red / amber / yellow are permanent aliases. Every JS
+   option that takes a tone runs through this, so a CSS class and a JS option
+   accept exactly the same words.
+
+     _78.tone("red")    → "danger"
+     _78.tone("info")   → "info"
+     _78.tone("nope")   → null
+     _78.tone.names     → ["accent", "success", "warn", "danger", "info", "dim"]
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var NAMES = ["accent", "success", "warn", "danger", "info", "dim"];
+  var ALIASES = { green: "success", red: "danger", amber: "warn", yellow: "warn" };
+
+  function tone(name) {
+    if (name == null) return null;
+    name = String(name).trim().toLowerCase();
+    if (ALIASES[name]) return ALIASES[name];
+    return NAMES.indexOf(name) === -1 ? null : name;
+  }
+  tone.names = NAMES.slice();
+  tone.aliases = Object.assign({}, ALIASES);
+
+  _78.tone = tone;
+})(window._78);
+
+/* ==========================================================================
    _78.modal — native <dialog>, always via showModal()
    showModal() is what buys the top layer, the ::backdrop, the focus trap and
    Escape. show() gives you none of that, which is why it is never used here.
@@ -234,7 +264,9 @@ window._78 = window._78 || {};
     var dialog = el("dialog", "_78-modal");
     if (opts.size === "sm") dialog.classList.add("_78-modal-sm");
     if (opts.size === "lg") dialog.classList.add("_78-modal-lg");
-    if (opts.tone) dialog.classList.add("_78-modal-" + opts.tone);
+    /* a known tone or alias maps to its canonical class; any other string is
+       passed through, so a tone of your own (with your own CSS) still works */
+    if (opts.tone) dialog.classList.add("_78-modal-" + (_78.tone(opts.tone) || opts.tone));
     if (opts.className) dialog.className += " " + opts.className;
     dialog.dataset._78Dismissible = dismissible ? "true" : "false";
 
@@ -285,7 +317,7 @@ window._78 = window._78 || {};
       actions: [
         { label: opts.cancelLabel || "Cancel", value: false, variant: "ghost" },
         { label: opts.confirmLabel || "Confirm", value: true,
-          variant: opts.tone === "danger" ? "danger" : "primary", autofocus: true }
+          variant: _78.tone(opts.tone) === "danger" ? "danger" : "primary", autofocus: true }
       ]
     }).then(function (value) { return value === true; });
   }
@@ -350,7 +382,11 @@ window._78 = window._78 || {};
       duration: ms, 0 = sticky (close button only). Returns { el, close }. */
   function notify(message, opts) {
     opts = opts || {};
+    /* Any tone name or alias works as a type. "error" is the toast's own word
+       for danger, and keeps meaning "announce now, stay longer". */
     var type = opts.type || "default";
+    var t = type === "error" ? "danger" : _78.tone(type);
+    if (t) type = t === "danger" ? "error" : t;
     var duration = opts.duration != null ? opts.duration
                  : (type === "error" ? ERROR_MS : DEFAULT_MS);
 
@@ -394,7 +430,8 @@ window._78 = window._78 || {};
     };
   }
 
-  ["success", "error", "warn", "info"].forEach(function (type) {
+  /* .danger is the canonical-name spelling of .error; both do the same */
+  ["success", "error", "danger", "warn", "info"].forEach(function (type) {
     notify[type] = function (message, opts) {
       opts = opts || {};
       opts.type = type;
@@ -740,7 +777,7 @@ window._78 = window._78 || {};
 
     var tone = opts.tone || el.dataset.tone;
     if (tone === "auto") tone = values[values.length - 1] >= values[0] ? "success" : "danger";
-    if (tone) svg.classList.add("_78-tone-" + tone);
+    if (tone) svg.classList.add("_78-tone-" + (_78.tone(tone) || tone));
 
     /* Label: explicit, else a plain-English summary of the series */
     var change = values[values.length - 1] - values[0];
@@ -964,7 +1001,7 @@ window._78 = window._78 || {};
       el.textContent = "";
       segments.forEach(function (s) {
         var seg = document.createElement("span");
-        seg.className = "_78-split-seg" + (s.tone ? " _78-tone-" + s.tone : "");
+        seg.className = "_78-split-seg" + (s.tone ? " _78-tone-" + (_78.tone(s.tone) || s.tone) : "");
         seg.dataset.pct = s.pct;
         if (s.label != null) seg.dataset.label = s.label;
         el.appendChild(seg);

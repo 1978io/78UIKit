@@ -165,7 +165,7 @@ Every accent and semantic color ships a `-lo` companion: the same hue at low alp
 `opacity` — `opacity` washes out the label along with the fill.
 
 ```css
-._78-badge-green { background: var(--success-lo); color: var(--success); }
+._78-badge-success { background: var(--success-lo); color: var(--success); }
 ```
 
 ### 2.5 Full token list
@@ -277,6 +277,51 @@ simply a button that cycles the theme.
 |---|---|
 | `._78-theme-toggle` | Marks an element as a toggle; auto-wired on load |
 | `._78-theme-icon` | An icon inside it; `data-pref="dark"` / `"light"` / `"system"` picks when it shows |
+
+### 2.9 Tones — one vocabulary for every component
+
+**This is the single list.** Every component that takes a tone takes the same names, and they are the
+token names:
+
+| Canonical | Token | Aliases (permanent) | Means |
+|---|---|---|---|
+| `accent` | `--accent` | | Your brand color; a neutral highlight |
+| `success` | `--success` | `green` | Done, healthy, up-is-good |
+| `warn` | `--warn` | `amber`, `yellow` | Needs attention, not broken |
+| `danger` | `--danger` | `red` | Failed, destructive, down-is-bad |
+| `info` | `--info` | | Neutral information |
+| `dim` | `--dim` | | De-emphasized; the plain look, stated |
+
+Write the canonical name. The aliases exist so older markup keeps working and so a guess doesn't fail
+silently; they are selector lists on the same rules, and they will not be removed.
+
+| Component | Class or option | All six? |
+|---|---|---|
+| Badge | `._78-badge-{tone}` | yes |
+| Tag | `._78-tag-{tone}` | yes |
+| Text | `._78-text-{tone}`, or the short `._78-{tone}` | yes |
+| Stat-card number | `._78-stat-card__num ._78-{tone}` | yes |
+| Inline alert | `._78-alert-{tone}` | yes; `dim` is the plain alert |
+| Data-viz (sparkline, progress, bar row, donut, figure, split bar) | `._78-tone-{tone}`, `data-tone` / `tone:` | yes |
+| Modal | `._78-modal-{tone}`, `_78.modal.open({ tone })` | yes; `dim` is the plain modal |
+| Toast | `_78.notify(msg, { type })`, `._78-toast-{tone}` | yes; `danger` is the same as the toast's own `error` |
+
+In JS, `_78.tone(name)` returns the canonical name for any tone or alias, or `null`:
+
+```js
+_78.tone('red')      // → 'danger'
+_78.tone('Amber')    // → 'warn'
+_78.tone('brand')    // → null
+_78.tone.names       // → ['accent', 'success', 'warn', 'danger', 'info', 'dim']
+_78.tone.aliases     // → { green: 'success', red: 'danger', amber: 'warn', yellow: 'warn' }
+```
+
+Not tones, on purpose: button variants (`._78-btn-primary` / `-ghost` / `-danger` are actions, not
+states), the score pill's `._78-high` / `-mid` / `-low` bands, and `._78-seg-accent` (a style for the
+selected segment).
+
+*(Added in 0.3.0. Before it, "danger" was `-red` on a badge and text but `-danger` on an alert; both
+spellings now work on every component.)*
 
 ---
 
@@ -637,7 +682,7 @@ The dashboard workhorse. Every part is optional — the label and the number alo
              aria-hidden="true">…</svg>
       </span>
     </div>
-    <div class="_78-stat-card__num _78-green">+$4,820</div>
+    <div class="_78-stat-card__num _78-success">+$4,820</div>
     <div class="_78-stat-card__row">
       <span class="_78-stat-delta" data-delta="12.4"></span>
       <span class="_78-stat-card__sub">vs last month</span>
@@ -648,7 +693,7 @@ The dashboard workhorse. Every part is optional — the label and the number alo
   <!-- "up is bad": drawdown, latency, spend, error rate -->
   <div class="_78-stat-card">
     <div class="_78-stat-card__label">Max drawdown</div>
-    <div class="_78-stat-card__num _78-red">-8.1%</div>
+    <div class="_78-stat-card__num _78-danger">-8.1%</div>
     <div class="_78-stat-card__row">
       <span class="_78-stat-delta _78-invert" data-delta="2.2"></span>
       <span class="_78-stat-card__sub">worse than last month</span>
@@ -677,8 +722,8 @@ The dashboard workhorse. Every part is optional — the label and the number alo
 | `._78-stat-card__spark` | Sparkline slot — full-bleed to the card's bottom edge, clipped to its radius |
 | `._78-stat-delta` | The delta chip. Styled identically to `._78-trend`; see §12.6 |
 
-Number color modifiers, applied to `._78-stat-card__num`: `._78-accent`, `._78-green`, `._78-warn`,
-`._78-red`. With none of them the number is `--text`.
+Number color modifiers, applied to `._78-stat-card__num`: any tone from §2.9 in its short form (`._78-success`,
+`._78-danger`, `._78-warn` …; the old `._78-green` / `._78-red` still work). With none the number is `--text`.
 
 ### 5.3 Grids
 
@@ -828,9 +873,9 @@ plain `._78-check` checkbox instead when the change only applies once a form is 
 ```html
 <span class="_78-badge">Draft</span>
 <span class="_78-badge _78-badge-accent">New</span>
-<span class="_78-badge _78-badge-green _78-badge-dot">Live</span>
+<span class="_78-badge _78-badge-success _78-badge-dot">Live</span>
 <span class="_78-badge _78-badge-warn">Pending</span>
-<span class="_78-badge _78-badge-red">Failed</span>
+<span class="_78-badge _78-badge-danger">Failed</span>
 <span class="_78-badge _78-badge-info">Beta</span>
 <span class="_78-badge _78-badge-dim">Archived</span>
 
@@ -850,11 +895,11 @@ plain `._78-check` checkbox instead when the change only applies once a form is 
 | Class | Role |
 |---|---|
 | `._78-badge` | Small status chip: `--bg3` fill, `--border` edge, `--fs-xs`, semibold |
-| `._78-badge-accent` / `-green` / `-warn` / `-red` / `-info` | `-lo` tint fill with solid text, no border |
+| `._78-badge-{tone}` | Any tone from §2.9 (`accent` `success` `warn` `danger` `info`, plus aliases): `-lo` tint fill with solid text, no border |
 | `._78-badge-dim` | Explicitly neutral (the base look, stated) |
 | `._78-badge-dot` | Adds a 6px `currentColor` dot before the label — status that is not color-only |
 | `._78-tag` | Softer pill for keywords / filters; `--fs-sm`, full text color |
-| `._78-tag-accent` | Accent-tinted tag |
+| `._78-tag-{tone}` | Any tone from §2.9: a tinted tag |
 | `._78-tag-x` | The remove control inside a tag (a `<button>` child is styled the same way) |
 | `._78-score-pill` | Numeric pill, min 46px, bold, tabular figures |
 | `._78-high` / `._78-mid` / `._78-low` | Score bands: success / warn / danger tint |
@@ -888,7 +933,7 @@ editing, virtual scroll — use Tabulator with the kit's adapter (§15.1); this 
         <td>Buy</td>
         <td class="_78-right">25,000</td>
         <td class="_78-right">1.0842</td>
-        <td class="_78-center"><span class="_78-badge _78-badge-green _78-badge-dot">Filled</span></td>
+        <td class="_78-center"><span class="_78-badge _78-badge-success _78-badge-dot">Filled</span></td>
       </tr>
       <tr class="_78-selected">
         <td>GBPUSD</td>
@@ -1050,7 +1095,7 @@ var choice = await _78.modal.open({
   title: 'Close this position?',
   body: 'This sends a market order immediately.\nSecond line, second paragraph.',
   size: 'sm',              // 'sm' | 'lg' | undefined (the 520px default)
-  tone: 'danger',          // 'danger' | 'warn' — tints the title
+  tone: 'danger',          // any tone (§2.9) — tints the title
   dismissible: true,       // false removes the × and blocks Escape/backdrop dismissal
   html: false,             // true = treat `body` as markup
   className: 'my-modal',   // extra classes on the <dialog>
@@ -1148,11 +1193,12 @@ _78.notify('Copied to clipboard');
 
 _78.notify.success('Order saved');
 _78.notify.error('Could not reach the server');   // 6s instead of 4s, role="alert"
+_78.notify.danger('Could not reach the server');  // the same thing, by its tone name
 _78.notify.warn('Two rows were skipped');
 _78.notify.info('Export queued');
 
 var t = _78.notify('Uploading…', {
-  type: 'info',        // 'success' | 'error' | 'warn' | 'info' | 'default'
+  type: 'info',        // any tone (§2.9), 'error' (= danger) or 'default'
   title: 'Import',     // optional bold line above the message
   duration: 0,         // ms; 0 = sticky, closable only by its × button
   html: false          // true = treat the message as markup (a DOM node also works)
@@ -1202,7 +1248,7 @@ alert.
 | Class | Role |
 |---|---|
 | `._78-alert` | Base: `--bg3`, bordered, with a 3px left edge in `--dim` |
-| `._78-alert-accent` / `-success` / `-warn` / `-danger` / `-info` | `-lo` tint fill, colored left edge, colored title and icon |
+| `._78-alert-{tone}` (any tone, §2.9) | `-lo` tint fill, colored left edge, colored title and icon |
 | `._78-alert-icon` | 18px icon slot on the left |
 | `._78-alert-body` | The text column |
 | `._78-alert-title` | Bold first line |
@@ -1251,6 +1297,8 @@ and `--viz-lo` (its tint, falling back to `--accent-lo`). Set them with a tone c
 | `._78-tone-danger` | `--danger` / `--danger-lo` |
 | `._78-tone-info` | `--info` / `--info-lo` |
 | `._78-tone-dim` | `--dim` / `--row-hover` |
+
+Aliases (`._78-tone-green` / `-red` / `-amber` / `-yellow`) work too; see §2.9.
 
 ```html
 <div class="_78-progress _78-tone-warn" data-pct="68"></div>
@@ -1603,7 +1651,7 @@ A deliberately small set — the kit is a component library, not a utility frame
 
 | Group | Classes |
 |---|---|
-| Text | `._78-text-dim` `._78-text-sm` `._78-text-xs` `._78-text-accent` `._78-text-green` `._78-text-warn` `._78-text-red` |
+| Text | `._78-text-{tone}` and the short `._78-{tone}` (all six tones and their aliases, §2.9) · `._78-text-sm` `._78-text-xs` |
 | Type | `._78-fw-600` `._78-mono` `._78-nums` (tabular figures) `._78-truncate` |
 | Layout | `._78-flex` `._78-flex-between` `._78-flex-wrap` `._78-flex-col` `._78-grow` |
 | Gaps | `._78-gap-8` `._78-gap-12` `._78-gap-16` |
@@ -1626,9 +1674,9 @@ utility):
 </ul>
 ```
 
-**Two spellings, one color.** `._78-accent` / `._78-green` / `._78-warn` / `._78-red` are aliases of
-`._78-text-accent` / `._78-text-green` / `._78-text-warn` / `._78-text-red` — the short forms started life
-on `._78-stat-card__num` and now work anywhere, so neither spelling is a typo.
+**Two spellings, one color.** Every text tone has a long and a short form — `._78-text-danger` and
+`._78-danger` are the same rule, for all six tones and their aliases (§2.9). The short forms started life
+on `._78-stat-card__num` and now work anywhere, so no spelling is a typo.
 
 **The escape hatch.** There is deliberately no margin utility above 16px and there are no padding
 utilities. Above the scale, use the space tokens directly — `style="padding: var(--space-5)"` — that is
@@ -1896,7 +1944,7 @@ css/  kit.css              the one stylesheet a project links (@imports everythi
                            viz · figure · split-bar · table · tabs · modal · toast · alert ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js               _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
+js/   _78.js               _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
                            _78.viz
       generator.js         _78.gen — opt-in, not part of _78.js
       adapters/            chartjs.js — _78.adapters.chartjs

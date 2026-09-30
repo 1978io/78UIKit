@@ -78,10 +78,19 @@
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
-._78-stat-card__num._78-accent { color: var(--accent); }
-._78-stat-card__num._78-green  { color: var(--success); }
-._78-stat-card__num._78-warn   { color: var(--warn); }
-._78-stat-card__num._78-red    { color: var(--danger); }
+/* Any tone spelling works here (the text utilities load later and win on
+   their own); these scoped rules keep the short names working even if a
+   project drops utilities.css. */
+._78-stat-card__num._78-accent  { color: var(--accent); }
+._78-stat-card__num._78-success,
+._78-stat-card__num._78-green   { color: var(--success); }
+._78-stat-card__num._78-warn,
+._78-stat-card__num._78-amber,
+._78-stat-card__num._78-yellow  { color: var(--warn); }
+._78-stat-card__num._78-danger,
+._78-stat-card__num._78-red     { color: var(--danger); }
+._78-stat-card__num._78-info    { color: var(--info); }
+._78-stat-card__num._78-dim     { color: var(--dim); }
 ._78-stat-card__sub {
   margin-top: var(--space-1);
   font-size: var(--fs-sm);

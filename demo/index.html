@@ -159,7 +159,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
       <div class="_78-stat-card">
         <div class="_78-stat-card__label">Realized P/L</div>
-        <div class="_78-stat-card__num _78-green">+£4,820</div>
+        <div class="_78-stat-card__num _78-success">+£4,820</div>
         <div class="_78-stat-card__sub">Month to date</div>
       </div>
       <div class="_78-stat-card">
@@ -169,7 +169,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
       <div class="_78-stat-card">
         <div class="_78-stat-card__label">Drawdown</div>
-        <div class="_78-stat-card__num _78-red">−9.4%</div>
+        <div class="_78-stat-card__num _78-danger">−9.4%</div>
         <div class="_78-stat-card__sub">Peak to trough</div>
       </div>
     </div>
@@ -316,13 +316,13 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       <div class="row">
         <span class="_78-badge">Default</span>
         <span class="_78-badge _78-badge-accent">Accent</span>
-        <span class="_78-badge _78-badge-green">Filled</span>
+        <span class="_78-badge _78-badge-success">Filled</span>
         <span class="_78-badge _78-badge-warn">Pending</span>
-        <span class="_78-badge _78-badge-red">Rejected</span>
+        <span class="_78-badge _78-badge-danger">Rejected</span>
         <span class="_78-badge _78-badge-info">Info</span>
         <span class="_78-badge _78-badge-dim">Draft</span>
-        <span class="_78-badge _78-badge-green _78-badge-dot">Live</span>
-        <span class="_78-badge _78-badge-red _78-badge-dot">Halted</span>
+        <span class="_78-badge _78-badge-success _78-badge-dot">Live</span>
+        <span class="_78-badge _78-badge-danger _78-badge-dot">Halted</span>
       </div>
 
       <div class="_78-eyebrow _78-mt-16 _78-mb-8">Tags</div>
@@ -346,6 +346,23 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     </div>
   </section>
 
+  <!-- ============================ TONES ============================ -->
+  <section id="tones">
+    <h2>Tones <span class="_78-badge _78-badge-dim">one vocabulary · _78.tone</span></h2>
+    <div class="_78-card">
+      <p class="_78-text-sm _78-text-dim _78-mb-12">The same six names on every component that takes a tone —
+        they are the token names. The aliases (<code class="tok">green</code>, <code class="tok">red</code>,
+        <code class="tok">amber</code>, <code class="tok">yellow</code>) are permanent and style identically.
+        This grid is built from <code class="tok">_78.tone.names</code>, so it can't drift from the kit.</p>
+      <div class="_78-table-wrap">
+        <table class="_78-table _78-table-compact" id="tone-grid">
+          <thead><tr><th>Tone</th><th>Aliases</th><th>Badge</th><th>Tag</th><th>Text</th><th>Alert</th><th>Viz</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================ UTILITIES ============================ -->
   <section id="utilities">
     <h2>Utilities</h2>
@@ -356,9 +373,10 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       <p class="_78-text-xs _78-text-dim">Extra small — <code class="tok">._78-text-xs</code>.</p>
       <p class="_78-mt-12"><span class="_78-fw-600">Semibold</span> ·
         <span class="_78-text-accent">accent</span> ·
-        <span class="_78-text-green">green</span> ·
+        <span class="_78-text-success">success</span> ·
         <span class="_78-text-warn">warn</span> ·
-        <span class="_78-text-red">red</span> ·
+        <span class="_78-text-danger">danger</span> ·
+        <span class="_78-text-info">info</span> ·
         <span class="_78-mono _78-nums">1,234.56</span></p>
       <div class="_78-flex-between _78-mt-16" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-3)">
         <span class="_78-text-sm">._78-flex-between</span>
@@ -406,6 +424,26 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
   }
   document.addEventListener('_78:themechange', show);
   show();
+
+  /* The tones grid — every canonical name, from the kit itself. */
+  (function () {
+    var body = document.querySelector('#tone-grid tbody');
+    var aliases = _78.tone.aliases;
+    _78.tone.names.forEach(function (t) {
+      var al = Object.keys(aliases).filter(function (a) { return aliases[a] === t; });
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><code class="tok">' + t + '</code></td>' +
+        '<td class="_78-text-dim _78-text-sm">' + (al.join(', ') || '—') + '</td>' +
+        '<td><span class="_78-badge _78-badge-' + t + '">Badge</span></td>' +
+        '<td><span class="_78-tag _78-tag-' + t + '">Tag</span></td>' +
+        '<td><span class="_78-text-' + t + ' _78-fw-600">Text</span></td>' +
+        '<td style="min-width:140px"><div class="_78-alert _78-alert-' + t + '"><div class="_78-alert-body">Alert</div></div></td>' +
+        '<td style="min-width:120px"><div class="_78-progress _78-tone-' + t + '" data-pct="64"></div></td>';
+      body.appendChild(tr);
+    });
+    body.querySelectorAll('._78-progress').forEach(function (el) { _78.viz.progress(el); });
+  })();
 </script>
 </body>
 </html>

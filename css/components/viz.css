@@ -230,10 +230,16 @@
 
 /* --- Tones ----------------------------------------------------------------
    One class re-colors any primitive above. Last in the file on purpose.
+   Canonical names are the token names; green / red / amber / yellow are
+   permanent aliases on the same rules.
    -------------------------------------------------------------------------- */
 ._78-tone-accent  { --viz: var(--accent);  --viz-lo: var(--accent-lo); }
-._78-tone-success { --viz: var(--success); --viz-lo: var(--success-lo); }
-._78-tone-warn    { --viz: var(--warn);    --viz-lo: var(--warn-lo); }
-._78-tone-danger  { --viz: var(--danger);  --viz-lo: var(--danger-lo); }
+._78-tone-success,
+._78-tone-green   { --viz: var(--success); --viz-lo: var(--success-lo); }
+._78-tone-warn,
+._78-tone-amber,
+._78-tone-yellow  { --viz: var(--warn);    --viz-lo: var(--warn-lo); }
+._78-tone-danger,
+._78-tone-red     { --viz: var(--danger);  --viz-lo: var(--danger-lo); }
 ._78-tone-info    { --viz: var(--info);    --viz-lo: var(--info-lo); }
 ._78-tone-dim     { --viz: var(--dim);     --viz-lo: var(--row-hover); }

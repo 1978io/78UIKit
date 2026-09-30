@@ -81,6 +81,14 @@
 /* The head's close control — a <form method="dialog"> button closes with no JS */
 ._78-modal-close { margin: -4px -4px 0 0; }
 
-/* Tone accents for alert-style modals */
-._78-modal-danger ._78-modal-title { color: var(--danger); }
-._78-modal-warn ._78-modal-title { color: var(--warn); }
+/* Tone accents for alert-style modals: the title takes the tone. Any tone name
+   works (dim is the plain modal); the JS `tone` option accepts the same names. */
+._78-modal-accent ._78-modal-title  { color: var(--accent); }
+._78-modal-success ._78-modal-title,
+._78-modal-green ._78-modal-title   { color: var(--success); }
+._78-modal-warn ._78-modal-title,
+._78-modal-amber ._78-modal-title,
+._78-modal-yellow ._78-modal-title  { color: var(--warn); }
+._78-modal-danger ._78-modal-title,
+._78-modal-red ._78-modal-title     { color: var(--danger); }
+._78-modal-info ._78-modal-title    { color: var(--info); }

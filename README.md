@@ -101,6 +101,24 @@ _78.theme.PREPAINT        // the pre-paint snippet, as a string
 Every change fires a `_78:themechange` event on `document` (`e.detail = { theme, pref }`) — the hook
 canvas-based libraries redraw on.
 
+### Tones
+
+One vocabulary for every component that takes a tone, and it is the token names:
+
+| Tone | Token | Aliases |
+|---|---|---|
+| `accent` | `--accent` | |
+| `success` | `--success` | `green` |
+| `warn` | `--warn` | `amber`, `yellow` |
+| `danger` | `--danger` | `red` |
+| `info` | `--info` | |
+| `dim` | `--dim` | |
+
+Badge `._78-badge-{tone}`, tag `._78-tag-{tone}`, text `._78-text-{tone}` (or the short `._78-{tone}`,
+also on a stat-card number), alert `._78-alert-{tone}`, data-viz `._78-tone-{tone}` / `data-tone`, modal
+`tone:` and toast `type:` all take all six. The aliases are permanent and style identically; write the
+canonical name. In JS, `_78.tone('red')` → `'danger'`.
+
 ## Library adapters
 
 *Your tables and charts match your theme automatically, including when it switches.* Tables and charts are
@@ -154,7 +172,7 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a
   real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size
   and a `._78-switch-row` settings-row layout; stacked rows space themselves.
-- **Badges / pills** — `._78-badge` variants, `._78-tag`, `._78-eyebrow`, `._78-score-pill`.
+- **Badges / pills** — `._78-badge` and `._78-tag` in any [tone](#tones), `._78-eyebrow`, `._78-score-pill`.
 - **Segmented control** — `._78-seg`, a joined run of buttons where exactly one is active (a range or
   type toggle). It owns a *value*, not a panel: mounted by `_78.seg` as a `radiogroup` with roving
   tabindex, arrow / Home / End keys that step over disabled options, and a `_78:segchange` event.
@@ -259,7 +277,7 @@ is `inert` (the topbar and scrim stay live, so either still closes it).
 |---|---|---|---|
 | **Modal** | needs acknowledgement — errors, confirms | blocks; requires a click | `_78.modal.open({title, body, actions})` → `Promise<value\|null>` · `.confirm(msg)` → `Promise<boolean>` · `.alert(msg)` → `Promise<boolean>` (`true` = the button, `false` = dismissed) |
 | **Toast** | informational — "Saved", "Copied" | auto-dismisses (never blocks) | `_78.notify(msg, {type, duration, title})` · `.success` / `.error` / `.warn` / `.info` |
-| **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`), `._78-empty`. A plain `<ul>` / `<ol>` inside keeps its bullets (also in cards, modal bodies, disclosures); `._78-list-plain` drops them |
+| **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ any [tone](#tones)), `._78-empty`. A plain `<ul>` / `<ol>` inside keeps its bullets (also in cards, modal bodies, disclosures); `._78-list-plain` drops them |
 
 Modals use the native `<dialog>` `showModal()` (top layer, `::backdrop`, focus trap, Escape). Body text goes
 in with `textContent`; pass `html: true` when you mean markup. `dismissible: false` removes the × and makes
@@ -272,7 +290,7 @@ that succeeded and use the alert only to report it.
 ## Naming
 
 - **CSS classes** use the `_78-` prefix (`._78-btn`, `._78-card`) — digit-safe and matches the JS namespace.
-- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.seg`,
+- **JS** is one global, `_78` (`_78.theme.cycle()`, `_78.tone()`, `_78.shell`, `_78.notify()`, `_78.tabs`, `_78.seg`,
   `_78.viz`).
 
 ## The theme generator
@@ -298,7 +316,7 @@ css/  kit.css            the one stylesheet a project links (@imports everything
       components/        shell · buttons · cards · forms · switch · seg · details · badges · viz ·
                          figure · split-bar · table · tabs · modal · toast · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
-js/   _78.js             _78.theme · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
+js/   _78.js             _78.theme · _78.tone · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
       adapters/          chartjs.js — _78.adapters.chartjs
 demo/                    living examples, every page in light + dark
 ```

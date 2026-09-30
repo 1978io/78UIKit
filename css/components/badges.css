@@ -1,6 +1,6 @@
 /* ==========================================================================
    78 UI Kit — badges & pills
-   ._78-badge (+ -accent/-green/-warn/-red/-dim)  ·  ._78-tag
+   ._78-badge (+ a tone: -accent/-success/-warn/-danger/-info/-dim)  ·  ._78-tag (+ the same tones)
    ._78-score-pill (.high/.mid/.low)              ·  ._78-eyebrow
    Every variant is a `-lo` tint + solid text — this is where the tints earn
    their keep (no opacity washing out the label).
@@ -20,9 +20,16 @@
   line-height: 1.6;
   white-space: nowrap;
 }
+/* Tones: the canonical names are the token names (accent · success · warn ·
+   danger · info · dim). green / red / amber / yellow are aliases, forever —
+   selector lists on the same rules, never copies. */
 ._78-badge-accent { background: var(--accent-lo);  border-color: transparent; color: var(--accent); }
+._78-badge-success,
 ._78-badge-green  { background: var(--success-lo); border-color: transparent; color: var(--success); }
-._78-badge-warn   { background: var(--warn-lo);    border-color: transparent; color: var(--warn); }
+._78-badge-warn,
+._78-badge-amber,
+._78-badge-yellow { background: var(--warn-lo);    border-color: transparent; color: var(--warn); }
+._78-badge-danger,
 ._78-badge-red    { background: var(--danger-lo);  border-color: transparent; color: var(--danger); }
 ._78-badge-info   { background: var(--info-lo);    border-color: transparent; color: var(--info); }
 ._78-badge-dim    { background: var(--bg3);        border-color: var(--border); color: var(--dim); }
@@ -51,7 +58,16 @@
   line-height: 1.7;
   white-space: nowrap;
 }
-._78-tag-accent { background: var(--accent-lo); border-color: transparent; color: var(--accent); }
+._78-tag-accent  { background: var(--accent-lo);  border-color: transparent; color: var(--accent); }
+._78-tag-success,
+._78-tag-green   { background: var(--success-lo); border-color: transparent; color: var(--success); }
+._78-tag-warn,
+._78-tag-amber,
+._78-tag-yellow  { background: var(--warn-lo);    border-color: transparent; color: var(--warn); }
+._78-tag-danger,
+._78-tag-red     { background: var(--danger-lo);  border-color: transparent; color: var(--danger); }
+._78-tag-info    { background: var(--info-lo);    border-color: transparent; color: var(--info); }
+._78-tag-dim     { color: var(--dim); }
 ._78-tag button,
 ._78-tag ._78-tag-x {
   color: var(--dim);
