@@ -43,8 +43,8 @@ first paint (no flash of the wrong theme):
   </script>
 
   <!-- 2. the kit — via CDN (jsDelivr serves it straight from GitHub) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/js/_78.js"></script>
 
   <!-- 3. your own theme overrides go here, AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
@@ -54,7 +54,7 @@ first paint (no flash of the wrong theme):
 That's it. Use the classes, and let the theme generator on [78uikit.com](https://78uikit.com) write your
 override block for you.
 
-**CDN or self-host.** `@v0.2.0` pins a release; use `@main` for the latest (moves on every push), or download
+**CDN or self-host.** `@v0.3.0` pins a release; use `@main` for the latest (moves on every push), or download
 the repo and serve the files yourself. jsDelivr also serves minified builds — swap in `kit.min.css` /
 `_78.min.js`. The library adapters live on the same CDN under `/css/adapters/` and `/js/adapters/`.
 
@@ -143,20 +143,20 @@ Adapters are **opt-in** — deliberately not part of `kit.css`. Include only the
 ```html
 <!-- Tabulator: verified against 6.5.2 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/css/tabulator.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/tabulator.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/css/adapters/tabulator.css">
 <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
 
 <!-- FullCalendar core: verified against 7.0.2 (a legacy block covers 6.x) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/skeleton.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/theme.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/palette.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/css/adapters/fullcalendar.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/css/adapters/fullcalendar.css">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/all/global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@7.0.2/themes/classic/global.js"></script>
 
 <!-- Chart.js: verified against 4.5.1. The adapter goes after _78.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.2.0/js/adapters/chartjs.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/js/adapters/chartjs.js"></script>
 ```
 
 Each library's version above is the one the adapter was checked against. A newer minor usually works;
@@ -351,7 +351,10 @@ demo/                    living examples, every page in light + dark
 
 Active development (v0.x). Foundation, the three library adapters, notifications / tabs / table, KPI +
 data-viz primitives, the theme generator, the app shell, and the v0.2.0 control and figure set (switch,
-segmented control, disclosure, figure row, split bar) are built. A few helpers are next.
+segmented control, disclosure, figure row, split bar) are built. v0.3.0 added one tone vocabulary across
+every component, categorical and chart-series colors, and the `_78.util` helpers. What changed in each
+release, and what to do when you upgrade: [CHANGELOG.md](CHANGELOG.md) and
+[78uikit.com/docs/upgrading.php](https://78uikit.com/docs/upgrading.php).
 
 ## License
 
