@@ -116,5 +116,11 @@
   width: 100%;
 }
 ._78-switch-row ._78-switch-label { flex: 1 1 auto; min-width: 0; }
+/* Stacked rows space themselves, like ._78-card + ._78-card. Inside a flex
+   column the gap already does it (and flex margins don't collapse, so the two
+   would add up) — the wrapper that used to be the advice keeps its look.
+   One class of specificity each, so a margin utility on a row still wins. */
+:where(._78-switch-row) + ._78-switch-row { margin-top: var(--space-4); }
+:where(._78-flex-col > ._78-switch-row) + ._78-switch-row { margin-top: 0; }
 ._78-switch-row ._78-switch-input,
 ._78-switch-row > input[type="checkbox"] { order: 2; }

@@ -266,18 +266,43 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <input class="_78-switch-input" type="checkbox" role="switch" aria-label="Standalone toggle, no visible label">
       </div>
 
-      <div class="_78-mt-16" style="max-width:420px">
-        <div class="_78-eyebrow _78-mb-8">Settings rows — label left, switch right</div>
-        <label class="_78-switch _78-switch-row">
-          <span class="_78-switch-label">Confirm before closing a position
-            <span class="_78-switch-hint">Shows a modal every time.</span>
-          </span>
-          <input type="checkbox" role="switch" checked>
-        </label>
-        <label class="_78-switch _78-switch-row _78-mt-12">
-          <span class="_78-switch-label">Play a sound on fill</span>
-          <input type="checkbox" role="switch">
-        </label>
+      <div class="_78-flex _78-flex-wrap _78-gap-16 _78-mt-16" style="align-items:flex-start">
+        <div style="flex:1 1 320px;max-width:420px" id="rows-bare">
+          <div class="_78-eyebrow _78-mb-8">Settings rows — no wrapper, they space themselves</div>
+          <label class="_78-switch _78-switch-row">
+            <span class="_78-switch-label">Confirm before closing a position
+              <span class="_78-switch-hint">Shows a modal every time.</span>
+            </span>
+            <input type="checkbox" role="switch" checked>
+          </label>
+          <label class="_78-switch _78-switch-row">
+            <span class="_78-switch-label">Play a sound on fill</span>
+            <input type="checkbox" role="switch">
+          </label>
+          <label class="_78-switch _78-switch-row">
+            <span class="_78-switch-label">Show P/L in the tab title</span>
+            <input type="checkbox" role="switch" checked>
+          </label>
+        </div>
+        <div style="flex:1 1 320px;max-width:420px" id="rows-wrapped">
+          <div class="_78-eyebrow _78-mb-8">The same in the old <code class="tok">_78-flex-col _78-gap-16</code> wrapper</div>
+          <div class="_78-flex-col _78-gap-16">
+            <label class="_78-switch _78-switch-row">
+              <span class="_78-switch-label">Confirm before closing a position
+                <span class="_78-switch-hint">Shows a modal every time.</span>
+              </span>
+              <input type="checkbox" role="switch" checked>
+            </label>
+            <label class="_78-switch _78-switch-row">
+              <span class="_78-switch-label">Play a sound on fill</span>
+              <input type="checkbox" role="switch">
+            </label>
+            <label class="_78-switch _78-switch-row">
+              <span class="_78-switch-label">Show P/L in the tab title</span>
+              <input type="checkbox" role="switch" checked>
+            </label>
+          </div>
+        </div>
       </div>
 
     </div>

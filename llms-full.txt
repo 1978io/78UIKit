@@ -801,7 +801,13 @@ the native control's, so there is nothing to re-implement and nothing to get wro
 | `._78-switch-label` | The text beside it |
 | `._78-switch-hint` | A second, dim line under the label |
 | `._78-switch-sm` | Small: a 28×16 track instead of 36×20. Goes on the wrapper or on a standalone input |
-| `._78-switch-row` | Settings row: label left, switch pushed to the right edge, full width |
+| `._78-switch-row` | Settings row: label left, switch pushed to the right edge, full width. Stacked rows space themselves `--space-4` apart |
+
+**Stacked rows need no wrapper.** `._78-switch-row + ._78-switch-row` gets a `--space-4` top margin, like
+stacked cards. Inside a `._78-flex-col` the rows drop that margin and the column's gap spaces them, so the
+old `_78-flex-col _78-gap-16` wrapper looks exactly the same, and a different gap is still one wrapper
+away. A margin utility on a row (`._78-mt-12`) still wins. *(Changed in 0.3.0; a wrapper of your own that
+spaces rows with `gap` now gets the gap plus 16px, so drop one.)*
 
 **Colors.** Off is a `--bg3` track with a `--border` edge and a `--dim` thumb; on is an `--accent` track
 with an `--accent-text` thumb. Hover raises the edge to `--dim`, focus is the kit's 2px accent outline,

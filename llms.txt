@@ -81,7 +81,8 @@ The `--space-*` tokens are also the escape hatch above the utility scale: there 
 - **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one
   consistent focus ring.
 - **Toggle switch** — `._78-switch` (+ `-sm`, `._78-switch-row`), a real `<input type="checkbox">`
-  restyled as a track and thumb, so keyboard, `:disabled` and label association are native.
+  restyled as a track and thumb, so keyboard, `:disabled` and label association are native. Stacked
+  `._78-switch-row`s space themselves.
 - **Segmented control** — `._78-seg` / `._78-seg-btn` (+ `-sm` / `-full` / `-accent`), one-of-N, mounted
   by `_78.seg` as a `radiogroup` with roving tabindex; fires `_78:segchange`.
 - **Disclosure** — `._78-details` (+ `-plain` / `-fill` / `-sm`), a styled `<details>` / `<summary>` with

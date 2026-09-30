@@ -152,7 +152,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   `._78-stat-delta` colored by sign, `._78-invert` where up is bad), laid out by `._78-kpi-grid`
   (auto-fit, 2–6 across).
 - **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a
-  real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size.
+  real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size
+  and a `._78-switch-row` settings-row layout; stacked rows space themselves.
 - **Badges / pills** — `._78-badge` variants, `._78-tag`, `._78-eyebrow`, `._78-score-pill`.
 - **Segmented control** — `._78-seg`, a joined run of buttons where exactly one is active (a range or
   type toggle). It owns a *value*, not a panel: mounted by `_78.seg` as a `radiogroup` with roving
