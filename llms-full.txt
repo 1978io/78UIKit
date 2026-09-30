@@ -1598,7 +1598,8 @@ the adapter on a major upgrade.
 
 **Responsive collapse** (`responsiveLayout: 'collapse'`) is themed too. The fold-out panel under each row
 wraps long values inside the table's width; Tabulator's cells are `nowrap`, which the panel would
-otherwise inherit.
+otherwise inherit. The +/- toggle is an `--accent` glyph on an `--accent-lo` tint in both themes
+(Tabulator hardcodes a white stroke; the adapter switches it to `currentColor`).
 
 ```js
 new Tabulator('#accounts', {

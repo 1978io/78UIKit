@@ -193,6 +193,9 @@
   background: var(--accent-lo);
   color: var(--accent);
 }
+/* Tabulator draws the +/- as an SVG with a hardcoded `stroke: #fff`, which
+   is white on a pale tint in light theme. currentColor makes the accent real. */
+.tabulator-row .tabulator-cell .tabulator-responsive-collapse-toggle svg { stroke: currentColor; }
 .tabulator-row .tabulator-responsive-collapse {
   border-top: 1px solid var(--row-border);
   border-bottom: 1px solid var(--row-border);
