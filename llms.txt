@@ -105,7 +105,8 @@ The `--space-*` tokens are also the escape hatch above the utility scale: there 
   `_78.viz` and toned with one class.
 - **Theme toggle** — any `._78-theme-toggle` element is wired on load and cycles Dark → Light → System.
 - **Utilities** — a small set: `._78-text-dim`, `._78-flex`, `._78-gap-12`, `._78-mt-16`, `._78-truncate`,
-  `._78-nums`, `._78-sr-only`, and friends. The color modifiers come in two interchangeable spellings:
+  `._78-nums`, `._78-sr-only`, `._78-list-plain`, and friends. Plain lists inside an alert body, card,
+  modal body or disclosure keep their indent and markers. The color modifiers come in two interchangeable spellings:
   `._78-green` / `._78-text-green` (also `-red` / `-warn` / `-accent`).
 
 ## Library adapters (opt-in)

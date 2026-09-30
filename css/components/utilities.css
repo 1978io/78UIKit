@@ -43,6 +43,29 @@
 ._78-mb-12 { margin-bottom: var(--space-3); }
 ._78-mb-16 { margin-bottom: var(--space-4); }
 
+/* Lists — the reset strips list padding on purpose, which leaves bullets
+   hanging outside their box. Inside the components that hold prose, a plain
+   <ul> / <ol> (no class of its own) gets an indent and a rhythm back. :where()
+   keeps it at the specificity of the :not([class]) alone, so any rule of
+   yours wins. Nothing changes for lists anywhere else. */
+:where(._78-alert-body, ._78-card, ._78-modal-body, ._78-details-body) :where(ul, ol):not([class]) {
+  padding-left: var(--space-5);
+}
+:where(._78-alert-body, ._78-card, ._78-modal-body, ._78-details-body) :where(ul, ol):not([class]) > li + li {
+  margin-top: var(--space-1);
+}
+/* Spacing sits on the list itself, never on its neighbors, so it can't fight
+   a margin utility or a full-bleed card foot that follows it. */
+:where(._78-alert-body, ._78-card, ._78-modal-body, ._78-details-body) * + :where(ul, ol):not([class]) {
+  margin-top: var(--space-2);
+}
+:where(._78-alert-body, ._78-card, ._78-modal-body, ._78-details-body) :where(ul, ol):not([class]):not(:last-child) {
+  margin-bottom: var(--space-2);
+}
+/* No markers and no indent, anywhere — for a list that is a list in the
+   markup but shouldn't look like one. */
+._78-list-plain { list-style: none; padding-left: 0; }
+
 /* Accessibility */
 ._78-sr-only {
   position: absolute;

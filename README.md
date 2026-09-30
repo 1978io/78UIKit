@@ -257,7 +257,7 @@ are handled for you.
 |---|---|---|---|
 | **Modal** | needs acknowledgement — errors, confirms | blocks; requires a click | `_78.modal.open({title, body, actions})` → `Promise<value\|null>` · `.confirm(msg)` → `Promise<boolean>` · `.alert(msg)` → `Promise<boolean>` (`true` = the button, `false` = dismissed) |
 | **Toast** | informational — "Saved", "Copied" | auto-dismisses (never blocks) | `_78.notify(msg, {type, duration, title})` · `.success` / `.error` / `.warn` / `.info` |
-| **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`), `._78-empty` |
+| **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`), `._78-empty`. A plain `<ul>` / `<ol>` inside keeps its bullets (also in cards, modal bodies, disclosures); `._78-list-plain` drops them |
 
 Modals use the native `<dialog>` `showModal()` (top layer, `::backdrop`, focus trap, Escape). Body text goes
 in with `textContent`; pass `html: true` when you mean markup. `dismissible: false` removes the × and makes

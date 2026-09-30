@@ -1203,6 +1203,23 @@ alert.
 Add `role="alert"` yourself when the message appears in response to an action; a standing notice does not
 need one.
 
+**Lists in an alert** keep their indent and markers: a plain `<ul>` / `<ol>` inside `._78-alert-body` (and
+inside a `._78-card`, `._78-modal-body` or `._78-details-body`) is indented `--space-5` with `--space-1`
+between items. Use `._78-list-plain` (§14) for a list with no markers. *(Fixed in 0.3.0 — the reset used
+to leave the bullets outside the box.)*
+
+```html
+<div class="_78-alert _78-alert-danger">
+  <div class="_78-alert-body">
+    <div class="_78-alert-title">Three rows were rejected</div>
+    <ul>
+      <li>Row 7: unknown symbol</li>
+      <li>Row 12: size is zero</li>
+    </ul>
+  </div>
+</div>
+```
+
 ---
 
 ## 12. Data-viz primitives — `_78.viz`, figure rows and split bars
@@ -1581,9 +1598,23 @@ A deliberately small set — the kit is a component library, not a utility frame
 | Layout | `._78-flex` `._78-flex-between` `._78-flex-wrap` `._78-flex-col` `._78-grow` |
 | Gaps | `._78-gap-8` `._78-gap-12` `._78-gap-16` |
 | Margins | `._78-mt-8` `._78-mt-12` `._78-mt-16` `._78-mb-4` `._78-mb-8` `._78-mb-12` `._78-mb-16` |
+| Lists | `._78-list-plain` |
 | Accessibility | `._78-sr-only` |
 
 `._78-flex` and `._78-flex-between` both center their items vertically.
+
+**Lists.** The reset strips list padding everywhere, on purpose. Inside the components that hold prose
+(`._78-alert-body`, `._78-card`, `._78-modal-body`, `._78-details-body`) a `<ul>` / `<ol>` with **no
+class of its own** gets an indent and a rhythm back; everywhere else lists stay bare. The rule is written
+with `:where()`, so any rule of yours out-ranks it. `._78-list-plain` removes markers and indent anywhere
+(if your own prose CSS styles a bare `.content ul`, scope it as `ul:not([class])` or it will out-rank the
+utility):
+
+```html
+<ul class="_78-list-plain">
+  <li>No markers, no indent, still a list to a screen reader</li>
+</ul>
+```
 
 **Two spellings, one color.** `._78-accent` / `._78-green` / `._78-warn` / `._78-red` are aliases of
 `._78-text-accent` / `._78-text-green` / `._78-text-warn` / `._78-text-red` — the short forms started life

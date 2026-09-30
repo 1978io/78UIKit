@@ -446,6 +446,36 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <button class="_78-btn _78-btn-primary _78-btn-sm _78-mt-8">New trade</button>
       </div>
     </div>
+
+    <h3 class="_78-mt-16 _78-mb-8">Lists inside alerts and cards</h3>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">A plain <code class="tok">&lt;ul&gt;</code> /
+      <code class="tok">&lt;ol&gt;</code> inside an alert body, a card, a modal body or a disclosure gets its
+      indent and markers back. <code class="tok">._78-list-plain</code> opts a list out.</p>
+    <div class="_78-card" id="alert-lists">
+      <div class="_78-alert _78-alert-info"><div class="_78-alert-body"><div class="_78-alert-title">Info</div>Before you import:
+        <ul><li>Export from your broker as CSV</li><li>Keep the header row</li></ul></div></div>
+      <div class="_78-alert _78-alert-success"><div class="_78-alert-body"><div class="_78-alert-title">Success</div>Import complete.
+        <ol><li>142 trades added</li><li>3 duplicates skipped</li></ol></div></div>
+      <div class="_78-alert _78-alert-warn"><div class="_78-alert-body"><div class="_78-alert-title">Warn</div>Check these rows:
+        <ul><li>Row 18: no exit price</li><li>Row 44: date in the future</li></ul></div></div>
+      <div class="_78-alert _78-alert-danger"><div class="_78-alert-body"><div class="_78-alert-title">Danger</div>Three rows were rejected:
+        <ol><li>Row 7: unknown symbol</li><li>Row 12: size is zero</li><li>Row 31: duplicate ID</li></ol></div></div>
+      <div class="_78-alert _78-alert-accent"><div class="_78-alert-body"><div class="_78-alert-title">Accent</div>New this week:
+        <ul><li>Responsive tables</li><li>Round sparkline dots</li></ul></div></div>
+      <div class="_78-alert"><div class="_78-alert-body"><div class="_78-alert-title">Plain</div>Keyboard shortcuts:
+        <ol><li>N for a new trade</li><li>/ to search</li></ol></div></div>
+    </div>
+    <div class="_78-card-grid _78-mt-16">
+      <div class="_78-card">
+        <div class="_78-card-title">In a card</div>
+        <ul><li>Bulleted, straight in the card</li><li>Markers sit inside the padding</li></ul>
+        <ol><li>Numbered too</li><li>Same indent, same rhythm</li></ol>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title"><code class="tok">._78-list-plain</code></div>
+        <ul class="_78-list-plain"><li>No markers</li><li>No indent</li><li>Still a list to a screen reader</li></ul>
+      </div>
+    </div>
   </section>
 
   <!-- ============================ TABS ============================ -->
