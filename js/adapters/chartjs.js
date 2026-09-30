@@ -232,6 +232,33 @@ window._78 = window._78 || {};
     return Object.keys(reg).map(function (k) { return reg[k]; }).filter(Boolean);
   }
 
+  /* --- live scales ---------------------------------------------------------
+     Chart.js binds each scale's options when the scale is built and never
+     re-reads Chart.defaults.scale, so on a live switch the grid, axis line and
+     tick labels would keep the old theme. Rewrite them on the live scale — but
+     only where the value is still the previous theme's token, i.e. it came
+     from the adapter. A color the chart set for itself is left alone.
+     ---------------------------------------------------------------------- */
+  var last = null;
+
+  function restyleScales(chart, was, now) {
+    var swap = function (obj, key, from, to) {
+      if (obj && obj[key] === from && from !== to) obj[key] = to;
+    };
+    Object.keys(chart.scales || {}).forEach(function (id) {
+      var o = chart.scales[id].options;
+      if (!o) return;
+      swap(o.grid, "color", was.border, now.border);
+      swap(o.grid, "tickColor", was.border, now.border);
+      swap(o.border, "color", was.border, now.border);
+      swap(o.ticks, "color", was.dim, now.dim);
+      swap(o.title, "color", was.dim, now.dim);
+      /* radar / polar area: the angle lines and point labels */
+      swap(o.angleLines, "color", was.border, now.border);
+      swap(o.pointLabels, "color", was.dim, now.dim);
+    });
+  }
+
   /* --- apply --------------------------------------------------------------- */
 
   var registered = false;
@@ -246,13 +273,16 @@ window._78 = window._78 || {};
     }
 
     applyDefaults(Chart);
+    var now = tokens();
 
     liveCharts(Chart).forEach(function (chart) {
       try {
+        if (last) restyleScales(chart, last, now);
         chart.update("none");                 /* re-theme without re-animating */
       } catch (e) { /* a chart mid-teardown must not break the theme switch */ }
     });
 
+    last = now;
     return true;
   }
 

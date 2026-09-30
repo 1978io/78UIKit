@@ -135,7 +135,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
   FullCalendar's CSS.
 - **Chart.js 4.x** (verified against 4.5.1) — `js/adapters/chartjs.js`, loaded after Chart.js and after
   `_78.js`. Canvas cannot read CSS variables, so it pushes tokens into `Chart.defaults` and calls
-  `update()` on every live chart when the theme switches. Series colors: `--accent`, `--series-2`, then
+  `update()` on every live chart when the theme switches (datasets, legend, tooltip and scales). Don't set
+  those colors per chart. Series colors: `--accent`, `--series-2`, then
   `--cat-1` … `--cat-6`.
 
 The version beside each library is the one its adapter was checked against; re-check after a major upgrade.

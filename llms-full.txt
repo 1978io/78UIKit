@@ -1788,6 +1788,16 @@ chart** whenever `_78:themechange` fires, because `Chart.defaults` is only read 
 *constructed*. Load order matters: with the adapter in place before your charts are built, they are
 constructed already themed rather than corrected afterwards.
 
+On a live switch the scales follow too: Chart.js binds each scale's colors once, so the adapter rewrites
+grid, axis-line, tick and title colors on every live scale — but only values that still equal the previous
+theme's token, so a color a chart set for itself is never overwritten. *(Fixed in 0.3.0: before it, the
+grid and tick labels kept the old theme until a reload.)*
+
+**Don't set theme colors per chart.** `plugins.legend.labels.color`, `scales.x.grid.color` and friends in
+a chart's own options out-rank `Chart.defaults` and are read once, so they stay on the theme the page
+loaded in. Leave them unset and the legend (`--text`), ticks (`--dim`) and grid (`--border`) follow every
+switch. If one chart genuinely needs its own color, re-set it on `_78:themechange`.
+
 It also registers a plugin that colors datasets from the theme.
 
 **Dataset ownership rule:** a dataset that declares **no** `backgroundColor` and **no** `borderColor` is
