@@ -3,6 +3,8 @@ CLAUDE.md
 _build-brief*
 HANDOFF.md
 TODO.md
+TO-SORT.md
+UPGRADING-internal.md
 
 # dependencies / build bulk
 node_modules/
