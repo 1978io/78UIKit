@@ -89,6 +89,14 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       <button class="_78-btn _78-btn-ghost _78-btn-sm" id="tab-clear">Clear (empty state)</button>
       <button class="_78-btn _78-btn-ghost _78-btn-sm" id="tab-reset">Reset</button>
     </div>
+
+    <h3 class="_78-mt-16 _78-mb-8">Responsive collapse</h3>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">The same adapter with
+      <code class="tok">responsiveLayout: "collapse"</code>. Narrow the window (phone width is the real test):
+      columns that no longer fit fold into a panel under each row, opened with the <strong>+</strong> toggle.
+      The panel wraps long values, the toggle glyph follows the accent in both themes, and the panel's type
+      follows the kit's type scale.</p>
+    <div id="tab-collapse"></div>
   </section>
 
   <!-- ============================ FULLCALENDAR ============================ -->
@@ -223,6 +231,31 @@ document.getElementById("tab-add").addEventListener("click", function () {
 });
 document.getElementById("tab-clear").addEventListener("click", function () { table.setData([]); });
 document.getElementById("tab-reset").addEventListener("click", function () { table.setData(ROWS.slice()); });
+
+/* Responsive collapse: the columns after Instrument fold away as the table
+   narrows. The toggle column comes first so it never collapses itself. */
+var NOTES = [
+  "Scaled in over three sessions after the breakout above the weekly range held; stop trails the 20-day low.",
+  "Short into the central-bank decision; exit on any close back above the prior swing high.",
+  "Core position. Adds only on a pullback to the rising 50-day average, never on strength.",
+  "Dividend capture with a hard stop; review after the ex-date whatever the price does.",
+  "Hedge against the long EUR book, sized to offset roughly a third of its delta."
+];
+var collapseTable = new Tabulator("#tab-collapse", {
+  data: ROWS.slice(0, 5).map(function (r, i) { return Object.assign({ note: NOTES[i], opened: "2026-08-" + (10 + i) }, r); }),
+  layout: "fitColumns",
+  responsiveLayout: "collapse",
+  responsiveLayoutCollapseStartOpen: false,
+  columns: [
+    { formatter: "responsiveCollapse", width: 40, minWidth: 40, hozAlign: "center", resizable: false, headerSort: false },
+    { title: "Instrument", field: "instrument", minWidth: 110, responsive: 0 },
+    { title: "Side", field: "side", formatter: sideBadge, hozAlign: "center", minWidth: 80, responsive: 1 },
+    { title: "P/L", field: "pl", formatter: money, hozAlign: "right", sorter: "number", minWidth: 100, responsive: 1 },
+    { title: "Size", field: "size", hozAlign: "right", sorter: "number", minWidth: 90, responsive: 2 },
+    { title: "Opened", field: "opened", minWidth: 110, responsive: 3 },
+    { title: "Note", field: "note", minWidth: 260, responsive: 4 }
+  ]
+});
 
 /* ---------- FullCalendar (v7 core, classic theme) ---------- */
 /* Fixed dates so the demo looks the same every time it is opened. */
