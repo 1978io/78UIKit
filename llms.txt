@@ -95,6 +95,7 @@ The `--space-*` tokens are also the escape hatch above the utility scale: there 
 - **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu`, auto-wired with roving focus and the
   `menu` / `menuitem` roles.
 - **Modal** — native `<dialog>` via `_78.modal.open()` / `.confirm()` / `.alert()`, promise-returning.
+  `confirm()` and `alert()` resolve `true` for their button and `false` for any dismissal.
 - **Toast** — `_78.notify()` and `.success` / `.error` / `.warn` / `.info`; auto-dismissing, never
   blocking.
 - **Inline alert** — `._78-alert` (+ `-success` / `-warn` / `-danger` / `-info` / `-accent`) and

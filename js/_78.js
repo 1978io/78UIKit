@@ -7,7 +7,8 @@
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
              _78.modal.open({title, body, actions}) → Promise<action value|null>
-             _78.modal.confirm(msg) → Promise<boolean> · _78.modal.alert(msg)
+             _78.modal.confirm(msg) → Promise<boolean> · .alert(msg) → Promise<boolean>
+             (true = the button was clicked, false = dismissed)
       TOAST  informational ("Saved", "Copied")        — auto-dismisses, never blocks
              _78.notify(msg, {type, duration}) · .success/.error/.warn/.info
       INLINE tied to a region (form errors, empty)    — sits in the layout, persists
@@ -187,15 +188,23 @@ window._78 = window._78 || {};
     return form;
   }
 
-  /* Backdrop click to dismiss. Safe to call twice on the same dialog. */
+  /* Backdrop click to dismiss, and Escape held off when the dialog is not
+     dismissible. Safe to call twice on the same dialog. */
   function mount(dialog) {
     if (!dialog || dialog.dataset._78ModalMounted) return dialog;
     dialog.dataset._78ModalMounted = "1";
     dialog.classList.add("_78-modal");
 
+    var locked = function () { return dialog.dataset._78Dismissible === "false"; };
     dialog.addEventListener("click", function (e) {
       /* the backdrop IS the dialog element — its children cover the box */
-      if (e.target === dialog && dialog.dataset._78Dismissible !== "false") dialog.close("");
+      if (e.target === dialog && !locked()) dialog.close("");
+    });
+    /* Both, because Chrome only lets `cancel` be prevented once per user
+       activation; stopping the keydown is what holds on a second Escape. */
+    dialog.addEventListener("cancel", function (e) { if (locked()) e.preventDefault(); });
+    dialog.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && locked()) e.preventDefault();
     });
     return dialog;
   }
@@ -261,6 +270,9 @@ window._78 = window._78 || {};
     });
   }
 
+  /*  confirm(msg, opts) → Promise<boolean>
+        true only for the Confirm button; false for Cancel and for every
+        dismissal (×, Escape, backdrop).                                    */
   function confirm(message, opts) {
     opts = opts || {};
     return open({
@@ -269,6 +281,7 @@ window._78 = window._78 || {};
       html: opts.html,
       size: opts.size || "sm",
       tone: opts.tone,
+      dismissible: opts.dismissible,
       actions: [
         { label: opts.cancelLabel || "Cancel", value: false, variant: "ghost" },
         { label: opts.confirmLabel || "Confirm", value: true,
@@ -277,6 +290,10 @@ window._78 = window._78 || {};
     }).then(function (value) { return value === true; });
   }
 
+  /*  alert(msg, opts) → Promise<boolean>
+        true when OK was clicked; false on any dismissal (×, Escape,
+        backdrop). Don't hang a side effect off the promise alone:
+        `if (await _78.modal.alert(msg)) reload()`.                         */
   function alert(message, opts) {
     opts = opts || {};
     return open({
@@ -285,8 +302,9 @@ window._78 = window._78 || {};
       html: opts.html,
       size: opts.size || "sm",
       tone: opts.tone,
+      dismissible: opts.dismissible,
       actions: [{ label: opts.okLabel || "OK", value: true, variant: "primary", autofocus: true }]
-    }).then(function () { return undefined; });
+    }).then(function (value) { return value === true; });
   }
 
   _78.modal = {

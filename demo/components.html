@@ -687,8 +687,10 @@ document.getElementById("m-danger").addEventListener("click", function () {
 });
 
 document.getElementById("m-alert").addEventListener("click", function () {
-  _78.modal.alert("Your session expires in five minutes.", { title: "Session expiring" }).then(function () {
-    showResult("acknowledged");
+  /* true = OK clicked, false = dismissed (×, Escape, backdrop) */
+  _78.modal.alert("Your session expires in five minutes.", { title: "Session expiring" }).then(function (ok) {
+    showResult(ok);
+    if (ok) _78.notify.info("Session extended");
   });
 });
 

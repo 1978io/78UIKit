@@ -1058,7 +1058,8 @@ is `true`. `variant` maps straight onto the button classes: `"primary"`, `"ghost
 for the default button.
 
 ```js
-// Confirm — resolves to a boolean
+// Confirm — resolves to a boolean: true only for the Confirm button,
+// false for Cancel and for every dismissal (×, Escape, backdrop)
 if (await _78.modal.confirm('Delete this saved view?', {
       title: 'Delete view',        // default: 'Are you sure?'
       confirmLabel: 'Delete',      // default: 'Confirm'
@@ -1069,15 +1070,26 @@ if (await _78.modal.confirm('Delete this saved view?', {
   destroy();
 }
 
-// Alert — resolves when acknowledged
-await _78.modal.alert('The export failed. Nothing was changed.', {
-  title: 'Export failed',   // default: 'Heads up'
-  okLabel: 'Got it',        // default: 'OK'
-  tone: 'danger'
-});
+// Alert — resolves to a boolean: true when OK was clicked, false when dismissed
+if (await _78.modal.alert('Import finished. Reload to see the new rows?', {
+      title: 'Import done',        // default: 'Heads up'
+      okLabel: 'Reload',           // default: 'OK'
+      tone: 'warn'
+    })) {
+  location.reload();
+}
 ```
 
-Both also accept `html`.
+Both also accept `html` and `dismissible` (`false` = no ×, and Escape and the backdrop do nothing, so the
+only way out is a button).
+
+**Don't hang a side effect off a dismissal.** A promise that resolves whenever the dialog closes is not a
+"yes". `_78.modal.alert(msg).then(reload)` reloads the page when the user presses Escape to get the alert
+out of the way. Test the value (`if (await _78.modal.alert(msg)) reload()`), or better, do the side effect
+because the *action* succeeded and use the alert only to report it.
+
+*Changed in 0.3.0:* `alert()` used to resolve `undefined` however it closed; it now resolves `true` / `false`.
+Callers that ignore the value are unaffected.
 
 **Your own dialog markup**, driven by the same behavior:
 
@@ -1098,7 +1110,9 @@ Both also accept `html`.
 ```
 
 ```js
-_78.modal.mount(el);                  // add backdrop-click dismissal (idempotent)
+_78.modal.mount(el);                  // add backdrop-click dismissal (idempotent);
+                                      // data-_78-dismissible="false" on the <dialog> blocks
+                                      // backdrop and Escape instead
 var returnValue = await _78.modal.show(el);   // showModal() + resolve on close
 ```
 
