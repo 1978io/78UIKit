@@ -757,11 +757,15 @@ window._78 = window._78 || {};
       "vector-effect": "non-scaling-stroke"    /* stretch the box, not the line */
     }));
     if (showDot) {
+      /* A zero-length path with a round cap, not a <circle>: the box stretches
+         under preserveAspectRatio="none", and a circle's radius stretches with
+         it (an ellipse), where a non-scaling stroke stays round. The size is the
+         stroke width in CSS. The ring underneath is the --bg2 halo. */
       var last = points[points.length - 1];
-      svg.appendChild(svgEl("circle", {
-        class: "_78-sparkline-dot", cx: last[0], cy: last[1], r: 2.5,
-        "vector-effect": "non-scaling-stroke"
-      }));
+      var d = "M" + last[0] + " " + last[1] + " l0 0";
+      ["_78-sparkline-dot-ring", "_78-sparkline-dot"].forEach(function (cls) {
+        svg.appendChild(svgEl("path", { class: cls, d: d, "vector-effect": "non-scaling-stroke" }));
+      });
     }
 
     var existing = el.querySelector("svg._78-sparkline");

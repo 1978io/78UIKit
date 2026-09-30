@@ -1277,7 +1277,11 @@ Attributes: `data-values`, `data-tone` (including `"auto"`), `data-label`, `data
 `data-dot="true"`.
 
 The end-of-series dot is **off by default** (it crowds a small card); `dot: true` / `data-dot="true"` turns
-it on. *(Changed in 0.2.0 — it used to be on by default.)*
+it on. *(Changed in 0.2.0 — it used to be on by default.)* The dot stays round at any width: it is a
+zero-length path drawn by its round cap with a non-scaling stroke, so its color is `stroke` and its size is
+`stroke-width` (5px, with an 8px `--bg2` halo underneath). *(Changed in 0.3.0 — it was a `<circle>`, which
+stretched into an ellipse in any container wider than 120px. A custom rule that set `fill` on
+`._78-sparkline-dot` should set `stroke` now.)*
 
 Without a label, the kit writes a plain-English one: *"Trend, 7 points: 18 to 34 (up)"*.
 
@@ -1285,6 +1289,7 @@ Without a label, the kit writes a plain-English one: *"Trend, 7 points: 18 to 34
 |---|---|
 | `._78-sparkline` | The generated `<svg>`: full width, 32px tall |
 | `._78-sparkline-line` / `-area` / `-dot` / `-base` | Its parts, all painted from `--viz` / `--viz-lo` |
+| `._78-sparkline-dot-ring` | The `--bg2` halo drawn under the end dot |
 
 ### 12.3 Progress bar
 
