@@ -198,6 +198,10 @@
   border-bottom: 1px solid var(--row-border);
   color: var(--dim);
 }
+/* The fold-out inherits the cells' `white-space: nowrap`, so a long value
+   pushes the panel wider than the table. `normal` is the load-bearing line;
+   overflow-wrap alone does nothing while nowrap stands. */
+.tabulator-row .tabulator-responsive-collapse td { white-space: normal; overflow-wrap: anywhere; }
 
 /* --- Groups + calculation rows -------------------------------------------- */
 .tabulator-row.tabulator-group {

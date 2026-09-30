@@ -109,7 +109,7 @@ libraries. **Nothing is vendored — you bring your own copy of the library at y
 
 | Library | Adapter | Notes |
 |---|---|---|
-| **Tabulator** | `css/adapters/tabulator.css` | Maps its classes onto kit tokens (header → `--bg2`, hover → `--row-hover`, selection → `--row-selected`, pagination → `--accent`). Re-themes for free. Built against 6.x (verified 6.5.2). |
+| **Tabulator** | `css/adapters/tabulator.css` | Maps its classes onto kit tokens (header → `--bg2`, hover → `--row-hover`, selection → `--row-selected`, pagination → `--accent`). Responsive-collapse mode is covered: the fold-out panel wraps long values. Re-themes for free. Built against 6.x (verified 6.5.2). |
 | **FullCalendar** (core) | `css/adapters/fullcalendar.css` | Remaps FullCalendar's own variables onto kit tokens. Core only, no paid plugins. Primary target **v7**; a legacy block covers v6.x. |
 | **Chart.js** | `js/adapters/chartjs.js` | Canvas can't read CSS variables, so it reads the tokens into `Chart.defaults` and calls `chart.update()` on every live chart when the theme switches — the part everyone misses. Built against 4.x (verified 4.5.1). |
 

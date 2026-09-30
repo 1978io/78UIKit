@@ -1596,6 +1596,24 @@ filters, the pagination controls and the column resize handles to `--accent`. Th
 moment `data-theme` flips, with no JS and no redraw. Tabulator renames classes across majors, so re-check
 the adapter on a major upgrade.
 
+**Responsive collapse** (`responsiveLayout: 'collapse'`) is themed too. The fold-out panel under each row
+wraps long values inside the table's width; Tabulator's cells are `nowrap`, which the panel would
+otherwise inherit.
+
+```js
+new Tabulator('#accounts', {
+  layout: 'fitColumns',
+  responsiveLayout: 'collapse',
+  responsiveLayoutCollapseStartOpen: false,
+  columns: [
+    { formatter: 'responsiveCollapse', width: 40, minWidth: 40, hozAlign: 'center',
+      resizable: false, headerSort: false },                               // the +/- toggle, first
+    { title: 'Customer', field: 'customer', minWidth: 120, responsive: 0 }, // never collapses
+    { title: 'Notes',    field: 'notes',    minWidth: 260, responsive: 3 }  // collapses first
+  ]
+});
+```
+
 ### 15.2 FullCalendar (7.x core, verified against 7.0.2)
 
 ```html
