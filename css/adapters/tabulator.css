@@ -208,6 +208,9 @@
    otherwise squeeze "Opened" into "Ope / ned" to make room for the value. */
 .tabulator-row .tabulator-responsive-collapse td { white-space: normal; overflow-wrap: anywhere; }
 .tabulator-row .tabulator-responsive-collapse td:first-child { white-space: nowrap; overflow-wrap: normal; }
+/* Tabulator hardcodes 14px here. --fs-base is what the cells use (set on the
+   frame), so the panel matches them and follows a changed type scale. */
+.tabulator-row .tabulator-responsive-collapse table { font-size: var(--fs-base); }
 
 /* --- Groups + calculation rows -------------------------------------------- */
 .tabulator-row.tabulator-group {
