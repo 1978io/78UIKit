@@ -210,6 +210,9 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   the full `menu` / `menuitem` ARIA. Built for the account menu; reusable anywhere.
 - **Tabs** — `._78-tabs` (+ `._78-tabs-segmented`). `_78.tabs` auto-mounts with roles, `aria-selected`,
   roving tabindex, arrow / Home / End keys, and a `_78:tabchange` event.
+- **Aurora text** — `._78-text-aurora`: a slow gradient drifting through a hero word, a role badge or a
+  wordmark. Token colors (AA on every surface in both themes), `--_78-aurora` / `--_78-aurora-speed` to
+  recolor and retime, still under reduced motion.
 - **Data-viz, no library** — `._78-sparkline` · `._78-progress` · `._78-bar-row` · `._78-split-bar` (one
   whole in proportional, named segments) · `._78-donut` / `._78-gauge` · `._78-trend`, driven by `_78.viz`.
   Color flows through two inherited variables (`--viz` / `--viz-lo`, defaulting to the accent), so a tone is
@@ -356,7 +359,7 @@ css/  kit.css            the one stylesheet a project links (@imports everything
       tokens.css         light + dark color blocks + shared non-color tokens
       reset.css          minimal reset, themed scrollbars, focus ring
       components/        shell · buttons · cards · grid · forms · switch · seg · details · badges · meta · viz ·
-                         figure · split-bar · table · tabs · modal · toast · alert · notes · …
+                         figure · split-bar · table · tabs · modal · toast · alert · notes · aurora · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js             _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
       adapters/          chartjs.js — _78.adapters.chartjs

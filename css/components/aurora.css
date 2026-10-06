@@ -1,0 +1,62 @@
+/* ==========================================================================
+   78 UI Kit — aurora text
+   A slow multi-color gradient drifting through the letters: for a hero word,
+   a role badge, a wordmark. One class, on any element that holds text.
+
+     <h1>Theme <span class="_78-text-aurora">everything</span></h1>
+
+   Recolor with --_78-aurora (a comma-separated color list; end on the color
+   you start with and the loop has no seam), change the tempo with
+   --_78-aurora-speed. The default colors are the accent and three category
+   hues (all tokens), so it re-themes with everything else and reads on both themes.
+   Under prefers-reduced-motion it is a still gradient.
+   ========================================================================== */
+
+._78-text-aurora {
+  /* --accent-hover, not --accent: it is the higher-contrast end of the accent
+     in both themes, so every point of the default gradient clears 4.5:1 on
+     --bg, --bg2 and --bg3 (5.2:1 at its weakest in light, 6.4:1 in dark). */
+  --_78-aurora: var(--accent-hover), var(--cat-1), var(--cat-3), var(--cat-5), var(--accent-hover);
+  --_78-aurora-speed: 6s;
+  color: var(--accent-hover);             /* fallback: no background-clip: text */
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  ._78-text-aurora {
+    background-image: linear-gradient(90deg, var(--_78-aurora));
+    background-size: 300% 100%;
+    background-repeat: repeat-x;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: _78-aurora var(--_78-aurora-speed) linear infinite;
+  }
+  /* Selected text would otherwise be invisible on the selection tint */
+  ._78-text-aurora::selection {
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+  }
+}
+
+/* 150% of a 300%-wide background is exactly one tile: the end frame is the
+   start frame, so the loop never jumps. */
+@keyframes _78-aurora {
+  from { background-position: 0% 50%; }
+  to   { background-position: 150% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ._78-text-aurora { animation: none; }
+}
+
+/* Forced colors (Windows high contrast) drop background images — keep the
+   text itself visible in the system color. */
+@media (forced-colors: active) {
+  ._78-text-aurora {
+    background: none;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+    animation: none;
+  }
+}

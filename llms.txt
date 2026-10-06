@@ -132,6 +132,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Quiet notes** — `._78-notes`: dim notes inside a card, quieter than an alert — an optional
   `._78-notes-title`, list lines with a dot marker that takes any `._78-tone-*`, and `-box` (a compact
   alert) / `-ruled` (a footnote) / `-xs`.
+- **Aurora text** — `._78-text-aurora`, an animated gradient for a hero word or a wordmark; recolor with
+  `--_78-aurora`, retime with `--_78-aurora-speed`; static under reduced motion.
 - **Data-viz, no library** — `._78-sparkline`, `._78-progress`, `._78-bar-row`, `._78-split-bar` (a whole
   divided into named, proportional segments), `._78-donut` / `._78-gauge`, `._78-trend`, driven by
   `_78.viz` and toned with one class.

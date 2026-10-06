@@ -27,6 +27,7 @@
 @import url("components/alert.css");
 @import url("components/notes.css");
 @import url("components/theme-toggle.css");
+@import url("components/aurora.css");
 @import url("components/utilities.css");
 
 /* Library adapters (css/adapters/*) are deliberately NOT imported here —

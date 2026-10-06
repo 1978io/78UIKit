@@ -2025,9 +2025,35 @@ A deliberately small set — the kit is a component library, not a utility frame
 | Gaps | `._78-gap-8` `._78-gap-12` `._78-gap-16` |
 | Margins | `._78-mt-8` `._78-mt-12` `._78-mt-16` `._78-mb-4` `._78-mb-8` `._78-mb-12` `._78-mb-16` |
 | Lists | `._78-list-plain` |
+| Effects | `._78-text-aurora` (animated gradient text) |
 | Accessibility | `._78-sr-only` |
 
 `._78-flex` and `._78-flex-between` both center their items vertically.
+
+**Aurora text — `._78-text-aurora`.** A slow multi-color gradient drifting through the letters, for a hero
+word, a role badge or a wordmark:
+
+```html
+<h1>Theme <span class="_78-text-aurora">everything</span>, live.</h1>
+
+<!-- your own colors and tempo -->
+<strong class="_78-text-aurora"
+        style="--_78-aurora: var(--success), var(--info), var(--success); --_78-aurora-speed: 3s">…</strong>
+```
+
+| Property | Default | What it does |
+|---|---|---|
+| `--_78-aurora` | `var(--accent-hover), var(--cat-1), var(--cat-3), var(--cat-5), var(--accent-hover)` | The gradient's colors, comma-separated. End on the color you start with and the loop has no seam |
+| `--_78-aurora-speed` | `6s` | One full pass of the gradient |
+
+It's a 300%-wide `linear-gradient` clipped to the text (`background-clip: text`), moved by a linear,
+infinite keyframe on `background-position`. The default stops are tokens, so it re-themes, and every point of
+the default gradient clears 4.5:1 on `--bg`, `--bg2` and `--bg3` in both themes — `--accent-hover` rather
+than `--accent` because it's the higher-contrast end of the accent in both. Check your own colors the same
+way. **`prefers-reduced-motion: reduce` gets a still gradient.** In forced-colors mode, or a browser without
+`background-clip: text`, the text is solid (`CanvasText` / `--accent-hover`), never invisible. Selected text
+switches to `--text` so a selection stays readable. Keep it to a word or a short phrase: moving color on a
+paragraph is hard to read.
 
 **Lists.** The reset strips list padding everywhere, on purpose. Inside the components that hold prose
 (`._78-alert-body`, `._78-card`, `._78-modal-body`, `._78-details-body`) a `<ul>` / `<ol>` with **no
@@ -2379,6 +2405,7 @@ css/  kit.css              the one stylesheet a project links (@imports everythi
       reset.css            minimal reset, themed scrollbars, focus ring
       components/          shell · buttons · cards · grid · forms · switch · seg · details · badges · meta ·
                            viz · figure · split-bar · table · tabs · modal · toast · alert · notes ·
+                           aurora ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js               _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
