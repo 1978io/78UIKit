@@ -14,7 +14,7 @@
 /* …but not in a grid or a row, where the gap already spaces them and the
    stacking margin would only push every card after the first out of line.
    :where() keeps this at the stacking rule's own weight; it wins on order. */
-:where(._78-card-grid, ._78-kpi-grid, ._78-card-stack, ._78-flex, ._78-flex-between) > ._78-card + ._78-card {
+:where(._78-grid, ._78-card-grid, ._78-kpi-grid, ._78-card-stack, ._78-flex, ._78-flex-between) > ._78-card + ._78-card {
   margin-top: 0;
 }
 
@@ -240,18 +240,5 @@
 /* Whole-card link (a KPI that drills through) */
 ._78-stat-card._78-card-link:hover { border-color: var(--accent); }
 
-/* --- KPI grid — the standard dashboard row, 2–6 across ------------------- */
-._78-kpi-grid {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-}
-._78-kpi-grid-sm { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-._78-kpi-grid-lg { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-
-/* Simple responsive card grid */
-._78-card-grid {
-  display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
+/* The grids that lay cards out — ._78-kpi-grid, ._78-card-grid and the general
+   ._78-grid they are presets of — live in components/grid.css. */

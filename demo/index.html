@@ -220,6 +220,40 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
     </div>
   </section>
 
+  <!-- ============================ GRID ============================ -->
+  <section id="grid">
+    <h2>Grid <span class="_78-badge _78-badge-dim">._78-grid · ._78-col-span-2 · ._78-col-full</span></h2>
+    <p class="_78-text-dim _78-mb-16">Auto-fit columns no narrower than <code class="tok">--min</code>, and a child that
+      spans two when there's room — full width when there isn't. Resize the window: no breakpoints are written
+      anywhere.</p>
+
+    <div class="_78-grid" id="grid-demo">
+      <div class="_78-card _78-col-span-2"><div class="_78-card-title">Span 2</div><p class="_78-text-dim">Two columns when the grid has them, the whole row when it doesn't.</p></div>
+      <div class="_78-card"><div class="_78-card-title">One</div><p class="_78-text-dim">A plain cell.</p></div>
+      <div class="_78-card"><div class="_78-card-title">Two</div><p class="_78-text-dim">A plain cell.</p></div>
+      <div class="_78-card"><div class="_78-card-title">Three</div><p class="_78-text-dim">A plain cell.</p></div>
+      <div class="_78-card _78-col-full"><div class="_78-card-title">Full</div><p class="_78-text-dim"><code class="tok">._78-col-full</code> — always the whole row.</p></div>
+    </div>
+
+    <p class="_78-text-dim _78-mt-16 _78-mb-8"><code class="tok">._78-kpi-grid</code> is a preset of it (<code class="tok">--min: 190px</code>),
+      so a stat card can span too:</p>
+    <div class="_78-kpi-grid" id="kpi-span-demo">
+      <div class="_78-stat-card _78-col-span-2">
+        <div class="_78-stat-card__label">Account value</div>
+        <div class="_78-stat-card__num">$48,290</div>
+        <div class="_78-stat-card__sub">the wide card on a dashboard row</div>
+      </div>
+      <div class="_78-stat-card"><div class="_78-stat-card__label">Open P/L</div><div class="_78-stat-card__num _78-success">+$1,204</div></div>
+      <div class="_78-stat-card"><div class="_78-stat-card__label">Win rate</div><div class="_78-stat-card__num">61%</div></div>
+    </div>
+
+    <p class="_78-text-dim _78-mt-16 _78-mb-8">A <code class="tok">--min</code> of your own, inline:</p>
+    <div class="_78-grid" style="--min: 120px" id="grid-min-demo">
+      <div class="_78-card">A</div><div class="_78-card">B</div><div class="_78-card">C</div>
+      <div class="_78-card">D</div><div class="_78-card">E</div><div class="_78-card">F</div>
+    </div>
+  </section>
+
   <!-- ============================ FORMS ============================ -->
   <section id="forms">
     <h2>Form controls</h2>

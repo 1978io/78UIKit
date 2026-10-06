@@ -1,0 +1,69 @@
+/* ==========================================================================
+   78 UI Kit — grid
+   One responsive primitive: auto-fit columns no narrower than --min, and a
+   child that spans two of them when there is room. Not a 12-column framework
+   — there are no column counts to pick and no breakpoints to write.
+
+     <div class="_78-grid" style="--min: 220px">
+       <div class="_78-card _78-col-span-2">…</div>   two columns, or full width
+       <div class="_78-card">…</div>
+       <div class="_78-card _78-col-full">…</div>     always the whole row
+     </div>
+
+   ._78-kpi-grid and ._78-card-grid are presets of it — the same template
+   with their own --min — so they take the span classes too.
+   ========================================================================== */
+
+._78-grid,
+._78-kpi-grid,
+._78-card-grid {
+  display: grid;
+  gap: var(--space-4);
+  /* min(…, 100%): a container narrower than one track gets one full-width
+     column instead of overflowing it */
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--min), 100%), 1fr));
+}
+._78-grid        { --min: 200px; }
+._78-card-grid   { --min: 200px; }
+._78-kpi-grid    { --min: 190px; }   /* the standard dashboard row, 2–6 across */
+._78-kpi-grid-sm { --min: 150px; }   /* with ._78-kpi-grid: more, tighter cards */
+._78-kpi-grid-lg { --min: 240px; }   /* with ._78-kpi-grid: fewer, roomier cards */
+
+/* --- Spans ----------------------------------------------------------------
+   ._78-col-full is the whole row, always. ._78-col-span-2 is the whole row
+   until the grid has room for two columns, then exactly two — so it never
+   adds an implicit column and pushes the row wider than its container.
+
+   "Room for two" is a container query, and only a grid that holds a
+   spanning child becomes a size container: an inline-size container ignores
+   its content when sizing itself, which would collapse a grid sitting in a
+   shrink-to-fit spot (an auto-width flex item), so plain grids stay exactly
+   as they were.
+
+   A container query cannot read var(--min), so each preset switches at its
+   own fixed width: 2 × --min + the --space-4 gap. With a --min of your own,
+   spans still switch at the preset's width — use ._78-col-full, or a preset
+   whose --min matches. Without :has() / container query support, a
+   span-2 child is simply full width. */
+._78-col-full,
+._78-col-span-2 { grid-column: 1 / -1; }
+
+:is(._78-grid, ._78-kpi-grid, ._78-card-grid):has(> ._78-col-span-2) {
+  container: _78-grid / inline-size;
+}
+
+@container _78-grid (min-width: 416px) {          /* 2 × 200 + 16 */
+  :is(._78-grid, ._78-card-grid) > ._78-col-span-2 { grid-column: span 2; }
+}
+@container _78-grid (min-width: 396px) {          /* 2 × 190 + 16 */
+  ._78-kpi-grid > ._78-col-span-2 { grid-column: span 2; }
+}
+/* the size variants carry ._78-kpi-grid too, so they reset its switch first */
+._78-kpi-grid-sm > ._78-col-span-2,
+._78-kpi-grid-lg > ._78-col-span-2 { grid-column: 1 / -1; }
+@container _78-grid (min-width: 316px) {          /* 2 × 150 + 16 */
+  ._78-kpi-grid-sm > ._78-col-span-2 { grid-column: span 2; }
+}
+@container _78-grid (min-width: 496px) {          /* 2 × 240 + 16 */
+  ._78-kpi-grid-lg > ._78-col-span-2 { grid-column: span 2; }
+}

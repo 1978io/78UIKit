@@ -691,6 +691,7 @@ Give the group an `aria-label` (or `aria-labelledby`) saying what the value *is*
 | `._78-card-link` | Makes the card an interactive link: accent border, lift and larger shadow on hover |
 | `._78-card-grid` | Responsive grid of cards — `auto-fit`, min 200px per column |
 | `._78-card-stack` | A vertical list of cards spaced by a `--space-4` gap (`-sm`: `--space-3`), wrapped or not |
+| `._78-grid` | The general auto-fit grid the card grids are presets of, with `._78-col-span-2` / `._78-col-full` children (§5.3) |
 
 Consecutive `._78-card` siblings get a `--space-4` gap automatically. Inside `._78-card-grid`, `._78-kpi-grid`,
 `._78-flex` or `._78-flex-between` they don't: there the container's gap spaces them, and every card lines up
@@ -817,14 +818,46 @@ Number color modifiers, applied to `._78-stat-card__num`: any tone from §2.9 in
 
 ### 5.3 Grids
 
-| Class | Layout |
-|---|---|
-| `._78-kpi-grid` | `auto-fit`, min 190px — the standard dashboard row, 2–6 across by width |
-| `._78-kpi-grid-sm` | Same, min 150px — more, tighter cards |
-| `._78-kpi-grid-lg` | Same, min 240px — fewer, roomier cards |
-| `._78-card-grid` | `auto-fit`, min 200px — for `._78-card`s rather than KPIs |
+`._78-grid` is the one grid primitive: auto-fit columns no narrower than `--min`, a `--space-4` gap, no
+breakpoints. The two card grids are presets of it — the same template with their own `--min`.
 
-Both use a `--space-4` gap and need no media queries.
+```html
+<div class="_78-grid" style="--min: 220px">
+  <div class="_78-card _78-col-span-2">…</div>   <!-- two columns when there's room, else the whole row -->
+  <div class="_78-card">…</div>
+  <div class="_78-card">…</div>
+  <div class="_78-card _78-col-full">…</div>     <!-- always the whole row -->
+</div>
+
+<!-- a stat card that spans on a dashboard row -->
+<div class="_78-kpi-grid">
+  <div class="_78-stat-card _78-col-span-2">…</div>
+  <div class="_78-stat-card">…</div>
+  <div class="_78-stat-card">…</div>
+</div>
+```
+
+| Class / property | Layout | Span 2 from |
+|---|---|---|
+| `._78-grid` | `auto-fit`, `--min: 200px` | a 416px-wide grid |
+| `._78-card-grid` | Preset, `--min: 200px` — for `._78-card`s | 416px |
+| `._78-kpi-grid` | Preset, `--min: 190px` — the standard dashboard row, 2–6 across by width | 396px |
+| `._78-kpi-grid-sm` | With `._78-kpi-grid`: `--min: 150px` — more, tighter cards | 316px |
+| `._78-kpi-grid-lg` | With `._78-kpi-grid`: `--min: 240px` — fewer, roomier cards | 496px |
+| `--min` | The narrowest a column gets. Set it **on the grid** (`style="--min: 260px"`); a container narrower than one column gets one full-width column instead of overflowing | — |
+| `._78-col-span-2` | On a child: two columns when the grid has two or more, the whole row when it has one. Never adds an implicit column | — |
+| `._78-col-full` | On a child: always the whole row | — |
+
+**Why spans need care.** A plain `grid-column: span 2` in an auto-fit grid that is down to one column makes
+the browser add an implicit second column, and the row runs off the screen. `._78-col-span-2` decides with a
+container query instead. A container query can't read `var(--min)`, so each preset switches at its own
+fixed width (2 × `--min` + 16px) — with a `--min` of your own, spans still switch at the preset's width, so
+use `._78-col-full` there or the preset whose minimum matches. Without `:has()` / container-query support a
+span-2 child is simply full width.
+
+**Only a grid with a spanning child becomes a size container**, so every other grid renders exactly as it
+did before 0.4.0. A grid that does have one needs a width from its surroundings — normal flow and grid cells
+give it one; in a flex row give it `flex: 1`.
 
 ### 5.4 Meta line — `._78-meta`
 
@@ -2270,7 +2303,7 @@ throws.
 css/  kit.css              the one stylesheet a project links (@imports everything below)
       tokens.css           light + dark color blocks + the shared non-color tokens
       reset.css            minimal reset, themed scrollbars, focus ring
-      components/          shell · buttons · cards · forms · switch · seg · details · badges · meta ·
+      components/          shell · buttons · cards · grid · forms · switch · seg · details · badges · meta ·
                            viz · figure · split-bar · table · tabs · modal · toast · alert · notes ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css

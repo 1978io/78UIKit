@@ -182,6 +182,9 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **Meta line** — `._78-meta`: the dim line of facts under a headline ("Scanned 1,234 · added 3"). The
   kit draws the `·` between child elements; a `._78-meta-label` lead-in, an `-xs` size and a line clamp
   (`._78-meta-clamp`, `-clamp-2`).
+- **Grid** — `._78-grid`: auto-fit columns no narrower than `--min`, no breakpoints; `._78-col-span-2` is two
+  columns when there's room and the whole row when there isn't, `._78-col-full` always the row.
+  `._78-kpi-grid` and `._78-card-grid` are presets of it. Not a 12-column framework.
 - **Forms** — `._78-field` with a consistent focus ring, `._78-form-inline` (a field and its button on one
   row — a dismiss-with-a-reason form in a card foot), plus `._78-switch`: a toggle switch built on a
   real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size
@@ -351,7 +354,7 @@ previews it live on real components, contrast-checks it, and hands back paste-re
 css/  kit.css            the one stylesheet a project links (@imports everything below)
       tokens.css         light + dark color blocks + shared non-color tokens
       reset.css          minimal reset, themed scrollbars, focus ring
-      components/        shell · buttons · cards · forms · switch · seg · details · badges · meta · viz ·
+      components/        shell · buttons · cards · grid · forms · switch · seg · details · badges · meta · viz ·
                          figure · split-bar · table · tabs · modal · toast · alert · notes · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js             _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
