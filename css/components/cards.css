@@ -11,6 +11,12 @@
   box-shadow: var(--shadow);
 }
 ._78-card + ._78-card { margin-top: var(--space-4); }
+/* …but not in a grid or a row, where the gap already spaces them and the
+   stacking margin would only push every card after the first out of line.
+   :where() keeps this at the stacking rule's own weight; it wins on order. */
+:where(._78-card-grid, ._78-kpi-grid, ._78-flex, ._78-flex-between) > ._78-card + ._78-card {
+  margin-top: 0;
+}
 
 ._78-card-title {
   font-size: var(--fs-lg);

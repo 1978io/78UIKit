@@ -92,7 +92,7 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Buttons** — `._78-btn` (`-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`,
   `._78-btn-group`.
 - **Cards** — `._78-card` and the KPI `._78-stat-card` (label / number / delta / sparkline), laid out by
-  `._78-kpi-grid`.
+  `._78-kpi-grid` / `._78-card-grid`. Stacked cards space themselves; in a grid they line up at the top.
 - **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one
   consistent focus ring.
 - **Toggle switch** — `._78-switch` (+ `-sm`, `._78-switch-row`), a real `<input type="checkbox">`

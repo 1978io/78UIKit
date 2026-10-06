@@ -173,7 +173,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **App shell** — `._78-topbar` + an optional `._78-sidebar` that collapses to an icon rail and turns
   into an off-canvas drawer on mobile, driven by `_78.shell`. See [The app shell](#the-app-shell) below.
 - **Buttons** — `._78-btn` (+ `-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`.
-- **Cards** — `._78-card`, `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
+- **Cards** — `._78-card` (stacked cards space themselves; in a grid or a flex row the gap does, so they
+  line up at the top), `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
   `._78-stat-delta` colored by sign, `._78-invert` where up is bad), laid out by `._78-kpi-grid`
   (auto-fit, 2–6 across).
 - **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a

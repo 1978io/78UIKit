@@ -691,7 +691,9 @@ Give the group an `aria-label` (or `aria-labelledby`) saying what the value *is*
 | `._78-card-link` | Makes the card an interactive link: accent border, lift and larger shadow on hover |
 | `._78-card-grid` | Responsive grid of cards — `auto-fit`, min 200px per column |
 
-Consecutive `._78-card` siblings get a `--space-4` gap automatically.
+Consecutive `._78-card` siblings get a `--space-4` gap automatically. Inside `._78-card-grid`, `._78-kpi-grid`,
+`._78-flex` or `._78-flex-between` they don't: there the container's gap spaces them, and every card lines up
+at the top. (In a grid of your own, set `margin-top: 0` on the cards yourself; the kit can't see it.)
 
 ### 5.2 Stat / KPI card
 
