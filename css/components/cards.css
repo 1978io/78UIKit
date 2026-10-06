@@ -14,9 +14,20 @@
 /* …but not in a grid or a row, where the gap already spaces them and the
    stacking margin would only push every card after the first out of line.
    :where() keeps this at the stacking rule's own weight; it wins on order. */
-:where(._78-card-grid, ._78-kpi-grid, ._78-flex, ._78-flex-between) > ._78-card + ._78-card {
+:where(._78-card-grid, ._78-kpi-grid, ._78-card-stack, ._78-flex, ._78-flex-between) > ._78-card + ._78-card {
   margin-top: 0;
 }
+
+/* Card stack — a vertical list of cards spaced by a gap, not by margins. Use it
+   when the cards are not direct siblings (each wrapped in a <form>, a partial
+   that brings its own wrapper, something hidden between them), or just to say
+   "this is a list" in the markup. Any child spaces, card or not. */
+._78-card-stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+._78-card-stack-sm { gap: var(--space-3); }
 
 ._78-card-title {
   font-size: var(--fs-lg);

@@ -74,6 +74,14 @@
 ._78-figure-row-sm ._78-figure { padding: var(--space-1) var(--space-2); }
 ._78-figure-row-sm ._78-figure-value { font-size: var(--fs-base); }
 
+/* Neutral — a figure that is not part of the set's meaning ("Time left" beside
+   a target and a stop). The tone is reset rather than overridden, so a tone the
+   figure or its row would otherwise inherit is ignored: the edge goes back to
+   --border, a -strong value to --text, a -plain label to --dim.
+   ._78-figure-neutral does one figure; ._78-figure-row-neutral does the row. */
+._78-figure-neutral,
+._78-figure-row-neutral ._78-figure { --viz: initial; --viz-lo: initial; }
+
 /* Borderless variant — the tone moves to the label, for a surface that is
    already tinted and where a second fill would muddy it. */
 ._78-figure-row-plain ._78-figure {

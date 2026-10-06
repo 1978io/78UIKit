@@ -690,10 +690,23 @@ Give the group an `aria-label` (or `aria-labelledby`) saying what the value *is*
 | `._78-card-foot-fill` | Adds the modal foot's `--bg3` surface to that row |
 | `._78-card-link` | Makes the card an interactive link: accent border, lift and larger shadow on hover |
 | `._78-card-grid` | Responsive grid of cards — `auto-fit`, min 200px per column |
+| `._78-card-stack` | A vertical list of cards spaced by a `--space-4` gap (`-sm`: `--space-3`), wrapped or not |
 
 Consecutive `._78-card` siblings get a `--space-4` gap automatically. Inside `._78-card-grid`, `._78-kpi-grid`,
 `._78-flex` or `._78-flex-between` they don't: there the container's gap spaces them, and every card lines up
 at the top. (In a grid of your own, set `margin-top: 0` on the cards yourself; the kit can't see it.)
+
+**A list of cards — `._78-card-stack`.** A one-column grid with a `--space-4` gap (`._78-card-stack-sm`:
+`--space-3`). Use it when the cards aren't direct siblings — each wrapped in a `<form>`, a partial that brings
+its own wrapper, a hidden element between them — so the `+` rule can't reach them. Any child is spaced, card
+or not; hidden children take no gap.
+
+```html
+<div class="_78-card-stack">
+  <form><article class="_78-card"> … </article></form>
+  <form><article class="_78-card"> … </article></form>
+</div>
+```
 
 ### 5.2 Stat / KPI card
 
@@ -1562,6 +1575,20 @@ and the chart beside it agree on color.
 
 <!-- no fill: the tone moves to the label -->
 <div class="_78-figure-row _78-figure-row-plain"> … </div>
+
+<!-- one figure that isn't part of the set's meaning: no tone, a plain --border edge -->
+<div class="_78-figure-row">
+  <div class="_78-figure _78-tone-success"> … Signal when … </div>
+  <div class="_78-figure _78-tone-danger"> … Dead if … </div>
+  <div class="_78-figure _78-figure-neutral">
+    <span class="_78-figure-label">Time left</span>
+    <span class="_78-figure-value">6</span>
+    <span class="_78-figure-sub">trading days</span>
+  </div>
+</div>
+
+<!-- a whole row with no semantic edges (any ._78-tone-* inside is ignored) -->
+<div class="_78-figure-row _78-figure-row-neutral"> … </div>
 ```
 
 | Class | Role |
@@ -1574,6 +1601,11 @@ and the chart beside it agree on color.
 | `._78-figure-strong` | On a figure (or the row): the value takes the tone color too |
 | `._78-figure-row-sm` | Denser padding and an `--fs-base` value, for a table cell or a narrow card |
 | `._78-figure-row-plain` | No fill and no edge; the tone moves to the label |
+| `._78-figure-neutral` | On one figure: no tone, even one inherited from the row or a parent — the edge is `--border`, a `-strong` value is `--text`, a `-plain` label is `--dim`. For a figure that isn't part of the set's meaning ("Time left" beside a target and a stop) |
+| `._78-figure-row-neutral` | On the row: every figure neutral, so the row carries no semantic edges at all |
+
+A figure with no tone class already has a `--border` edge; `-neutral` is for when a tone would otherwise be
+inherited, and for saying so in the markup.
 
 The label is the meaning and the color is reinforcement — never ship a figure row whose only difference
 between parts is the tone.

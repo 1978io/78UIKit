@@ -174,7 +174,7 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   into an off-canvas drawer on mobile, driven by `_78.shell`. See [The app shell](#the-app-shell) below.
 - **Buttons** — `._78-btn` (+ `-primary` / `-ghost` / `-danger` / `-sm` / `-full`), `._78-icon-btn`.
 - **Cards** — `._78-card` (stacked cards space themselves; in a grid or a flex row the gap does, so they
-  line up at the top), `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
+  line up at the top), `._78-card-stack` (a list of cards spaced by a gap, wrapped or not), `._78-stat-card` (a KPI card: `__head` / `__icon` / `__row` / `__spark` +
   `._78-stat-delta` colored by sign, `._78-invert` where up is bad), laid out by `._78-kpi-grid`
   (auto-fit, 2–6 across).
 - **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a
@@ -188,7 +188,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   rotating chevron. No JS: the keyboard, screen-reader and find-in-page behavior is the browser's.
 - **Figure row** — `._78-figure-row` / `._78-figure`: N related numbers read side by side, each a label, a
   value and a tone shown as a colored left edge (entry / target / stop, plan / actual / variance). One
-  fact in parts — where a KPI grid is unrelated metrics.
+  fact in parts — where a KPI grid is unrelated metrics. `._78-figure-neutral` (one figure) and
+  `._78-figure-row-neutral` (the row) drop the tone for figures that carry no meaning ("Time left").
 - **Table** — `._78-table` (+ `-compact` / `-striped` / `-sticky`, `._78-table-wrap` to scroll on narrow
   screens). For a full data grid, use Tabulator + its adapter.
 - **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu` (`._78-menu-item`, `._78-menu-sep`).

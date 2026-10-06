@@ -93,6 +93,7 @@ One vocabulary for every component that takes a tone, and it is the token names:
   `._78-btn-group`.
 - **Cards** — `._78-card` and the KPI `._78-stat-card` (label / number / delta / sparkline), laid out by
   `._78-kpi-grid` / `._78-card-grid`. Stacked cards space themselves; in a grid they line up at the top.
+  `._78-card-stack` spaces a list of cards with a gap, even when each one is wrapped.
 - **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one
   consistent focus ring.
 - **Toggle switch** — `._78-switch` (+ `-sm`, `._78-switch-row`), a real `<input type="checkbox">`
@@ -103,7 +104,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Disclosure** — `._78-details` (+ `-plain` / `-fill` / `-sm`), a styled `<details>` / `<summary>` with
   a rotating chevron marker. CSS only.
 - **Figure row** — `._78-figure-row` / `._78-figure`, N related numbers side by side, each with a label
-  and a `._78-tone-*` colored left edge.
+  and a `._78-tone-*` colored left edge; `._78-figure-neutral` / `._78-figure-row-neutral` for figures
+  that carry no meaning.
 - **Badges & pills** — `._78-badge` and `._78-tag` (any tone), `._78-score-pill`, `._78-eyebrow`.
 - **Table** — `._78-table` (`-compact` / `-striped` / `-sticky`) in a `._78-table-wrap` scroller. For a
   real data grid, use Tabulator plus its adapter.
