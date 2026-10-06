@@ -1190,6 +1190,7 @@ Pick by what the message *needs from the user*, not by how it looks:
 | **Modal** | Needs acknowledgement — errors that stop the flow, confirms | Blocks; requires a click | `_78.modal.open()` / `.confirm()` / `.alert()` |
 | **Toast** | Informational — "Saved", "Copied", "Export queued" | Auto-dismisses; never blocks | `_78.notify()` and `.success` / `.error` / `.warn` / `.info` |
 | **Inline alert** | Tied to a region — form errors, empty states, a standing warning | Sits in the layout; persists | The `._78-alert` / `._78-empty` markup |
+| **Quiet notes** | Worth knowing, nothing to do — "close to target", "earnings Thursday", why a button isn't there | Sits in a card; persists; never louder than the content | The `._78-notes` markup (§11.4) |
 
 ### 11.1 Modal
 
@@ -1398,6 +1399,54 @@ to leave the bullets outside the box.)*
   </div>
 </div>
 ```
+
+### 11.4 Quiet notes — `._78-notes`
+
+The secondary text inside a card that an alert would shout: "close to target, nothing to do yet", the
+time-stop and earnings lines under a position, the reason an action isn't offered. An alert is for something
+to act on and `._78-empty` is for a region with nothing in it; notes are things worth knowing. Dim,
+`--fs-sm`, and after other content in a card they sit `--space-4` down, where a card foot would.
+
+```html
+<!-- a heading and a list, as a footnote under the card's content -->
+<div class="_78-notes _78-notes-ruled">
+  <div class="_78-notes-title">Close to target, nothing to do yet:</div>
+  <ul>
+    <li>AAPL is 1.2% under its first target</li>
+    <li>MSFT is 0.8% under its first target</li>
+  </ul>
+</div>
+
+<!-- the compact alert: a quiet box, a toned edge, a tone per line -->
+<div class="_78-notes _78-notes-box _78-tone-warn">
+  <div class="_78-notes-title">Worth a look</div>
+  <ul>
+    <li>NVDA reports on Thursday, before the open</li>
+    <li>AMD is past its 20-day time stop</li>
+    <li class="_78-tone-info">The market check moved to caution</li>
+  </ul>
+  <p class="_78-notes-xs">Nothing has been changed. These are things to know, not instructions.</p>
+</div>
+
+<!-- "nothing to do, but here's why" — one line, in a card foot -->
+<div class="_78-card-foot">
+  <p class="_78-notes">No order to place: the price is already 3% past the entry.</p>
+</div>
+```
+
+| Class | Role |
+|---|---|
+| `._78-notes` | The block (or a single `<p>`): `--dim`, `--fs-sm`. After other content in a `._78-card`, `--space-4` above it |
+| `._78-notes-title` | An optional small heading: `--text`, semibold, sentence case |
+| `<ul>` / `<ol>` inside | No bullets or indent of the prose kind; each `<li>` gets a 6px dot marker, `--space-1` apart |
+| `._78-tone-{tone}` on an `<li>` | Colors that line's marker — any tone or category from §2.9. The text stays dim |
+| `._78-tone-{tone}` on the block | Colors every marker (and the box edge); a tone on a line overrides it |
+| `._78-notes-box` | The compact alert: `--bg3` inset, `--radius-sm`, a 3px left edge in the tone (`--border` without one) |
+| `._78-notes-ruled` | A hairline above and `--space-3` of padding — a footnote under the card's content |
+| `._78-notes-xs` | `--fs-xs` — on the block, or on one paragraph inside it |
+
+Consecutive notes blocks sit `--space-2` apart. The marker is reinforcement, never the message: write the
+line so it reads without its color.
 
 ---
 
@@ -2150,7 +2199,7 @@ css/  kit.css              the one stylesheet a project links (@imports everythi
       tokens.css           light + dark color blocks + the shared non-color tokens
       reset.css            minimal reset, themed scrollbars, focus ring
       components/          shell · buttons · cards · forms · switch · seg · details · badges · meta ·
-                           viz · figure · split-bar · table · tabs · modal · toast · alert ·
+                           viz · figure · split-bar · table · tabs · modal · toast · alert · notes ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js               _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·

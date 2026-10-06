@@ -355,7 +355,7 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
 
   <!-- ============================ QUIET TEXT ============================ -->
   <section id="quiet">
-    <h2>Quiet text <span class="_78-badge _78-badge-dim">._78-meta · ._78-status</span></h2>
+    <h2>Quiet text <span class="_78-badge _78-badge-dim">._78-meta · ._78-status · ._78-notes</span></h2>
     <p class="_78-text-dim _78-mb-16">The secondary lines around a headline — dim, small, and never louder than
       what they explain.</p>
 
@@ -399,6 +399,44 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
           <span class="_78-status-text">the regime check runs after the close</span>
         </div>
         <p class="_78-text-sm _78-mt-12">Sync <span class="_78-status _78-status-inline"><span class="_78-badge _78-badge-success">on</span><span class="_78-status-text">2 min ago</span></span> — <code class="tok">._78-status-inline</code> sits in a sentence.</p>
+      </div>
+    </div>
+
+    <h3 class="_78-mt-16 _78-mb-8">Quiet notes <span class="_78-badge _78-badge-dim">._78-notes</span></h3>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">For things worth knowing inside a card — quieter than an alert
+      (something to act on) and not an empty state. Markers take any <code class="tok">._78-tone-*</code>.</p>
+    <div class="_78-card-grid" id="notes-demo">
+      <div class="_78-card">
+        <div class="_78-card-title">Review</div>
+        <p>All open positions are inside their plan.</p>
+        <div class="_78-notes _78-notes-ruled">
+          <div class="_78-notes-title">Close to target, nothing to do yet:</div>
+          <ul>
+            <li>AAPL is 1.2% under its first target</li>
+            <li>MSFT is 0.8% under its first target</li>
+          </ul>
+        </div>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title">Positions</div>
+        <p>Three open, all sized to plan.</p>
+        <div class="_78-notes _78-notes-box _78-tone-warn">
+          <div class="_78-notes-title">Worth a look</div>
+          <ul>
+            <li>NVDA reports on Thursday, before the open</li>
+            <li>AMD is past its 20-day time stop</li>
+            <li class="_78-tone-info">The market check moved to caution this morning</li>
+          </ul>
+          <p class="_78-notes-xs">Nothing has been changed. These are things to know, not instructions.</p>
+        </div>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title">Suggestion</div>
+        <p>Buy 40 shares at the open.</p>
+        <div class="_78-card-foot">
+          <p class="_78-notes">No order to place: the price is already 3% past the entry, which is outside the
+            plan's range.</p>
+        </div>
       </div>
     </div>
   </section>

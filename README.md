@@ -293,6 +293,7 @@ is `inert` (the topbar and scrim stay live, so either still closes it).
 | **Modal** | needs acknowledgement — errors, confirms | blocks; requires a click | `_78.modal.open({title, body, actions})` → `Promise<value\|null>` · `.confirm(msg)` → `Promise<boolean>` · `.alert(msg)` → `Promise<boolean>` (`true` = the button, `false` = dismissed) |
 | **Toast** | informational — "Saved", "Copied" | auto-dismisses (never blocks) | `_78.notify(msg, {type, duration, title})` · `.success` / `.error` / `.warn` / `.info` |
 | **Inline alert** | tied to a region — form errors, empty states | sits in the layout; persists | `._78-alert` (+ any [tone](#tones)), `._78-empty`. A plain `<ul>` / `<ol>` inside keeps its bullets, and consecutive `<p>`s space themselves (also in cards, modal bodies, disclosures); `._78-list-plain` drops the bullets |
+| **Quiet notes** | worth knowing, nothing to do — "close to target", why a button isn't there | sits in a card; never louder than the content | `._78-notes`: a dim list with an optional `._78-notes-title`, a dot marker per line that takes any tone, `-box` (a compact alert) and `-ruled` (a footnote) |
 
 Modals use the native `<dialog>` `showModal()` (top layer, `::backdrop`, focus trap, Escape). Body text goes
 in with `textContent`; pass `html: true` when you mean markup. `dismissible: false` removes the × and makes
@@ -348,7 +349,7 @@ css/  kit.css            the one stylesheet a project links (@imports everything
       tokens.css         light + dark color blocks + shared non-color tokens
       reset.css          minimal reset, themed scrollbars, focus ring
       components/        shell · buttons · cards · forms · switch · seg · details · badges · meta · viz ·
-                         figure · split-bar · table · tabs · modal · toast · …
+                         figure · split-bar · table · tabs · modal · toast · alert · notes · …
       adapters/          tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js             _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
       adapters/          chartjs.js — _78.adapters.chartjs

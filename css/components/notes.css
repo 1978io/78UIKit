@@ -1,0 +1,85 @@
+/* ==========================================================================
+   78 UI Kit — quiet notes
+   The secondary text inside a card that an alert would shout: "close to
+   target, nothing to do yet", the time-stop and earnings lines under a
+   position, the reason a button isn't there. Dim, small, and spaced like a
+   card foot. An alert is for something to act on; ._78-empty is for a region
+   with nothing in it; this is for things worth knowing.
+
+     <div class="_78-notes">
+       <div class="_78-notes-title">Close to target, nothing to do yet</div>
+       <ul>
+         <li>AAPL is 1.2% under its target</li>
+         <li class="_78-tone-warn">MSFT reports on Thursday</li>
+       </ul>
+     </div>
+
+   Each <li> gets a small dot marker in --dim; any ._78-tone-* on a line (or
+   on the whole block) colors its marker — the text stays quiet either way.
+   ._78-notes-box puts it in a tinted box with a toned left edge (the compact
+   alert), ._78-notes-ruled draws a hairline above it (the footnote).
+   ========================================================================== */
+
+._78-notes {
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+}
+._78-notes-xs { font-size: var(--fs-xs); }
+
+/* After other content in a card, it sits where a card foot would. */
+:where(._78-card) > * + ._78-notes { margin-top: var(--space-4); }
+
+._78-notes-title {
+  margin-bottom: var(--space-1);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The lines. Class-level selectors, so the kit's prose-list indent (which
+   only touches lists with no class, at a lower weight) never reaches them. */
+._78-notes ul,
+._78-notes ol {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+/* …including the bottom margin the prose-list rule gives a list that isn't last */
+._78-notes :is(ul, ol):not(:last-child) { margin-bottom: 0; }
+._78-notes li {
+  position: relative;
+  padding-left: var(--space-4);
+}
+._78-notes li + li { margin-top: var(--space-1); }
+._78-notes li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: calc(var(--lh) * .5em - 3px);   /* centered on the first line */
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--viz, var(--dim));
+}
+/* Consecutive paragraphs inside — a note can be two sentences */
+._78-notes p + p,
+._78-notes p + ul,
+._78-notes ul + p,
+._78-notes p + ol,
+._78-notes ol + p { margin-top: var(--space-1); }
+
+/* Ruled — a hairline above, for a footnote under a card's content */
+._78-notes-ruled {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Box — the compact alert: a quiet inset with a toned left edge. A tone on
+   the box colors the edge and every marker; a tone on a line overrides it. */
+._78-notes-box {
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg3);
+  border-left: 3px solid var(--viz, var(--border));
+  border-radius: var(--radius-sm);
+}
+._78-notes + ._78-notes { margin-top: var(--space-2); }
