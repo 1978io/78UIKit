@@ -203,7 +203,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   fact in parts — where a KPI grid is unrelated metrics. `._78-figure-neutral` (one figure) and
   `._78-figure-row-neutral` (the row) drop the tone for figures that carry no meaning ("Time left").
 - **Table** — `._78-table` (+ `-compact` / `-striped` / `-sticky`, `._78-table-wrap` to scroll on narrow
-  screens). For a full data grid, use Tabulator + its adapter.
+  screens). For a full data grid, use Tabulator + its adapter. `._78-table-card` + `._78-table-filters`
+  (`._78-table-dates`, `._78-table-count`) frame either one with a filter-and-date toolbar.
 - **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu` (`._78-menu-item`, `._78-menu-sep`).
   Auto-wired: click to open, outside-click / Escape / choosing an item to close, arrow-key navigation and
   the full `menu` / `menuitem` ARIA. Built for the account menu; reusable anywhere.

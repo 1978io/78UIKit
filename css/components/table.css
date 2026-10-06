@@ -86,3 +86,65 @@
 }
 ._78-table-wrap ._78-table th:first-child,
 ._78-table-wrap ._78-table td:first-child { padding-left: var(--space-3); }
+
+/* --- Table card + toolbar ---------------------------------------------------
+   The frame a data table lives in: a card with tighter padding, and a filter
+   row above the table — a date range, a checkbox or two, a count, a clear
+   button. Works the same over a Tabulator grid or a plain ._78-table.
+
+     <div class="_78-table-card">
+       <div class="_78-table-filters">
+         <div class="_78-field _78-table-dates">
+           <label for="from">From</label>
+           <input class="_78-input" id="from" type="date">
+         </div>
+         <div class="_78-field _78-table-dates"> … To … </div>
+         <label class="_78-check"><input type="checkbox"> Errors only</label>
+         <span class="_78-grow"></span>
+         <span class="_78-table-count">Showing 12 of 40</span>
+         <button class="_78-btn _78-btn-ghost _78-btn-sm" type="button">Clear filters</button>
+       </div>
+       <div id="table"></div>            ← new Tabulator(…), or a ._78-table-wrap
+     </div>
+   -------------------------------------------------------------------------- */
+._78-table-card {
+  padding: var(--space-3);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Bottoms align, so labeled fields sit level; everything without a label
+   above it is centered on the inputs' line instead. */
+._78-table-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+._78-table-filters > ._78-field { min-width: 0; margin-bottom: 0; }
+._78-table-filters > ._78-check,
+._78-table-filters > ._78-switch,
+._78-table-filters > ._78-table-count { min-height: var(--control-h); }
+._78-table-filters > ._78-btn-sm {
+  margin-bottom: calc((var(--control-h) - var(--control-h-sm)) / 2);
+}
+
+/* A date field: wide enough for the browser's date picker, and the pair of
+   them stays side by side on a phone (wrapping is decided on the 130px
+   basis, so two fit in a 272px toolbar). Scoped so the toolbar's own
+   min-width: 0 on fields does not undo it. */
+._78-table-dates,
+._78-table-filters > ._78-table-dates { flex: 1 1 130px; min-width: 130px; max-width: 170px; }
+
+/* "Showing 12 of 40" */
+._78-table-count {
+  display: inline-flex;
+  align-items: center;
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

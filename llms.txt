@@ -117,7 +117,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Status line** — `._78-status`: a badge + `._78-status-text` caption that wraps cleanly on a phone
   (`._78-status-inline` inside a sentence).
 - **Table** — `._78-table` (`-compact` / `-striped` / `-sticky`) in a `._78-table-wrap` scroller. For a
-  real data grid, use Tabulator plus its adapter.
+  real data grid, use Tabulator plus its adapter. `._78-table-card` + `._78-table-filters` (`._78-table-dates`,
+  `._78-table-count`) frame either with a filter-and-date toolbar.
 - **Tabs** — `._78-tabs` (+ `._78-tabs-segmented`), auto-mounted by `_78.tabs` with full ARIA and arrow
   keys.
 - **Dropdown menu** — `._78-menu-wrap` > trigger + `._78-menu`, auto-wired with roving focus and the

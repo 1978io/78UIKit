@@ -105,6 +105,31 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       The panel wraps long values, the toggle glyph follows the accent in both themes, and the panel's type
       follows the kit's type scale.</p>
     <div id="tab-collapse"></div>
+
+    <h3 class="_78-mt-16 _78-mb-8">In a table card, with a toolbar</h3>
+    <p class="_78-text-sm _78-text-dim _78-mb-12"><code class="tok">._78-table-card</code> +
+      <code class="tok">._78-table-filters</code>: a date range, a checkbox, a count and a clear button above the
+      grid, all from kit classes. The toolbar wraps on a phone with the two dates kept side by side.</p>
+    <div class="_78-table-card" id="tab-card">
+      <div class="_78-table-filters">
+        <div class="_78-field _78-table-dates">
+          <label for="tc-from">From</label>
+          <input class="_78-input" id="tc-from" type="date">
+        </div>
+        <div class="_78-field _78-table-dates">
+          <label for="tc-to">To</label>
+          <input class="_78-input" id="tc-to" type="date">
+        </div>
+        <label class="_78-check">
+          <input type="checkbox" id="tc-loss"> Losses only
+          <span class="_78-badge _78-badge-danger" id="tc-loss-n">0</span>
+        </label>
+        <span class="_78-grow"></span>
+        <span class="_78-table-count" id="tc-count"></span>
+        <button class="_78-btn _78-btn-ghost _78-btn-sm" type="button" id="tc-clear" hidden>Clear filters</button>
+      </div>
+      <div id="tab-in-card"></div>
+    </div>
   </section>
 
   <!-- ============================ FULLCALENDAR ============================ -->
@@ -266,6 +291,40 @@ var collapseTable = new Tabulator("#tab-collapse", {
     { title: "Note", field: "note", minWidth: 260, responsive: 4 }
   ]
 });
+
+/* Table card + toolbar: the filters drive Tabulator's own setFilter. */
+var CARD_ROWS = ROWS.map(function (r, i) { return Object.assign({ closed: "2026-08-" + String(3 + i * 2).padStart(2, "0") }, r); });
+var cardTable = new Tabulator("#tab-in-card", {
+  data: CARD_ROWS,
+  layout: "fitColumns",
+  height: 300,
+  placeholder: "Nothing in this range",
+  columns: [
+    { title: "Closed", field: "closed", minWidth: 110 },
+    { title: "Instrument", field: "instrument", minWidth: 110 },
+    { title: "Side", field: "side", formatter: sideBadge, hozAlign: "center", width: 90 },
+    { title: "P/L", field: "pl", formatter: money, hozAlign: "right", sorter: "number", minWidth: 100 }
+  ]
+});
+(function () {
+  var from = document.getElementById("tc-from"), to = document.getElementById("tc-to"),
+      loss = document.getElementById("tc-loss"), count = document.getElementById("tc-count"),
+      clear = document.getElementById("tc-clear");
+  document.getElementById("tc-loss-n").textContent = CARD_ROWS.filter(function (r) { return r.pl < 0; }).length;
+  function apply() {
+    cardTable.setFilter(function (r) {
+      return (!from.value || r.closed >= from.value) && (!to.value || r.closed <= to.value) && (!loss.checked || r.pl < 0);
+    });
+    var active = !!(from.value || to.value || loss.checked);
+    clear.hidden = !active;
+  }
+  cardTable.on("dataFiltered", function (filters, rows) {
+    count.textContent = "Showing " + rows.length + " of " + CARD_ROWS.length;
+  });
+  cardTable.on("tableBuilt", function () { count.textContent = "Showing " + CARD_ROWS.length + " of " + CARD_ROWS.length; });
+  [from, to, loss].forEach(function (el) { el.addEventListener("change", apply); });
+  clear.addEventListener("click", function () { from.value = ""; to.value = ""; loss.checked = false; apply(); });
+})();
 
 /* ---------- FullCalendar (v7 core, classic theme) ---------- */
 /* Fixed dates so the demo looks the same every time it is opened. */

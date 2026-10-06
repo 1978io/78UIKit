@@ -1181,6 +1181,78 @@ editing, virtual scroll — use Tabulator with the kit's adapter (§15.1); this 
 Rows hover to `--row-hover`, the last row drops its bottom rule, `<tfoot>` gets a top border and dim
 semibold text, and `<caption>` renders as a small dim left-aligned line above the table.
 
+### 8.1 Table card and toolbar — `._78-table-card`
+
+The frame a data table lives in: a card with tighter padding and a filter row above the table — a date
+range, a checkbox or two, a count and a clear button. The same classes work over a Tabulator grid (§15.1) or
+a plain `._78-table`.
+
+```html
+<div class="_78-table-card">
+  <div class="_78-table-filters">
+    <div class="_78-field _78-table-dates">
+      <label for="log-from">From</label>
+      <input class="_78-input" id="log-from" type="date">
+    </div>
+    <div class="_78-field _78-table-dates">
+      <label for="log-to">To</label>
+      <input class="_78-input" id="log-to" type="date">
+    </div>
+    <label class="_78-check">
+      <input type="checkbox"> Errors only
+      <span class="_78-badge _78-badge-danger">2</span>
+    </label>
+    <span class="_78-grow"></span>
+    <span class="_78-table-count">Showing 4 of 4</span>
+    <button class="_78-btn _78-btn-ghost _78-btn-sm" type="button">Clear filters</button>
+  </div>
+  <div class="_78-table-wrap">
+    <table class="_78-table _78-table-compact">
+      <thead><tr><th>When</th><th>Event</th><th class="_78-right">Rows</th></tr></thead>
+      <tbody>
+        <tr><td>Oct 3</td><td>Nightly import</td><td class="_78-right">1,204</td></tr>
+        <tr><td>Oct 3</td><td><span class="_78-badge _78-badge-danger">Error</span> Webhook timed out</td><td class="_78-right">0</td></tr>
+        <tr><td>Oct 2</td><td>Nightly import</td><td class="_78-right">986</td></tr>
+        <tr><td>Oct 2</td><td><span class="_78-badge _78-badge-danger">Error</span> Rate limited</td><td class="_78-right">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
+Over a Tabulator, the table div replaces the `._78-table-wrap`, and Tabulator's own `setFilter` does the
+filtering:
+
+```html
+<div class="_78-table-card">
+  <div class="_78-table-filters"> … the same toolbar … </div>
+  <div id="activity"></div>
+</div>
+
+<script>
+var table = new Tabulator('#activity', { data: rows, layout: 'fitColumns', columns: [ … ] });
+function apply() {
+  table.setFilter(function (r) {
+    return (!from.value || r.date >= from.value) && (!to.value || r.date <= to.value)
+        && (!errorsOnly.checked || r.level === 'error');
+  });
+}
+table.on('dataFiltered', function (filters, shown) {
+  count.textContent = 'Showing ' + shown.length + ' of ' + rows.length;
+});
+</script>
+```
+
+| Class | Role |
+|---|---|
+| `._78-table-card` | The card: `._78-card`'s surface with `--space-3` padding |
+| `._78-table-filters` | The toolbar row: wraps, bottoms aligned so labeled fields sit level, `--space-3` apart and `--space-3` above the table. Fields lose their bottom margin; a `._78-check`, `._78-switch` or `._78-table-count` centers on the inputs' line, and so does a `._78-btn-sm` |
+| `._78-table-dates` | On a `._78-field` with a date input: 130–170px wide, so a From / To pair stays side by side on a phone |
+| `._78-table-count` | The "Showing 12 of 40" readout: `--fs-xs`, `--dim`, tabular figures |
+
+Use `._78-grow` as the spacer that pushes the count and the clear button to the right; hide the clear
+button with `hidden` until a filter is set.
+
 ---
 
 ## 9. Tabs
@@ -2040,6 +2112,8 @@ library, at your own version. Always load an adapter **after** the library it th
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/css/adapters/tabulator.css">
 <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.5.2/dist/js/tabulator.min.js"></script>
 ```
+
+For a filter-and-date toolbar above the grid, wrap it in `._78-table-card` / `._78-table-filters` (§8.1).
 
 Pure CSS: it maps Tabulator's classes onto kit tokens — frame and header to `--bg2`, cells to `--text`,
 row rules to `--row-border`, hover to `--row-hover`, selection to `--row-selected`, sorters, editors,
