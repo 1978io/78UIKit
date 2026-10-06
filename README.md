@@ -184,6 +184,9 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
   real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size
   and a `._78-switch-row` settings-row layout; stacked rows space themselves.
 - **Badges / pills** — `._78-badge` and `._78-tag` in any [tone](#tones), `._78-eyebrow`, `._78-score-pill`.
+- **Status line** — `._78-status`: a badge plus the dim caption that explains it ("Market: caution · half
+  risk"). The caption sits beside the badge and drops to its own line on a phone; `._78-status-inline`
+  for one inside a sentence.
 - **Segmented control** — `._78-seg`, a joined run of buttons where exactly one is active (a range or
   type toggle). It owns a *value*, not a panel: mounted by `_78.seg` as a `radiogroup` with roving
   tabindex, arrow / Home / End keys that step over disabled options, and a `_78:segchange` event.

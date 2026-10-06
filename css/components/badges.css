@@ -2,6 +2,7 @@
    78 UI Kit — badges & pills
    ._78-badge (+ a tone: -accent/-success/-warn/-danger/-info/-dim)  ·  ._78-tag (+ the same tones)
    ._78-score-pill (.high/.mid/.low)              ·  ._78-eyebrow
+   ._78-status (a badge + ._78-status-text, its dim caption)
    Every variant is a `-lo` tint + solid text — this is where the tints earn
    their keep (no opacity washing out the label).
    ========================================================================== */
@@ -119,3 +120,33 @@
   text-transform: uppercase;
   color: var(--dim);
 }
+
+/* --- Status line — a badge and the dim sentence that explains it ----------
+     <div class="_78-status">
+       <span class="_78-badge _78-badge-warn">Market: caution</span>
+       <span class="_78-status-text">half risk until the index reclaims its 50-day</span>
+     </div>
+   The badge stays whole; the caption takes the rest of the line, and once
+   there is less than ~14em left it drops to a line of its own rather than
+   wrapping into a narrow column beside the badge. Not an announcement bar —
+   it sits in the flow, the width of its content. */
+._78-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+._78-status > ._78-badge,
+._78-status > ._78-tag { flex: 0 0 auto; }
+._78-status-text {
+  flex: 1 1 14em;
+  min-width: 0;
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+  overflow-wrap: anywhere;
+}
+/* Inline — sits in a sentence or a toolbar instead of taking the row */
+._78-status-inline { display: inline-flex; }
+._78-status-inline ._78-status-text { flex: 0 1 auto; }
