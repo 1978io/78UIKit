@@ -19,7 +19,7 @@ Version 0.x — the public API may still change before 1.0.
 2. Theming — tokens, the mechanism, the theme toggle
 3. Layout — the app shell
 4. Buttons and the segmented control
-5. Cards, stat / KPI cards and grids
+5. Cards, stat / KPI cards, grids and the meta line
 6. Forms and the toggle switch
 7. Badges, tags and pills
 8. Table
@@ -654,7 +654,7 @@ Give the group an `aria-label` (or `aria-labelledby`) saying what the value *is*
 
 ---
 
-## 5. Cards, stat / KPI cards and grids
+## 5. Cards, stat / KPI cards, grids and the meta line
 
 ### 5.1 Plain card
 
@@ -776,6 +776,47 @@ Number color modifiers, applied to `._78-stat-card__num`: any tone from §2.9 in
 | `._78-card-grid` | `auto-fit`, min 200px — for `._78-card`s rather than KPIs |
 
 Both use a `--space-4` gap and need no media queries.
+
+### 5.4 Meta line — `._78-meta`
+
+The small dim line of facts under a card headline: a scan summary, a thesis, the factors behind a score.
+Each fact is a **child element** and the kit draws the `·` separator between them (with empty alt text, so
+a screen reader doesn't read it), so the markup is a list of facts rather than a string with punctuation in
+it.
+
+```html
+<div class="_78-card">
+  <div class="_78-card-title">Watch list</div>
+  <p class="_78-meta">
+    <span class="_78-meta-label">Tonight's scan:</span>
+    <span>Scanned <b>1,234</b> names</span>
+    <span>read the top <b>20</b></span>
+    <span>added <b>3</b></span>
+  </p>
+  …
+</div>
+
+<!-- one line, with an ellipsis, however long the text -->
+<p class="_78-meta _78-meta-clamp">
+  <span class="_78-meta-label">Watched for:</span>
+  <span>a pullback to the 50-day average on falling volume, then a reclaim of…</span>
+  <a href="/watch">Open the watch list →</a>
+</p>
+```
+
+| Class / property | What it does |
+|---|---|
+| `._78-meta` | `--fs-sm`, `--dim`, tabular figures, wraps long words. A `·` before every child after the first |
+| `._78-meta-label` | A lead-in ("Watched for:") — `--text`, semibold, and no separator after it |
+| `b` / `strong` inside | A figure lifted out of the dim text: `--text`, semibold |
+| `._78-meta-xs` | `--fs-xs` instead of `--fs-sm` — a tally line, a timestamp |
+| `._78-meta-clamp` | Clamp to one line with an ellipsis |
+| `._78-meta-clamp-2` | Clamp to two lines |
+| `--_78-meta-lines` | With a clamp class: any number of lines, e.g. `style="--_78-meta-lines: 3"` |
+
+Straight after a `._78-card-title` or `._78-card-head` it tucks up to `--space-1` under the title and keeps
+`--space-3` below itself, so it reads as part of the heading. Text without child elements works too — it's
+just a dim line with no drawn separators. A link inside it never breaks across lines.
 
 ---
 
@@ -2083,7 +2124,7 @@ throws.
 css/  kit.css              the one stylesheet a project links (@imports everything below)
       tokens.css           light + dark color blocks + the shared non-color tokens
       reset.css            minimal reset, themed scrollbars, focus ring
-      components/          shell · buttons · cards · forms · switch · seg · details · badges ·
+      components/          shell · buttons · cards · forms · switch · seg · details · badges · meta ·
                            viz · figure · split-bar · table · tabs · modal · toast · alert ·
                            theme-toggle · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css

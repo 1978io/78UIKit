@@ -1,0 +1,68 @@
+/* ==========================================================================
+   78 UI Kit — meta line
+   The small dim line of facts under a headline: "Scanned 1,234 names · read
+   the top 20 · added 3". Each fact is a child element and the kit draws the
+   separator between them, so the markup stays a list of facts rather than a
+   string with punctuation baked in.
+
+     <p class="_78-meta">
+       <span class="_78-meta-label">Tonight's scan:</span>
+       <span>Scanned <b>1,234</b> names</span>
+       <span>read the top <b>20</b></span>
+       <span>added <b>3</b></span>
+     </p>
+
+   ._78-meta-clamp cuts it to one line with an ellipsis (-clamp-2 to two, or
+   set --_78-meta-lines yourself), so a long thesis never pushes a card taller.
+   ========================================================================== */
+
+._78-meta {
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  line-height: var(--lh);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+._78-meta-xs { font-size: var(--fs-xs); }
+
+/* The separator: before every fact but the first. Drawn, not typed, so it is
+   always the same glyph with the same spacing, and a screen reader skips it. */
+._78-meta > * + *::before {
+  content: "\00B7";
+  content: "\00B7" / "";            /* empty alt text: not read aloud */
+  display: inline-block;
+  margin: 0 .5em;
+  color: var(--dim);
+  font-weight: 400;
+}
+/* A lead-in label ("Watched for:") is not a fact — no separator after it. */
+._78-meta > ._78-meta-label + *::before { content: none; }
+
+._78-meta-label {
+  margin-right: .35em;
+  color: var(--text);
+  font-weight: 600;
+}
+/* A figure inside a fact, lifted out of the dim text */
+._78-meta b,
+._78-meta strong { color: var(--text); font-weight: 600; }
+._78-meta a { white-space: nowrap; }
+
+/* Line clamp — one line by default, two with -clamp-2, any with the property */
+._78-meta-clamp,
+._78-meta-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--_78-meta-lines, 1);
+  line-clamp: var(--_78-meta-lines, 1);
+  overflow: hidden;
+  overflow-wrap: normal;
+}
+._78-meta-clamp-2 { --_78-meta-lines: 2; }
+
+/* Right under a card title it belongs to the title: tuck it up close, and give
+   the content below the space the title would have. */
+:where(._78-card-title, ._78-card-head) + ._78-meta {
+  margin-top: calc(var(--space-2) * -1);
+  margin-bottom: var(--space-3);
+}
