@@ -1306,6 +1306,21 @@ inside a `._78-card`, `._78-modal-body` or `._78-details-body`) is indented `--s
 between items. Use `._78-list-plain` (§14) for a list with no markers. *(Fixed in 0.3.0 — the reset used
 to leave the bullets outside the box.)*
 
+**Paragraphs in an alert** space themselves too: consecutive `<p>`s inside `._78-alert-body` get a
+`--space-2` gap. Inside a `._78-card` or a `._78-details-body` it's `--space-3`, the same as a
+`._78-modal-body`. The rule weighs nothing (`:where()`), so a margin utility on the paragraph wins. *(New in
+0.4.0 — before, the reset ran two paragraphs together.)*
+
+```html
+<div class="_78-alert _78-alert-warn">
+  <div class="_78-alert-body">
+    <div class="_78-alert-title">Worth a look</div>
+    <p>Earnings are due on Thursday, before the open.</p>
+    <p>The position is past its time stop.</p>
+  </div>
+</div>
+```
+
 ```html
 <div class="_78-alert _78-alert-danger">
   <div class="_78-alert-body">
@@ -1734,6 +1749,11 @@ utility):
   <li>No markers, no indent, still a list to a screen reader</li>
 </ul>
 ```
+
+**Paragraphs.** The reset zeroes paragraph margins too. In the same components, a `<p>` that follows a
+`<p>` gets a top margin back: `--space-2` in `._78-alert-body`, `--space-3` in `._78-card` and
+`._78-details-body` (`._78-modal-body` has always had `--space-3`). Zero specificity, so a utility such as
+`._78-mt-8` on the paragraph, or any rule of yours, wins.
 
 **Two spellings, one color.** Every text tone has a long and a short form — `._78-text-danger` and
 `._78-danger` are the same rule, for all six tones and their aliases (§2.9). The short forms started life

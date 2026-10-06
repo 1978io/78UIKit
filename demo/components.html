@@ -512,6 +512,26 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         <ul class="_78-list-plain"><li>No markers</li><li>No indent</li><li>Still a list to a screen reader</li></ul>
       </div>
     </div>
+
+    <h3 class="_78-mt-16 _78-mb-8">Paragraphs inside alerts and cards</h3>
+    <p class="_78-text-sm _78-text-dim _78-mb-12">Consecutive <code class="tok">&lt;p&gt;</code>s space themselves:
+      <code class="tok">--space-2</code> in an alert body, <code class="tok">--space-3</code> in a card or a disclosure
+      body (the modal body's own rhythm). A margin utility on the paragraph still wins.</p>
+    <div class="_78-card-grid" id="alert-paras">
+      <div class="_78-alert _78-alert-warn">
+        <div class="_78-alert-body">
+          <div class="_78-alert-title">Worth a look</div>
+          <p>Earnings are due on Thursday, before the open.</p>
+          <p>The position has been flat for 18 sessions, past its time stop.</p>
+          <p class="_78-text-dim _78-text-xs">Nothing has been changed. These are things to know, not instructions.</p>
+        </div>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title">In a card</div>
+        <p>The first paragraph sits right under the title.</p>
+        <p>The second one keeps a --space-3 gap, like a modal body.</p>
+      </div>
+    </div>
   </section>
 
   <!-- ============================ TABS ============================ -->

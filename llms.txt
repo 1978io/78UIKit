@@ -125,7 +125,7 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Theme toggle** — any `._78-theme-toggle` element is wired on load and cycles Dark → Light → System.
 - **Utilities** — a small set: `._78-text-dim`, `._78-flex`, `._78-gap-12`, `._78-mt-16`, `._78-truncate`,
   `._78-nums`, `._78-sr-only`, `._78-list-plain`, and friends. Plain lists inside an alert body, card,
-  modal body or disclosure keep their indent and markers. Text color takes any tone, in two
+  modal body or disclosure keep their indent and markers, and consecutive paragraphs there space themselves. Text color takes any tone, in two
   interchangeable spellings: `._78-text-danger` / `._78-danger`.
 
 ## Helpers — `_78.util`

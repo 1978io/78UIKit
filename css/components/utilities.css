@@ -73,6 +73,15 @@
 :where(._78-alert-body, ._78-card, ._78-modal-body, ._78-details-body) :where(ul, ol):not([class]):not(:last-child) {
   margin-bottom: var(--space-2);
 }
+/* Paragraphs — the reset zeroes their margins too, so two <p>s in a row ran
+   together. The same components get a paragraph rhythm back: tighter in an
+   alert, the modal body's own --space-3 in a card or a disclosure. Wholly
+   inside :where(), so it weighs nothing — a margin utility or any rule of
+   yours on the paragraph wins. The alert line comes last so an alert inside
+   a card keeps the tighter rhythm. */
+:where(._78-card, ._78-details-body) :where(p + p) { margin-top: var(--space-3); }
+:where(._78-alert-body) :where(p + p) { margin-top: var(--space-2); }
+
 /* No markers and no indent, anywhere — for a list that is a list in the
    markup but shouldn't look like one. */
 ._78-list-plain { list-style: none; padding-left: 0; }
