@@ -330,6 +330,36 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
 
     </div>
+
+    <h3 class="_78-mt-16 _78-mb-8">Inline form — <code class="tok">._78-form-inline</code></h3>
+    <p class="_78-text-dim _78-mb-12">A field or two and their button on one row, bottoms aligned; wraps on a phone.
+      Its home is a card foot — dismiss with a reason:</p>
+    <div class="_78-card-grid" id="form-inline-demo">
+      <div class="_78-card">
+        <div class="_78-card-title">Northwind</div>
+        <p class="_78-text-dim">Watched since Sep 14 for a renewal at the new price.</p>
+        <div class="_78-card-foot">
+          <form class="_78-form-inline">
+            <div class="_78-field">
+              <label for="dismiss-why">Why (optional)</label>
+              <input class="_78-input" id="dismiss-why" name="reason" maxlength="500" autocomplete="off">
+            </div>
+            <button class="_78-btn" type="submit">Dismiss</button>
+          </form>
+        </div>
+      </div>
+      <div class="_78-card">
+        <div class="_78-card-title">Add to the list</div>
+        <form class="_78-form-inline">
+          <div class="_78-field">
+            <label for="add-sym">Name</label>
+            <input class="_78-input" id="add-sym" placeholder="Account name">
+          </div>
+          <label class="_78-check"><input type="checkbox"> Notify me</label>
+          <button class="_78-btn _78-btn-primary" type="submit">Add</button>
+        </form>
+      </div>
+    </div>
   </section>
 
   <!-- ============================ BADGES ============================ -->

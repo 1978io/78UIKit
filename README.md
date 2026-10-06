@@ -182,7 +182,8 @@ that declares **no** colors is adopted and recolored on every theme switch; a da
 - **Meta line** — `._78-meta`: the dim line of facts under a headline ("Scanned 1,234 · added 3"). The
   kit draws the `·` between child elements; a `._78-meta-label` lead-in, an `-xs` size and a line clamp
   (`._78-meta-clamp`, `-clamp-2`).
-- **Forms** — `._78-field` with a consistent focus ring, plus `._78-switch`: a toggle switch built on a
+- **Forms** — `._78-field` with a consistent focus ring, `._78-form-inline` (a field and its button on one
+  row — a dismiss-with-a-reason form in a card foot), plus `._78-switch`: a toggle switch built on a
   real `<input type="checkbox">` (keyboard, `:disabled` and label association come free), with a `-sm` size
   and a `._78-switch-row` settings-row layout; stacked rows space themselves.
 - **Badges / pills** — `._78-badge` and `._78-tag` in any [tone](#tones), `._78-eyebrow`, `._78-score-pill`.

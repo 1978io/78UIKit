@@ -111,3 +111,35 @@
   flex-wrap: wrap;
 }
 ._78-field-row > ._78-field { flex: 1 1 180px; margin-bottom: var(--space-4); }
+
+/* Inline form — a field or two and the button that submits them, on one row:
+   dismiss-with-a-reason in a card foot, an add-row, a quick filter. Bottoms
+   align, so the button sits level with the input under its label; on a phone
+   the row wraps and each field keeps a usable width.
+     <form class="_78-form-inline">
+       <div class="_78-field">
+         <label for="why">Why (optional)</label>
+         <input class="_78-input" id="why" name="reason">
+       </div>
+       <button class="_78-btn" type="submit">Dismiss</button>
+     </form>
+   Put a hint or an error after the form, not inside a field — a line under
+   one input would push the button out of line. */
+._78-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2) var(--space-3);
+}
+._78-form-inline > ._78-field {
+  flex: 1 1 180px;
+  min-width: 0;
+  margin-bottom: 0;
+}
+._78-form-inline > ._78-btn,
+._78-form-inline > ._78-btn-group,
+._78-form-inline > ._78-check,
+._78-form-inline > ._78-switch { flex: 0 0 auto; }
+/* a check or switch has no label above it — center it on the input's line */
+._78-form-inline > ._78-check,
+._78-form-inline > ._78-switch { min-height: var(--control-h); }

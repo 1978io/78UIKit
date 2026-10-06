@@ -926,10 +926,33 @@ just a dim line with no drawn separators. A link inside it never breaks across l
 | `._78-field-hint` | Small dim helper text under the control |
 | `._78-field-error` | Small `--danger` message under the control |
 | `._78-field-row` | Flex row of fields, each `flex: 1 1 180px`; wraps on narrow screens |
+| `._78-form-inline` | A field or two and the button that submits them on one row, bottoms aligned so the button sits level with the input; fields `flex: 1 1 180px` with no bottom margin, buttons / checks / switches keep their size; wraps on a phone |
 
 **States.** Hover raises the border to `--dim`. Focus sets an `--accent` border plus a `--ring-w` ring in
 `--ring`. `:disabled` dims and blocks the cursor. `[aria-invalid="true"]` (or `._78-invalid` on an input)
 turns the border `--danger` and the focus ring `--danger-lo`. Placeholders render in `--dim`.
+
+**A form in a card foot** — dismiss with a reason, an add-row, a quick filter. `._78-form-inline` inside
+`._78-card-foot`; the foot already gives it the padding and the rule above:
+
+```html
+<div class="_78-card">
+  <div class="_78-card-title">Northwind</div>
+  <p class="_78-text-dim">Watched since Sep 14 for a renewal at the new price.</p>
+  <div class="_78-card-foot">
+    <form class="_78-form-inline">
+      <div class="_78-field">
+        <label for="dismiss-why">Why (optional)</label>
+        <input class="_78-input" id="dismiss-why" name="reason" maxlength="500" autocomplete="off">
+      </div>
+      <button class="_78-btn" type="submit">Dismiss</button>
+    </form>
+  </div>
+</div>
+```
+
+Put a hint or an error after the form rather than inside a field: a line under one input would push the
+button out of line with it. A `._78-check` or `._78-switch` in the row centers on the input's line.
 
 ### 6.1 Toggle switch — `._78-switch`
 
