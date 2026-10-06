@@ -44,6 +44,10 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
   }
   .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
   code.tok { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--accent); }
+  :root { --_78-toc-top: var(--header-h); }              /* the sticky .site-head above */
+  #toc-article section { margin-top: 0; }
+  #toc-article section + section { margin-top: var(--space-5); }
+  #toc-article h3 { margin-bottom: var(--space-2); }
 </style>
 </head>
 <body>
@@ -908,6 +912,54 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
         </table>
       </div>
     </div>
+  </section>
+
+  <!-- ============================ CONTENTS RAIL ============================ -->
+  <section id="toc">
+    <h2>Contents rail <span class="_78-badge _78-badge-dim">._78-toc · _78.toc</span></h2>
+    <p class="_78-text-dim _78-mb-16">"On this page", built from the article's own headings: a sticky rail with a
+      scroll-spy beside it, a <code class="tok">._78-details</code> dropdown in its place when the layout is under
+      880px, nothing at all under two headings. This page sticks its own header, so it sets
+      <code class="tok">--_78-toc-top</code>; under a <code class="tok">._78-topbar</code> that is automatic.</p>
+    <div class="_78-toc-layout" id="toc-demo">
+      <article id="toc-article" class="_78-card">
+        <section id="toc-one">
+          <h3>Reading the page</h3>
+        <p class="_78-text-dim">The rail lists this heading, and the scroll-spy marks it current once it has crossed the line under the header.</p>
+        <p class="_78-text-dim">Scroll on: the highlight follows the last heading you have passed, not whichever one happens to be at the top of the screen.</p>
+        <p class="_78-text-dim">Click any entry in the rail and the page scrolls there smoothly, unless reduced motion is on, and the address bar takes the hash.</p>
+        </section>
+        <section id="toc-two">
+          <h3>How the current section is chosen</h3>
+        <p class="_78-text-dim">The rail lists this heading, and the scroll-spy marks it current once it has crossed the line under the header.</p>
+        <p class="_78-text-dim">Scroll on: the highlight follows the last heading you have passed, not whichever one happens to be at the top of the screen.</p>
+        <p class="_78-text-dim">Click any entry in the rail and the page scrolls there smoothly, unless reduced motion is on, and the address bar takes the hash.</p>
+        <p class="_78-text-dim">Narrow the window below the layout's 880px and the rail gives way to the dropdown above the article; both are the same list.</p>
+        </section>
+        <section id="toc-three">
+          <h3>Clicking an entry</h3>
+        <p class="_78-text-dim">The rail lists this heading, and the scroll-spy marks it current once it has crossed the line under the header.</p>
+        <p class="_78-text-dim">Scroll on: the highlight follows the last heading you have passed, not whichever one happens to be at the top of the screen.</p>
+        <p class="_78-text-dim">Click any entry in the rail and the page scrolls there smoothly, unless reduced motion is on, and the address bar takes the hash.</p>
+        </section>
+        <section id="toc-four">
+          <h3>Narrow screens</h3>
+        <p class="_78-text-dim">The rail lists this heading, and the scroll-spy marks it current once it has crossed the line under the header.</p>
+        <p class="_78-text-dim">Scroll on: the highlight follows the last heading you have passed, not whichever one happens to be at the top of the screen.</p>
+        <p class="_78-text-dim">Click any entry in the rail and the page scrolls there smoothly, unless reduced motion is on, and the address bar takes the hash.</p>
+        <p class="_78-text-dim">Narrow the window below the layout's 880px and the rail gives way to the dropdown above the article; both are the same list.</p>
+        </section>
+        <section id="toc-five">
+          <h3>The last section</h3>
+        <p class="_78-text-dim">The rail lists this heading, and the scroll-spy marks it current once it has crossed the line under the header.</p>
+        <p class="_78-text-dim">Scroll on: the highlight follows the last heading you have passed, not whichever one happens to be at the top of the screen.</p>
+        </section>
+      </article>
+      <aside class="_78-toc" data-toc-scope="#toc-article" data-toc-headings="h3"></aside>
+    </div>
+    <!-- room below, so the last sections can scroll up to the line (at the very bottom of a page the
+         last entry is current by design) -->
+    <div style="min-height: 80vh"></div>
   </section>
 
 </main>

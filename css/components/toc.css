@@ -1,0 +1,93 @@
+/* ==========================================================================
+   78 UI Kit — "On this page" rail (._78-toc, filled by _78.toc)
+
+     <div class="_78-toc-layout">
+       <article id="doc"> … </article>
+       <aside class="_78-toc" data-toc-scope="#doc"></aside>
+     </div>
+
+   _78.toc builds two renderings of the same list: the sticky rail inside
+   ._78-toc, and a ._78-details dropdown (._78-toc-inline) at the top of the
+   content. Both stay in the DOM; a container query on ._78-toc-layout
+   decides which is on screen — so the rail appears whenever the layout has
+   880px to give it, including when a collapsed sidebar frees the room, which
+   a viewport media query cannot know. Without container queries the dropdown
+   shows, the safe half of the pair.
+   ========================================================================== */
+
+/* How far down a fixed topbar reaches — the rail sticks below it and the
+   scroll-spy reads from there. Set it yourself for a header of your own. */
+:root { --_78-toc-top: 0px; }
+:root:has(._78-topbar) { --_78-toc-top: var(--header-h); }
+
+._78-toc-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  container: _78-toc / inline-size;
+}
+._78-toc-layout > :not(._78-toc) { flex: 1 1 auto; min-width: 0; }
+
+._78-toc {
+  flex: 0 0 208px;
+  position: sticky;
+  top: calc(var(--_78-toc-top) + var(--space-4));
+  max-height: calc(100vh - var(--_78-toc-top) - var(--space-6));
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* In the layout, the dropdown is the default form until there is room */
+._78-toc-layout > ._78-toc { display: none; }
+
+._78-toc-label {
+  display: block;
+  margin-bottom: var(--space-3);
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+._78-toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+._78-toc-link {
+  display: block;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color var(--transition), background var(--transition);
+}
+._78-toc-link:hover {
+  background: var(--row-hover);
+  color: var(--text);
+  text-decoration: none;
+}
+._78-toc-link-sub { padding-left: var(--space-4); font-size: var(--fs-xs); }
+/* The section you are reading, kept in step by the scroll-spy */
+._78-toc-link[aria-current] {
+  background: var(--accent-lo);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* The narrow form: the kit's own disclosure */
+._78-toc-inline { margin: var(--space-4) 0 var(--space-5); }
+._78-toc-inline ._78-toc-list { gap: 0; }
+._78-toc-inline ._78-toc-link { padding: var(--space-1) var(--space-2); }
+
+@container _78-toc (min-width: 880px) {
+  ._78-toc-layout > ._78-toc { display: block; }
+  ._78-toc-inline { display: none; }
+}

@@ -47,10 +47,11 @@ download the repo and serve the files yourself. Library adapters are opt-in and 
   state classes are their own prefixed class alongside it: `._78-active`, `._78-selected`, `._78-up`,
   `._78-down`, `._78-invert`, `._78-high` / `._78-mid` / `._78-low`, `._78-danger`.
 - **JS** is one global, `_78`, with no dependencies: `_78.theme`, `_78.tone`, `_78.util`, `_78.shell`, `_78.modal`, `_78.notify`,
-  `_78.tabs`, `_78.seg`, `_78.viz`, `_78.adapters.chartjs`, `_78.gen`.
+  `_78.tabs`, `_78.seg`, `_78.viz`, `_78.toc`, `_78.adapters.chartjs`, `_78.gen`.
 - **Events** are namespaced `_78:` and fire on `document` (except `_78:tabchange`, which bubbles from the
-  tab list, and `_78:segchange`, which bubbles from the segmented control): `_78:themechange`,
-  `_78:railchange`, `_78:drawerchange`, `_78:tabchange`, `_78:segchange`, `_78:genchange`.
+  tab list, `_78:segchange`, which bubbles from the segmented control, and `_78:tocchange`, from the
+  contents rail): `_78:themechange`, `_78:railchange`, `_78:drawerchange`, `_78:tabchange`, `_78:segchange`,
+  `_78:tocchange`, `_78:genchange`.
 
 ## Tokens
 
@@ -96,6 +97,9 @@ One vocabulary for every component that takes a tone, and it is the token names:
   `._78-card-stack` spaces a list of cards with a gap, even when each one is wrapped.
   `._78-stat-card__actions` puts a small control (a seg, an icon button) beside the label;
   `._78-stat-card__lines` / `__line` / `__key` / `__value` are key : value lines with the keys in one column.
+- **Contents rail** — `._78-toc` in a `._78-toc-layout`, filled by `_78.toc`: an "On this page" rail built
+  from the page's headings, sticky, with an IntersectionObserver scroll-spy (`aria-current`), a `._78-details`
+  dropdown under 880px, nothing under two headings. `data-toc-*` options, `_78:tocchange`.
 - **Grid** — `._78-grid` (auto-fit, `--min` track size, no breakpoints) with `._78-col-span-2` (two
   columns when there's room, else the whole row) and `._78-col-full`. `._78-kpi-grid` / `._78-card-grid`
   are presets of it.

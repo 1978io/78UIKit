@@ -2,7 +2,7 @@
    78 UI Kit — _78.js
    One global (`_78`), no dependencies, no build step.
 
-   Surface: _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz
+   Surface: _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg · _78.viz · _78.toc
 
    ⭐ Which notification? — the rule, so nobody has to guess:
       MODAL  needs acknowledgement (errors, confirms) — blocks, requires a click
@@ -1561,4 +1561,273 @@ window._78 = window._78 || {};
             + "document.documentElement.dataset.sidebar=s==='rail'?'rail':'full';}"
             + "catch(e){document.documentElement.dataset.sidebar='full';}})();"
   };
+})(window._78);
+
+
+/* ==========================================================================
+   _78.toc — "On this page": a contents rail built from a page's own headings
+   Scans a container's headings, builds a sticky rail of anchor links beside
+   it and — where the rail has no room — the same list as a ._78-details
+   dropdown, then keeps both in step with an IntersectionObserver scroll-spy
+   (aria-current on the section you are reading). Fewer than two headings and
+   it renders nothing at all.
+
+     <div class="_78-toc-layout">
+       <article id="doc"> <h2>…</h2> … </article>
+       <aside class="_78-toc" data-toc-scope="#doc"></aside>
+     </div>
+
+   Options (or data-toc-* on the ._78-toc element):
+     scope     the element (or selector) whose headings are listed
+               — default: the layout's other child, else <main>, else <body>
+     headings  selector run inside scope — default "h2, h3", skipping any
+               heading in a <dialog>, a modal or a [data-toc-skip] subtree
+     min       fewest headings worth a rail — default 2
+     label     "On this page"
+     inline    where the dropdown goes: an element / selector to insert it
+               after, "start" (top of scope — the default) or "none"
+     offset    px from the top of the viewport to the reading line's base —
+               default --_78-toc-top (the topbar height when there is one)
+   ========================================================================== */
+(function (_78) {
+  "use strict";
+
+  var SKIP = "dialog, [role='dialog'], ._78-modal, ._78-toc, ._78-toc-inline, [data-toc-skip]";
+  var smooth = function () {
+    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  };
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function find(x, root) {
+    if (!x) return null;
+    return typeof x === "string" ? (root || document).querySelector(x) : x;
+  }
+
+  function slug(text, taken) {
+    var base = text.toLowerCase()
+      .replace(/[’']/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section";
+    var id = base, n = 2;
+    while (taken[id] || document.getElementById(id)) { id = base + "-" + n++; }
+    taken[id] = true;
+    return id;
+  }
+
+  /* The anchor target for a heading: the <section> it opens, when it is that
+     section's first heading (so a jump lands on the section's top edge),
+     otherwise the heading itself. Either gets an id if it has none. */
+  function targetFor(h, taken) {
+    var sec = h.parentElement;
+    if (sec && sec.tagName === "SECTION" && h === sec.querySelector("h1, h2, h3, h4")) {
+      if (!sec.id) sec.id = slug(h.textContent, taken);
+      return sec;
+    }
+    if (!h.id) h.id = slug(h.textContent, taken);
+    return h;
+  }
+
+  function buildList(items) {
+    var ul = el("ul", "_78-toc-list");
+    items.forEach(function (it) {
+      var li = el("li");
+      var a = el("a", "_78-toc-link" + (it.level > 2 ? " _78-toc-link-sub" : ""), it.text);
+      a.href = "#" + it.id;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function mount(toc, opts) {
+    toc = find(toc);
+    if (!toc) return null;
+    if (toc._78toc) return toc._78toc;
+    opts = opts || {};
+    var d = toc.dataset;
+
+    var layout = toc.closest("._78-toc-layout");
+    var sibling = layout && Array.prototype.filter.call(layout.children, function (c) {
+      return c !== toc;
+    })[0];
+    var scope = find(opts.scope || d.tocScope) || sibling ||
+                document.querySelector("main") || document.body;
+    var min = +(opts.min || d.tocMin || 2);
+    var label = opts.label || d.tocLabel || "On this page";
+    var inline = opts.inline !== undefined ? opts.inline : (d.tocInline || "start");
+
+    var headings = Array.prototype.slice.call(
+      scope.querySelectorAll(opts.headings || d.tocHeadings || "h2, h3"))
+      .filter(function (h) { return !h.closest(SKIP); });
+
+    if (headings.length < min) {           /* nothing worth a rail */
+      toc.hidden = true;
+      toc._78toc = { el: toc, items: [], destroy: function () {} };
+      return toc._78toc;
+    }
+    toc.hidden = false;
+
+    var taken = {};
+    var items = headings.map(function (h) {
+      var target = targetFor(h, taken);
+      return {
+        id: target.id,
+        text: h.textContent.replace(/\s+/g, " ").trim(),
+        level: +h.tagName.charAt(1) || 2,
+        el: target
+      };
+    });
+
+    /* Where the reading line sits: below a fixed topbar when there is one.
+       --_78-toc-top is that height (see components/toc.css). */
+    function top() {
+      if (opts.offset != null || d.tocOffset != null) return +(opts.offset != null ? opts.offset : d.tocOffset);
+      return parseFloat(getComputedStyle(toc).getPropertyValue("--_78-toc-top")) || 0;
+    }
+
+    /* A jumped-to heading parks --space-4 below that top — unless the page
+       already sets its own scroll-margin-top, which wins. */
+    items.forEach(function (it) {
+      if (parseFloat(getComputedStyle(it.el).scrollMarginTop) === 0) {
+        it.el.style.scrollMarginTop = (top() + 16) + "px";
+      }
+    });
+
+    /* 1. The rail */
+    toc.textContent = "";
+    var nav = el("nav");
+    nav.setAttribute("aria-label", label);
+    nav.appendChild(el("span", "_78-toc-label", label));
+    nav.appendChild(buildList(items));
+    toc.appendChild(nav);
+
+    /* 2. The same list as a dropdown, for when the rail has no room. */
+    var details = null;
+    if (inline !== "none" && inline !== false) {
+      details = el("details", "_78-details _78-details-sm _78-toc-inline");
+      var summary = el("summary", null, label);
+      summary.appendChild(el("span", "_78-details-meta", items.length + " sections"));
+      var body = el("div", "_78-details-body");
+      var inav = el("nav");
+      inav.setAttribute("aria-label", label);
+      inav.appendChild(buildList(items));
+      body.appendChild(inav);
+      details.appendChild(summary);
+      details.appendChild(body);
+      var after = inline === "start" ? null : find(inline, scope) || find(inline);
+      if (after && after.parentNode) after.parentNode.insertBefore(details, after.nextSibling);
+      else scope.insertBefore(details, scope.firstChild);
+    }
+
+    var links = Array.prototype.slice.call(toc.querySelectorAll("._78-toc-link"))
+      .concat(details ? Array.prototype.slice.call(details.querySelectorAll("._78-toc-link")) : []);
+
+    var current = "";
+    function setCurrent(id) {
+      if (id === current) return;
+      current = id;
+      links.forEach(function (a) {
+        if (a.hash === "#" + id) a.setAttribute("aria-current", "location");
+        else a.removeAttribute("aria-current");
+      });
+      toc.dispatchEvent(new CustomEvent("_78:tocchange", { bubbles: true, detail: { id: id } }));
+    }
+
+    function onClick(e) {
+      var a = e.target.closest && e.target.closest("._78-toc-link");
+      if (!a || links.indexOf(a) === -1) return;
+      var target = document.getElementById(a.hash.slice(1));
+      if (!target) return;
+      e.preventDefault();
+      if (details) details.open = false;    /* the dropdown has done its job */
+      target.scrollIntoView({ behavior: smooth() ? "smooth" : "auto", block: "start" });
+      history.replaceState(null, "", a.hash);
+      setCurrent(a.hash.slice(1));
+    }
+    document.addEventListener("click", onClick);
+
+    /* The current section is the LAST heading scrolled past a line just
+       under the top, not the topmost one on screen — a long section
+       straddling the line stays "visible" all the way down, and picking the
+       topmost would leave the highlight behind for its whole length.
+       The 48px tolerance is load-bearing: a jumped-to heading parks 16px
+       below the top, so a tighter line would read the section you just
+       clicked as not yet reached. */
+    function recompute() {
+      var docEl = document.documentElement;
+      if (window.innerHeight + window.scrollY >= docEl.scrollHeight - 4) {
+        setCurrent(items[items.length - 1].id);    /* the bottom: last entry */
+        return;
+      }
+      var line = top() + 48, cur = items[0];
+      items.forEach(function (it) {
+        if (it.el.getBoundingClientRect().top <= line) cur = it;
+      });
+      setCurrent(cur.id);
+    }
+
+    /* The observer is the trigger, not the answer: it fires when a heading
+       crosses the band, which is when the answer can change. The rAF'd
+       scroll listener covers what no crossing reports — reaching the bottom,
+       and content resizing under the page after load. */
+    var io = "IntersectionObserver" in window
+      ? new IntersectionObserver(recompute,
+          { rootMargin: "-" + (top() + 16) + "px 0px -75% 0px", threshold: 0 })
+      : null;
+    if (io) items.forEach(function (it) { io.observe(it.el); });
+
+    var queued = false;
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; recompute(); });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    recompute();
+
+    /* A hash aimed at an id this module just created could not be jumped to
+       on load, because the id did not exist yet. Land on it now. */
+    var hashTarget = location.hash && document.getElementById(location.hash.slice(1));
+    if (hashTarget && items.some(function (it) { return it.el === hashTarget; })) {
+      hashTarget.scrollIntoView({ behavior: "auto", block: "start" });
+      setCurrent(location.hash.slice(1));
+    }
+
+    toc._78toc = {
+      el: toc,
+      items: items,
+      dropdown: details,
+      get current() { return current; },
+      setCurrent: setCurrent,
+      refresh: recompute,
+      destroy: function () {
+        if (io) io.disconnect();
+        window.removeEventListener("scroll", onScroll);
+        document.removeEventListener("click", onClick);
+        if (details && details.parentNode) details.parentNode.removeChild(details);
+        toc.textContent = "";
+        delete toc._78toc;
+      }
+    };
+    return toc._78toc;
+  }
+
+  function mountAll(root) {
+    return Array.prototype.slice
+      .call((root || document).querySelectorAll("._78-toc"))
+      .map(function (t) { return mount(t); });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { mountAll(); });
+  } else {
+    mountAll();
+  }
+
+  _78.toc = { mount: mount, mountAll: mountAll };
 })(window._78);

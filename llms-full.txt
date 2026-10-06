@@ -17,7 +17,7 @@ Version 0.x — the public API may still change before 1.0.
 
 1. Install
 2. Theming — tokens, the mechanism, the theme toggle
-3. Layout — the app shell
+3. Layout — the app shell and the contents rail
 4. Buttons and the segmented control
 5. Cards, stat / KPI cards, grids and the meta line
 6. Forms and the toggle switch
@@ -351,7 +351,7 @@ spellings now work on every component.)*
 
 ---
 
-## 3. Layout — the app shell
+## 3. Layout — the app shell and the contents rail
 
 A fixed topbar, an optional sidebar that collapses to an icon rail on desktop and becomes an off-canvas
 drawer on mobile, and a main region that makes its own room for both. Because the topbar and sidebar are
@@ -546,6 +546,65 @@ table, a Chart.js canvas, a virtualized list.
 
 Section headings group items; there are no nested or expandable sub-menus. If a section needs sub-pages,
 they belong in the page — as tabs or in-page navigation — rather than in the sidebar.
+
+### 3.8 "On this page" — `._78-toc` / `_78.toc`
+
+The in-page navigation that note points to: a contents rail built from the page's own headings, so it can
+never drift from them. A sticky rail of anchor links beside the content, a scroll-spy that marks the section
+being read, the same list as a `._78-details` dropdown when the rail has no room, and nothing at all under
+two headings.
+
+```html
+<div class="_78-toc-layout">
+  <article id="doc">
+    <h2>Install</h2> …
+    <h2>Theming</h2> …
+    <h3>Tokens</h3> …
+  </article>
+  <aside class="_78-toc" data-toc-scope="#doc"></aside>
+</div>
+```
+
+Every `._78-toc` mounts on load. It lists the scope's `h2` / `h3` headings, gives each heading — or the
+`<section>` it opens — an id if it has none, fills the aside with
+`<nav aria-label="On this page"> ._78-toc-label + ul._78-toc-list > li > a._78-toc-link` (`._78-toc-link-sub`
+for an `h3`), and puts the same list in a `<details class="_78-details _78-details-sm _78-toc-inline">` at the
+top of the scope.
+
+| Attribute | Option | Default | What it does |
+|---|---|---|---|
+| `data-toc-scope` | `scope` | the layout's other child, else `<main>`, else `<body>` | Whose headings are listed (selector or element) |
+| `data-toc-headings` | `headings` | `h2, h3` | Selector run inside the scope (`:scope > section > h2` works). Headings inside a `<dialog>`, a modal or a `[data-toc-skip]` subtree are always skipped |
+| `data-toc-min` | `min` | `2` | Fewest headings worth a rail; under it the aside is `hidden` |
+| `data-toc-label` | `label` | `On this page` | The rail label, the dropdown summary, and both navs' accessible name |
+| `data-toc-inline` | `inline` | `start` | Where the dropdown goes: after the element a selector finds, `start` (top of the scope) or `none` |
+| `data-toc-offset` | `offset` | `--_78-toc-top` | Pixels from the viewport top to the reading line's base |
+
+```js
+var toc = _78.toc.mount(el, { scope: '#doc', min: 3 });   // _78.toc.mountAll(root) for many
+toc.items        // [{ id, text, level, el }, …]
+toc.current      // the id of the section being read
+toc.setCurrent(id) · toc.refresh() · toc.destroy()
+document.addEventListener('_78:tocchange', function (e) { e.detail.id; });   // bubbles from the aside
+```
+
+**Rail or dropdown.** `._78-toc-layout` is a flex row and a size container. At 880px and wider the rail shows
+and the dropdown hides; below that, the reverse. It measures the layout, not the window, so a sidebar
+collapsing to its rail can bring the contents rail in. Without container queries the dropdown shows. A
+`._78-toc` outside a layout always shows as a rail.
+
+**The current section** is the last heading scrolled past a line 48px below `--_78-toc-top` — not the topmost
+heading on screen, so a long section stays current all the way down — and at the very bottom of the page it
+is the last entry. The active link gets `aria-current="location"`. An IntersectionObserver triggers the
+check; a rAF-throttled scroll listener covers the page bottom and late layout shifts.
+
+**Clicking** scrolls smoothly (instantly under `prefers-reduced-motion`), parks the heading `--space-4` below
+`--_78-toc-top`, writes the hash with `replaceState` and closes the dropdown. Targets get that
+`scroll-margin-top` inline unless the page already sets one. A hash on load that names a heading the module
+just gave an id is honored.
+
+**`--_78-toc-top`** is the height of a fixed header: `--header-h` automatically when the page has a
+`._78-topbar`, `0px` otherwise. Set it on `:root` for a header of your own.
 
 ---
 
@@ -2380,6 +2439,7 @@ string) · `hex(rgb)` · `rgba(rgb, a)` · `luminance(rgb)` · `contrast(a, b)` 
 | `_78:drawerchange` | `document` | `{ open: boolean }` |
 | `_78:tabchange` | the `._78-tabs` list (bubbles) | `{ index, tab, panel, id }` |
 | `_78:segchange` | the `._78-seg` group (bubbles) | `{ index, button, value }` |
+| `_78:tocchange` | the `._78-toc` aside (bubbles) | `{ id }` — the section now being read |
 | `_78:genchange` | `document` | `{ config }` — `null` after `_78.gen.clear()` |
 
 ### localStorage keys
@@ -2406,10 +2466,10 @@ css/  kit.css              the one stylesheet a project links (@imports everythi
       components/          shell · buttons · cards · grid · forms · switch · seg · details · badges · meta ·
                            viz · figure · split-bar · table · tabs · modal · toast · alert · notes ·
                            aurora ·
-                           theme-toggle · utilities
+                           theme-toggle · toc · utilities
       adapters/            tabulator.css · fullcalendar.css — opt-in, never in kit.css
 js/   _78.js               _78.theme · _78.tone · _78.util · _78.shell · _78.modal · _78.notify · _78.tabs · _78.seg ·
-                           _78.viz
+                           _78.viz · _78.toc
       generator.js         _78.gen — opt-in, not part of _78.js
       adapters/            chartjs.js — _78.adapters.chartjs
 demo/                      living examples, every page in light + dark
