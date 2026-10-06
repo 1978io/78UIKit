@@ -757,11 +757,33 @@ The dashboard workhorse. Every part is optional — the label and the number alo
 | `._78-stat-card__head` | Label on the left, icon on the right |
 | `._78-stat-card__label` | Small uppercase dim label |
 | `._78-stat-card__icon` | 28px accent-tinted rounded icon slot |
+| `._78-stat-card__actions` | A control slot at the end of `__head` — a small toggle beside the label. A `._78-seg` inside drops to a 24px compact size, and the slot's negative block margin keeps the head at the label's height, so the number still lines up with its neighbors in a grid |
 | `._78-stat-card__num` | The number: 28px, bold, tabular figures |
 | `._78-stat-card__sub` | The caption under the number |
 | `._78-stat-card__row` | Puts the delta and the caption on one baseline-aligned row |
 | `._78-stat-card__spark` | Sparkline slot — full-bleed to the card's bottom edge, clipped to its radius |
 | `._78-stat-delta` | The delta chip. Styled identically to `._78-trend`; see §12.6 |
+
+**A control beside the label.** Put `._78-stat-card__actions` at the end of `._78-stat-card__head` — the
+head centers its items when it holds one:
+
+```html
+<div class="_78-stat-card">
+  <div class="_78-stat-card__head">
+    <span class="_78-stat-card__label">Account value</span>
+    <div class="_78-stat-card__actions">
+      <div class="_78-seg" aria-label="Change measured against">
+        <button class="_78-seg-btn" type="button" data-value="today" aria-checked="true">Today</button>
+        <button class="_78-seg-btn" type="button" data-value="total">Total</button>
+      </div>
+    </div>
+  </div>
+  <div class="_78-stat-card__num">$48,290</div>
+</div>
+```
+
+Don't put a control inside `._78-stat-card__label` itself — the label is uppercase, letter-spaced text, and
+its styling would reach the buttons.
 
 Number color modifiers, applied to `._78-stat-card__num`: any tone from §2.9 in its short form (`._78-success`,
 `._78-danger`, `._78-warn` …; the old `._78-green` / `._78-red` still work). With none the number is `--text`.

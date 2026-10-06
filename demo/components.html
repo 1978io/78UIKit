@@ -126,6 +126,47 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
     </div>
 
+    <p class="_78-text-sm _78-text-dim _78-mb-8">A control beside the label — <code class="tok">._78-stat-card__actions</code>.
+      The seg drops to a compact size and the row keeps the label's height, so every number in the row still
+      lines up:</p>
+    <div class="_78-kpi-grid _78-mb-16" id="stat-actions-demo">
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Account value</span>
+          <div class="_78-stat-card__actions">
+            <div class="_78-seg" aria-label="Change measured against">
+              <button class="_78-seg-btn" type="button" data-value="today" aria-checked="true">Today</button>
+              <button class="_78-seg-btn" type="button" data-value="total">Total</button>
+            </div>
+          </div>
+        </div>
+        <div class="_78-stat-card__num">$48,290</div>
+        <div class="_78-stat-card__row">
+          <span class="_78-stat-delta" data-delta="0.6"></span>
+          <span class="_78-stat-card__sub">today</span>
+        </div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Open P/L</span>
+        </div>
+        <div class="_78-stat-card__num _78-success">+$1,204</div>
+        <div class="_78-stat-card__sub">across 9 positions</div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__head">
+          <span class="_78-stat-card__label">Exposure</span>
+          <div class="_78-stat-card__actions">
+            <button class="_78-icon-btn" type="button" aria-label="Refresh exposure" style="width:24px;height:24px">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="_78-stat-card__num">62%</div>
+        <div class="_78-stat-card__sub">of the account at work</div>
+      </div>
+    </div>
+
     <div class="_78-card-grid">
       <div class="_78-card">
         <div class="_78-card-title">Progress / score bars</div>

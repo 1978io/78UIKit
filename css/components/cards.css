@@ -148,6 +148,31 @@
 }
 ._78-stat-card__icon svg { width: 15px; height: 15px; }
 
+/* Control slot — a small toggle beside the label (Today / Total, a range).
+     <div class="_78-stat-card__head">
+       <span class="_78-stat-card__label">Account value</span>
+       <div class="_78-stat-card__actions">
+         <div class="_78-seg" aria-label="Measured against"> … </div>
+       </div>
+     </div>
+   A seg control inside it drops to a 24px compact size, and the slot's
+   negative block margin keeps the row at the label's own height — so in a
+   KPI grid this card's number lines up with its neighbors'. */
+._78-stat-card__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  margin: calc(var(--space-1) * -1) 0 calc(var(--space-1) * -1) auto;
+}
+._78-stat-card__head:has(> ._78-stat-card__actions) { align-items: center; }
+._78-stat-card__actions ._78-seg { padding: 2px; }
+._78-stat-card__actions ._78-seg-btn {
+  height: 18px;
+  padding: 0 var(--space-2);
+  font-size: var(--fs-xs);
+}
+
 /* delta + caption on one line under the number */
 ._78-stat-card__row {
   display: flex;
