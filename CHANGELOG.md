@@ -4,6 +4,64 @@ All notable changes to 78 UI Kit are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-10-06
+
+The consumer-components pass: the pieces production dashboards kept hand-rolling — dim meta lines,
+status captions, quiet notes, stat-card controls and key : value lines, a span-aware grid, a table
+toolbar — plus animated gradient text and an "On this page" rail. New classes and one new JS module;
+nothing was removed or renamed, and `._78-kpi-grid` renders exactly as before.
+
+### Added
+
+- **`._78-grid`** — auto-fit columns no narrower than `--min` (200px), no breakpoints, with
+  **`._78-col-span-2`** (two columns when the grid has two, the whole row when it has one — never an
+  implicit overflowing column) and **`._78-col-full`**. `._78-kpi-grid` (`--min: 190px`, `-sm` 150px,
+  `-lg` 240px) and `._78-card-grid` (200px) are now presets of it, so their children can span too.
+- **`._78-toc` / `_78.toc`** — an "On this page" contents rail built from a page's own headings: sticky,
+  an IntersectionObserver scroll-spy (`aria-current="location"`), a `._78-details` dropdown when its
+  `._78-toc-layout` is under 880px, nothing under two headings. `data-toc-scope` / `-headings` / `-min` /
+  `-label` / `-inline` / `-offset`, `_78.toc.mount()` / `.mountAll()`, a `_78:tocchange` event, and
+  `--_78-toc-top` for a fixed header (automatic under `._78-topbar`).
+- **`._78-meta`** — the dim line of facts under a headline; the kit draws the `·` between child elements.
+  `._78-meta-label`, `-xs`, and a line clamp (`._78-meta-clamp`, `-clamp-2`, `--_78-meta-lines`).
+- **`._78-status`** — a badge and the dim caption that explains it (`._78-status-text`), which drops to
+  its own line on a phone; `._78-status-inline` inside a sentence.
+- **`._78-notes`** — quiet notes inside a card: an optional `._78-notes-title`, list lines with a dot
+  marker that takes any `._78-tone-*`, `._78-notes-box` (a compact alert with a toned edge),
+  `._78-notes-ruled` (a footnote) and `-xs`.
+- **Stat card: `._78-stat-card__actions`**, a control slot beside the label (a seg inside it drops to a
+  compact 24px and the row keeps the label's height), and **`._78-stat-card__lines`** /
+  `__line` / `__key` / `__value` for key : value lines with the keys in one column.
+- **`._78-card-stack`** (+ `-sm`) — a list of cards spaced by a gap, for cards that aren't direct
+  siblings.
+- **`._78-figure-neutral`** / **`._78-figure-row-neutral`** — figures with no semantic edge, even under an
+  inherited tone.
+- **`._78-form-inline`** — a field or two and their button on one row, bottoms aligned; the form in a
+  card foot (dismiss with a reason) is now a documented pattern.
+- **`._78-table-card`**, **`._78-table-filters`**, **`._78-table-dates`**, **`._78-table-count`** — the
+  filter-and-date toolbar above a Tabulator grid or a plain `._78-table`.
+- **`._78-text-aurora`** — a slow animated gradient for a hero word or a wordmark. Token colors that clear
+  4.5:1 on every surface in both themes; `--_78-aurora` / `--_78-aurora-speed`; static under
+  `prefers-reduced-motion`, solid in forced-colors mode.
+
+### Changed
+
+- **Consecutive paragraphs space themselves** inside `._78-alert-body` (`--space-2`), `._78-card` and
+  `._78-details-body` (`--space-3`, the modal body's rhythm). *(Visual change: two `<p>`s in an alert or a
+  card used to run together. The rule weighs nothing, so a margin utility or any rule of yours still wins.)*
+- **A `--min` track narrower than its container no longer overflows** in `._78-kpi-grid` /
+  `._78-card-grid`: under one column's width the grid gives one full-width column. Nothing changes at any
+  width where the grid fitted before.
+
+### Fixed
+
+- **Cards in a grid or a flex row no longer pick up the stacking margin.** `._78-card + ._78-card` pushed
+  every card after the first 16px down inside `._78-card-grid`, `._78-kpi-grid` (and now `._78-grid`,
+  `._78-card-stack`, `._78-flex`, `._78-flex-between`). *(Visual change: rows of cards now align at the
+  top. A `margin-top: 0` workaround of your own can go.)*
+- The demo pages' header no longer scrolls the page sideways at phone width, and the generator demo fits a
+  390px screen.
+
 ## [0.3.0] — 2026-09-30
 
 The bug-and-tones pass: one tone vocabulary across every component, categorical colors for labels that

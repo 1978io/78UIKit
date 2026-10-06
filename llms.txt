@@ -28,15 +28,15 @@ No framework. No build step. No dependencies. Version 0.x — the public API may
   </script>
 
   <!-- 2. the kit -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/css/kit.css">
-  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.3.0/js/_78.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.4.0/css/kit.css">
+  <script defer src="https://cdn.jsdelivr.net/gh/1978io/78UIKit@v0.4.0/js/_78.js"></script>
 
   <!-- 3. your theme overrides — AFTER the kit -->
   <style>:root[data-theme="dark"]{--accent:#7c5cff}</style>
 </head>
 ```
 
-`@v0.3.0` pins a release; `@main` tracks the latest. `kit.min.css` / `_78.min.js` are also served. Or
+`@v0.4.0` pins a release; `@main` tracks the latest. `kit.min.css` / `_78.min.js` are also served. Or
 download the repo and serve the files yourself. Library adapters are opt-in and live under
 `/css/adapters/` and `/js/adapters/` — they are never part of `kit.css`.
 
