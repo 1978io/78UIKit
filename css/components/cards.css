@@ -1,6 +1,6 @@
 /* ==========================================================================
    78 UI Kit — cards
-   ._78-card (+ ._78-card-title)  ·  ._78-stat-card (__label / __num / __sub)
+   ._78-card (+ ._78-card-title)  ·  ._78-stat-card (__label / __num / __sub / __lines)
    ========================================================================== */
 
 ._78-card {
@@ -182,6 +182,49 @@
   margin-top: var(--space-2);
 }
 ._78-stat-card__row ._78-stat-card__sub { margin-top: 0; }
+
+/* key : value lines — one or more figures under (or instead of) the number,
+   each with a dim key: Account / vs benchmark / Trades.
+     <div class="_78-stat-card__lines">
+       <div class="_78-stat-card__line">
+         <span class="_78-stat-card__key">Account</span>
+         <span class="_78-stat-card__value"><b class="_78-success">+$123.45</b> <small>today</small></span>
+       </div>
+       …
+     </div>
+   In the __lines wrapper the keys share one column, so the values start on a
+   common edge whatever the keys' lengths. A bare __line is a flex row. */
+._78-stat-card__lines {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: baseline;
+  gap: 2px var(--space-3);
+  margin-top: var(--space-2);
+}
+._78-stat-card__lines > ._78-stat-card__line { display: contents; }
+._78-stat-card__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+._78-stat-card__key {
+  flex: 0 0 auto;
+  color: var(--dim);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+}
+._78-stat-card__value {
+  min-width: 0;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+._78-stat-card__value b,
+._78-stat-card__value strong { font-weight: 600; }
+/* the aside after a figure — "today", "on capital deployed" */
+._78-stat-card__value small { color: var(--dim); font-size: var(--fs-xs); }
 
 /* sparkline slot — full-bleed to the card edge, clipped to its radius so the
    area fill can't square off the bottom corners (the padding leaves the

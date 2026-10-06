@@ -94,7 +94,8 @@ One vocabulary for every component that takes a tone, and it is the token names:
 - **Cards** — `._78-card` and the KPI `._78-stat-card` (label / number / delta / sparkline), laid out by
   `._78-kpi-grid` / `._78-card-grid`. Stacked cards space themselves; in a grid they line up at the top.
   `._78-card-stack` spaces a list of cards with a gap, even when each one is wrapped.
-  `._78-stat-card__actions` puts a small control (a seg, an icon button) beside the label.
+  `._78-stat-card__actions` puts a small control (a seg, an icon button) beside the label;
+  `._78-stat-card__lines` / `__line` / `__key` / `__value` are key : value lines with the keys in one column.
 - **Meta line** — `._78-meta`, the small dim line of facts under a headline; the kit draws the `·` between
   child elements. `._78-meta-label` lead-in, `-xs`, and a line clamp (`-clamp` / `-clamp-2`).
 - **Forms** — `._78-field` with `._78-input` / `._78-select` / `._78-textarea` / `._78-check` and one

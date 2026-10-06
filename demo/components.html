@@ -167,6 +167,37 @@ var r=document.documentElement;r.dataset.theme=t;r.dataset.themePref=p;})();
       </div>
     </div>
 
+    <p class="_78-text-sm _78-text-dim _78-mb-8">Key : value lines — <code class="tok">._78-stat-card__lines</code>.
+      The keys share a column, so every value starts on the same edge:</p>
+    <div class="_78-kpi-grid _78-kpi-grid-lg _78-mb-16" id="stat-lines-demo">
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__label">Account value</div>
+        <div class="_78-stat-card__num">$48,290</div>
+        <div class="_78-stat-card__lines">
+          <div class="_78-stat-card__line">
+            <span class="_78-stat-card__key">Account</span>
+            <span class="_78-stat-card__value"><b class="_78-success">+$123.45</b> <small>today</small></span>
+          </div>
+          <div class="_78-stat-card__line">
+            <span class="_78-stat-card__key">vs benchmark</span>
+            <span class="_78-stat-card__value"><b class="_78-success">+0.50%</b> <small>you +1.2% · index +0.7%</small></span>
+          </div>
+          <div class="_78-stat-card__line">
+            <span class="_78-stat-card__key">Trades</span>
+            <span class="_78-stat-card__value"><b class="_78-danger">−0.30%</b> <small>on capital deployed, across 9 days</small></span>
+          </div>
+        </div>
+      </div>
+      <div class="_78-stat-card">
+        <div class="_78-stat-card__label">Latency</div>
+        <div class="_78-stat-card__lines">
+          <div class="_78-stat-card__line"><span class="_78-stat-card__key">p50</span><span class="_78-stat-card__value"><b>42 ms</b></span></div>
+          <div class="_78-stat-card__line"><span class="_78-stat-card__key">p95</span><span class="_78-stat-card__value"><b>118 ms</b></span></div>
+          <div class="_78-stat-card__line"><span class="_78-stat-card__key">p99</span><span class="_78-stat-card__value"><b class="_78-warn">390 ms</b> <small>over budget</small></span></div>
+        </div>
+      </div>
+    </div>
+
     <div class="_78-card-grid">
       <div class="_78-card">
         <div class="_78-card-title">Progress / score bars</div>
